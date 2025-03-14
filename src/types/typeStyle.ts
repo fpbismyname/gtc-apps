@@ -1,0 +1,5 @@
+export type colorType = 'primary' | 'secondary' | 'info' | 'danger' | 'warning' | 'success' | 'active' | 'inactive' | 'link' | 'hoverPrimary' | 'light' | 'dark' | 'transparent'
+export type sizeType = 'none' | 'sm' | 'md' | 'xl' | 'lg'
+export type directionType = 'column' | 'row'
+export type weightType = 'bolder' | 'bold' | 'normal' | 'thin'
+export type alertType = 'warning' | 'danger' | 'success'

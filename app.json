@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "Gading Training Center",
+    "slug": "gading-training-center",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/images/gtc_icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./src/assets/images/gtc_icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#8a7322"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/images/gtc_icon.png",
+        "backgroundColor": "#8a7322"
+      },
+      "package": "com.gadingtrainingcenter.apps"
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./src/assets/images/gtc_icon.png"
+    },
+    "plugins": [
+      "expo-asset"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "6a358ec8-e329-4409-8293-51faf40a2983"
+      }
+    }
+  }
+}
