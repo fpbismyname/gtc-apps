@@ -1,0 +1,1 @@
+export type inputMode = 'default' | 'numeric' | 'email' | 'search' | 'password';

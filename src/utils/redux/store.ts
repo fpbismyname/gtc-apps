@@ -1,14 +1,32 @@
-import { configureStore } from '@reduxjs/toolkit';
-import notifyReducer from './slices/notifySlice';
-import userReducer from './slices/userSlice'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import { persistReducer, persistStore } from 'redux-persist'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import authReducer from './slices/authToggle'
+import notifyReducer from './slices/notifyMessage'
+import userReducer from './slices/userInformation'
 
-export const store = configureStore({
-  reducer: {
-    notify: notifyReducer,
-    user: userReducer
-  }
-});
+const persistConfig = {
+    key: 'gtc-apps',
+    storage: AsyncStorage
+}
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
-export default store;
+const combinedReducer = combineReducers({
+    authToggleMethod: authReducer,
+    notifyMessage: notifyReducer,
+    userInformation: userReducer
+})
+
+const persistedReducer = persistReducer(persistConfig, combinedReducer)
+
+const store = configureStore({
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: false
+        })
+})
+
+export const persistor = persistStore(store)
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
+export default store
