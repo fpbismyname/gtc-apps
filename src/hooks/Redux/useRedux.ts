@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../../utils/redux/store'
 import { setUser, unsetUser } from '../../utils/redux/slices/userInformation'
 import { setNotify, unsetNotify } from '../../utils/redux/slices/notifyMessage'
-import { handleToggleAuth } from '../../utils/redux/slices/authToggle'
+import { handleToggleAuth } from '../../utils/redux/slices/authToggleMethod'
 
 const useRedux = () => {
     // Get Redux state data
