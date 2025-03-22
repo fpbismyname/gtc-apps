@@ -4,11 +4,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import authReducer from './slices/authToggleMethod'
 import notifyReducer from './slices/notifyMessage'
 import userReducer from './slices/userInformation'
-
+    
 const persistConfig = {
     key: 'gtc-apps',
     storage: AsyncStorage,
-    whitelist: ['userInformation']
+    whitelist: ['userInformation'],
+    transform: []
 }
 
 const combinedReducer = combineReducers({

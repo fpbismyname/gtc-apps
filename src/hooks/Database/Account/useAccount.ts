@@ -1,15 +1,17 @@
-import { account } from '~/src/types/Account/account'
 import { db } from '~/src/utils/firebase/firebase'
 import { useNotify } from '~/src/hooks/Notify/useNotify'
-import { addDoc, collection, DocumentData, getDocs, onSnapshot, query, where } from 'firebase/firestore'
-import { UserInformation } from '~/src/types/User/User'
+import { setDoc, collection, doc, DocumentData, getDocs, onSnapshot, query, where } from 'firebase/firestore'
+import { User } from '~/src/types/userType/User'
+import { getAuth } from 'firebase-admin/auth'
 
 const useAccount = () => {
     const { setNotifyMessage } = useNotify()
-    const addAccount = async (values: Partial<UserInformation>) => {
+
+    const addAccount = async (values: Partial<User>) => {
         try {
-            const collect = collection(db, 'accounts')
-            return (await addDoc(collect, values)) ? true : false
+            const collect = doc(db, 'accounts', values.user_uid || '')
+            await setDoc(collect, values, { merge: true })
+            return true
         } catch (err: any) {
             setNotifyMessage(err.code)
             // console.log(err)
@@ -17,10 +19,10 @@ const useAccount = () => {
         }
     }
 
-    const getAccount = async (values: Partial<account>) => {
+    const getAccount = async (values: Partial<User>, path: string) => {
         try {
             const collect = collection(db, 'accounts')
-            const queryData = values ? query(collect, where(`user_information.email`, '==', values.email)) : collect
+            const queryData = values ? query(collect, where(path, '==', values)) : collect
             const { docs } = await getDocs(queryData)
             if (!docs) return null
             const data: DocumentData = docs.map((doc) => ({ ...doc.data() })).filter(Boolean)
@@ -31,7 +33,7 @@ const useAccount = () => {
         }
     }
 
-    const checkAccount = (values: Partial<UserInformation>, callback: (exist: boolean) => void) => {
+    const checkAccount = (values: Partial<User>, callback: (exist: boolean) => void) => {
         try {
             const collect = collection(db, 'accounts')
             const queryData = query(collect, where('user_uid', '==', values.user_uid))
@@ -45,14 +47,16 @@ const useAccount = () => {
         }
     }
 
-    const checkAuth = (callback: (exist: boolean) => void) => {
+    const deleteAccount = async (user_uid: string) => {
         try {
+            await getAuth().deleteUser(user_uid)
+            console.log(user_uid, ' : account deleted')
         } catch (err: any) {
             setNotifyMessage(err.code)
         }
     }
 
-    return { addAccount, getAccount, checkAccount }
+    return { addAccount, getAccount, checkAccount, deleteAccount }
 }
 
 export default useAccount

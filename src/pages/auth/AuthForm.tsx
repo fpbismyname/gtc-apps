@@ -10,8 +10,8 @@ import useAuth from '~/src/hooks/Auth/useAuth'
 import { sizeType } from '~/src/types/typeStyle'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
-import { inputMessage } from '~/src/types/AuthInterface'
-import { account } from '~/src/types/Account/account'
+import { inputMessage } from '~/src/types/authType/AuthInterface'
+import { account } from '~/src/types/accountType/Account'
 
 // Card Auth Form
 const CardForm: React.FC<{ children: React.ReactNode; gap: sizeType }> = ({ children, gap }) => {

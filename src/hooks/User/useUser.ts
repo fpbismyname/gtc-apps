@@ -1,16 +1,12 @@
-import { UserInformation } from '~/src/types/User/User'
+import { User } from '~/src/types/userType/User'
 import useRedux from '../Redux/useRedux'
 
 const useUser = () => {
     // Get state from Redux
     const { dispatch, slicer, userState } = useRedux()
     // function to set User information
-    const setUser = (newUser: Partial<UserInformation>) => {
-        const mergedUser = {
-            ...userState,
-            ...newUser
-        }
-        return dispatch(slicer.setUser(mergedUser)) ? true : false
+    const setUser = (user_uid: Partial<User>) => {
+        return dispatch(slicer.setUser({ user_uid: user_uid.user_uid || null })) ? true : false
     }
     // function to unset User Information
     const unsetUser = () => {

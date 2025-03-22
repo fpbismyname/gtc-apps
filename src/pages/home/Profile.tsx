@@ -18,7 +18,7 @@ const HeaderProfile: React.FC = () => {
     const { userState } = useRedux()
     return (
         <Section color="primary" direction="column" customStyle="rounded-xl p-4">
-            <Text>Hi, {userState.user_information.username}</Text>
+            <Text>Hi, {userState.user_uid}</Text>
             {/* <Text>Nama Akun : {dataUser?.email}</Text> */}
             {/* <Text>ID User : {dataUser?.sub}</Text> */}
         </Section>

@@ -69,7 +69,7 @@ export default function TextInput({
                 onChangeText={onChange}
                 keyboardType={inputText[0]}
                 inputMode={typeof inputText[1] !== 'boolean' ? inputText[1] : 'text'}
-                secureTextEntry={typeof inputText[1] === 'string' ? false : showPassword ? true : false}
+                secureTextEntry={typeof inputText[1] === 'string' ? false : !showPassword ? true : false}
                 value={value}
                 onBlur={onBlur}
                 maxLength={37}
@@ -79,7 +79,7 @@ export default function TextInput({
             {inputMode === 'password' ? (
                 <Section padding="sm" direction="row">
                     <Link
-                        title={showPassword ? 'Sembunyikan' : 'Tampilkan'}
+                        title={!showPassword ? 'Tampilkan' : 'Sembunyikan'}
                         customStyle="absolute right-0 px-2"
                         onPress={() => setShowPassword((prev) => !prev)}
                     />

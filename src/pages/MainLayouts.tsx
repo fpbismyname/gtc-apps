@@ -5,8 +5,6 @@ import useUser from '~/src/hooks/User/useUser'
 import useAccount from '~/src/hooks/Database/Account/useAccount'
 import useRedux from '~/src/hooks/Redux/useRedux'
 import { useEffect } from 'react'
-import { onAuthStateChanged } from '@firebase/auth'
-import { auth } from '../utils/firebase/firebase'
 
 export default () => {
     // Stack & Navigator

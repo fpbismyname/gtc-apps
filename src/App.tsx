@@ -19,7 +19,7 @@ export default () => {
         console.log(data)
     }
 
-    // localStorage()
+    localStorage()
 
     // Debug User Information
     // console.log(userState)
