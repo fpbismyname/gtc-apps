@@ -8,6 +8,8 @@ export type notifyMessage =
     | 'auth/invalid-credential'
     | 'auth/weak-password'
     | 'auth/user-disabled'
+    | 'auth/signOut'
+    | 'auth/too-many-requests'
 
 export interface notifyInterface {
     loading?: boolean

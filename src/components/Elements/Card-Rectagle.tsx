@@ -1,7 +1,7 @@
 import Section from './Section'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Text from './Text'
-import { weightType } from '../../../types/typeStyle'
+import { weightType } from '../../types/typeStyle'
 
 interface cardType {
     title?: string

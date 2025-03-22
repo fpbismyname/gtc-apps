@@ -11,6 +11,7 @@ import { sizeType } from '~/src/types/typeStyle'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import { inputMessage } from '~/src/types/AuthInterface'
+import { account } from '~/src/types/Account/account'
 
 // Card Auth Form
 const CardForm: React.FC<{ children: React.ReactNode; gap: sizeType }> = ({ children, gap }) => {
@@ -82,7 +83,7 @@ const FormRegister: React.FC = () => {
                     password: ''
                 }}
                 validationSchema={ValidationSchema.Register}
-                onSubmit={(values) => {
+                onSubmit={(values: account) => {
                     authSignUp(values)
                 }}
             >
@@ -103,7 +104,7 @@ const FormRegister: React.FC = () => {
                             inputMode="default"
                             onChange={handleChange('phone_number')}
                             errors={errors.phone_number}
-                            value={errors.phone_number ? '' : values.phone_number}
+                            value={values.phone_number}
                         />
                         <TextInput
                             placeholder="Email"
@@ -141,7 +142,7 @@ const FormLogin: React.FC = () => {
                     password: ''
                 }}
                 validationSchema={ValidationSchema.Login}
-                onSubmit={(values) => {
+                onSubmit={(values: Partial<account>) => {
                     authSignIn(values)
                 }}
             >
@@ -159,7 +160,7 @@ const FormLogin: React.FC = () => {
                             placeholder="Password"
                             size="md"
                             color={errors.password ? 'danger' : 'dark'}
-                            inputMode="default"
+                            inputMode="password"
                             onChange={handleChange('password')}
                             errors={errors.password}
                         />

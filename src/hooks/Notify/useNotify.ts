@@ -44,7 +44,27 @@ export const useNotify = () => {
             case 'auth/user-disabled':
                 dispatch(
                     setNotify({
-                        message: 'Akun telah dinonaktifkan, silahkan hubungi admin.',
+                        message: 'Akun belum aktif, silahkan hubungi admin.',
+                        loading: false,
+                        type: 'warning'
+                    })
+                )
+                break
+            // User Signout
+            case 'auth/signOut':
+                dispatch(
+                    setNotify({
+                        message: 'Keluar dari akun berhasil.',
+                        loading: false,
+                        type: 'success'
+                    })
+                )
+                break
+            // User Signout
+            case 'auth/too-many-requests':
+                dispatch(
+                    setNotify({
+                        message: 'Terlalu banyak permintaaan, cobalah beberapa saat lagi.',
                         loading: false,
                         type: 'warning'
                     })
@@ -61,7 +81,6 @@ export const useNotify = () => {
                     })
                 )
                 break
-
             // reset Message
             case 'reset':
                 dispatch(unsetNotify())

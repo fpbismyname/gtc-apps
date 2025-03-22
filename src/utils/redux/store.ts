@@ -7,7 +7,8 @@ import userReducer from './slices/userInformation'
 
 const persistConfig = {
     key: 'gtc-apps',
-    storage: AsyncStorage
+    storage: AsyncStorage,
+    whitelist: ['userInformation']
 }
 
 const combinedReducer = combineReducers({

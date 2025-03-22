@@ -1,10 +1,12 @@
-import React, { ChangeEvent } from 'react'
-import { TextInputProps, TextInput as TI } from 'react-native'
-import { colorType } from '../../../types/typeStyle'
+import React, { useState } from 'react'
+import { TextInput as TI, View } from 'react-native'
+import { colorType } from '../../types/typeStyle'
 import { inputMode } from '~/src/types/inputMode'
 import Section from './Section'
 import Text from './Text'
-import { FormikErrors } from 'formik'
+import useRedux from '~/src/hooks/Redux/useRedux'
+import Icon from 'react-native-vector-icons/Ionicons'
+import Link from './Link'
 
 interface textInputType {
     placeholder: string
@@ -15,7 +17,6 @@ interface textInputType {
     inputMode?: inputMode
     value?: string
     expand?: boolean
-    disabled?: boolean
     errors?: string
 }
 
@@ -27,11 +28,13 @@ export default function TextInput({
     onChange,
     onBlur,
     value,
-    disabled = false,
     expand,
     errors
 }: textInputType) {
     let inputText: any = []
+    const { notifyState } = useRedux()
+    const [showPassword, setShowPassword] = useState<boolean>(false)
+    const { loading } = notifyState
 
     if (inputMode === 'default') inputText = ['default', 'text']
     if (inputMode === 'numeric') inputText = ['numeric', 'numeric']
@@ -59,19 +62,29 @@ export default function TextInput({
         .join(' ')
 
     return (
-        <Section>
+        <Section direction="column">
             <TI
                 placeholder={placeholder}
                 className={style}
                 onChangeText={onChange}
                 keyboardType={inputText[0]}
                 inputMode={typeof inputText[1] !== 'boolean' ? inputText[1] : 'text'}
-                secureTextEntry={typeof inputText[1] === 'string' ? false : true}
+                secureTextEntry={typeof inputText[1] === 'string' ? false : showPassword ? true : false}
                 value={value}
                 onBlur={onBlur}
-                editable={!disabled}
+                maxLength={37}
+                editable={!loading}
             />
-            {errors ? <Text customStyle="absolute right-0 bg-danger rounded-md px-2 text-white">{errors}</Text> : null}
+            {errors ? <Text customStyle="absolute right-0 top-0 bg-danger rounded-md px-2 text-white">{errors}</Text> : null}
+            {inputMode === 'password' ? (
+                <Section padding="sm" direction="row">
+                    <Link
+                        title={showPassword ? 'Sembunyikan' : 'Tampilkan'}
+                        customStyle="absolute right-0 px-2"
+                        onPress={() => setShowPassword((prev) => !prev)}
+                    />
+                </Section>
+            ) : null}
         </Section>
     )
 }

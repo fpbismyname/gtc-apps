@@ -1,14 +1,3 @@
-export interface signUpInterface {
-    username: string
-    phone_number: number | null
-    email: string
-    password: string
-}
-export interface signInInterface {
-    email: string
-    password: string
-}
-
 export const inputMessage = {
     signUp: {
         username: {

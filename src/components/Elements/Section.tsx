@@ -1,7 +1,8 @@
 import React from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { colorType, directionType, sizeType } from '../../../types/typeStyle'
+// import { SafeAreaView } from 'react-native-safe-area-context'
+import { colorType, directionType, sizeType } from '../../types/typeStyle'
 import { Keyboard, TouchableWithoutFeedback } from 'react-native'
+import { View } from 'react-native'
 
 interface sectionType {
     children: React.ReactNode
@@ -56,9 +57,9 @@ const Section: React.FC<sectionType> = ({
         .join(' ')
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <SafeAreaView className={style}>
+            <View className={style}>
                 <>{children}</>
-            </SafeAreaView>
+            </View>
         </TouchableWithoutFeedback>
     )
 }

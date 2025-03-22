@@ -1,9 +1,10 @@
-import { createUserWithEmailAndPassword } from '@firebase/auth'
-import { signInInterface, signUpInterface } from '../../types/AuthInterface'
-import { auth } from '../../utils/firebase/firebase'
-import { useNotify } from '../Notify/useNotify'
 import useUser from '../User/useUser'
 import useAccount from '../Database/Account/useAccount'
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from '@firebase/auth'
+import { auth } from '../../utils/firebase/firebase'
+import { useNotify } from '../Notify/useNotify'
+import { account } from '~/src/types/Account/account'
+import { UserInformation } from '~/src/types/User/User'
 
 const useAuth = () => {
     // Get State and Reducer Redux
@@ -11,37 +12,42 @@ const useAuth = () => {
     const { setUser, unsetUser } = useUser()
 
     // Get account database Firebase
-    const { addAccount } = useAccount()
+    const { addAccount, getAccount } = useAccount()
 
     // SignUp Method
-    const authSignUp = async (values: any) => {
+    const authSignUp = async (values: Partial<account>) => {
         try {
+            setNotifyMessage('loading')
             // Get Data
-            const data: signUpInterface = values
-            const { user } = await createUserWithEmailAndPassword(auth, data.email, data.password)
-            // Check Signin Process
+            const data = values
+            // account check
+            const { user } = await createUserWithEmailAndPassword(auth, data.email || '', data.password || '')
             if (user) {
-                // Get Token JWT & user UID
-                const tokenUser = await user.getIdToken()
-                const userId = user.uid
-                // Check get token process
-                if (tokenUser) {
-                    // set user info to local storage
-                    setUser({
-                        user: {
-                            userUID: userId,
-                            userToken: tokenUser
-                        }
-                    })
-                    // Input data user to accounts on firestore
-                    await addAccount({
-                        userUID: userId,
-                        userToken: tokenUser,
-                        userDataPrivacy: {
-                            ...values
-                        }
-                    })
+                const userUID = user.uid // Get UID user
+                const tokenUser = await user.getIdToken() // Get Token JWT & user UID
+                // Prepare data user
+                const dataUser: Partial<UserInformation> = {
+                    user_uid: userUID,
+                    user_information: {
+                        email: data.email || '',
+                        phone_number: data.phone_number || '',
+                        username: data.username || ''
+                    },
+                    user_data: {
+                        membership: 'new_user',
+                        completed_modules: [],
+                        expired_at: ''
+                    }
                 }
+                // set user info to local storage
+                setUser({
+                    ...dataUser,
+                    user_token: tokenUser
+                })
+                // Input data user to accounts on firestore
+                await addAccount(dataUser)
+                // complete the loading
+                setNotifyMessage('reset')
             }
         } catch (err: any) {
             setNotifyMessage(err.code)
@@ -49,11 +55,53 @@ const useAuth = () => {
     }
 
     // SignIn Method
-    const authSignIn = (values: any) => {
-        const data: signInInterface = values
-        console.log(values)
+    const authSignIn = async (values: Partial<account>) => {
+        try {
+            setNotifyMessage('loading')
+            const data = values
+            if (data) {
+                const { user } = await signInWithEmailAndPassword(auth, data.email || '', data.password || '')
+                if (user) {
+                    // Get Token JWT & user UID
+                    const userUID = user.uid
+                    const tokenUser = await user.getIdToken()
+                    // Check get token process
+                    if (tokenUser) {
+                        // Get data user
+                        const account = await getAccount(data)
+                        if (!account) throw new Error()
+                        // set Data User to save
+                        const dataUser: Partial<UserInformation> = {
+                            ...account['0'],
+                            user_uid: userUID,
+                            user_token: tokenUser
+                        }
+                        setUser(dataUser)
+                        // complete the loading
+                        setNotifyMessage('reset')
+                    }
+                }
+            }
+        } catch (err: any) {
+            setNotifyMessage(err.code)
+            // console.log(err)
+        }
     }
-    return { authSignUp, authSignIn }
+
+    // SignOut Method
+    const authSignOut = () => {
+        try {
+            // setNotifyMessage('loading')
+            unsetUser()
+            setNotifyMessage('auth/signOut')
+        } catch (err: any) {
+            setNotifyMessage(err.code)
+            // console.log(err)
+        }
+    }
+
+    // Return Method Auth
+    return { authSignUp, authSignIn, authSignOut }
 }
 
 export default useAuth

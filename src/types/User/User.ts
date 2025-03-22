@@ -1,21 +1,21 @@
 // User Information
 
-interface userDoneModule {
-    idModule?: string[] | []
-}
+import { account } from '../Account/account'
 
-export interface userData {
-    member?: 'new_user' | 'member_regular' | 'member_pro_1' | 'member_pro_2'
-    lifeTime?: number | null
-    doneModule?: userDoneModule
-}
-
-interface userObject {
-    userUID?: string | null
-    userToken?: string | null
-    userData?: userData
-}
-
-export interface User {
-    user: userObject
+export interface UserInformation {
+    user_uid: string | null
+    user_token: string | null
+    user_data: {
+        membership: 'new_user' | 'member_regular' | 'member_pro_1' | 'member_pro_2' | null
+        expired_at?: string | ''
+        completed_modules?:
+            | [
+                  {
+                      module_id: number
+                      completed_at: string
+                  }
+              ]
+            | object[]
+    }
+    user_information: account
 }

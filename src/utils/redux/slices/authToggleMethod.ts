@@ -14,9 +14,10 @@ const authSlice = createSlice({
     reducers: {
         handleToggleAuth(state) {
             state.toggleAuth = !state.toggleAuth
-        }
+        },
+        resetToggleAuth: () => initialState
     }
 })
 
-export const { handleToggleAuth } = authSlice.actions
+export const { handleToggleAuth, resetToggleAuth } = authSlice.actions
 export default authSlice.reducer
