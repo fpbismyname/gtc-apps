@@ -4,11 +4,12 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { NavigationContainer } from '@react-navigation/native'
 import useRedux from './hooks/Redux/useRedux'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import constant from 'expo-constants'
 
 export default () => {
     // React State, call clearReduxData for cleaning past data
-    const { userState, clearReduxData } = useRedux()
-    const { user_uid } = userState
+    const { userState, clearReduxData, slicer, dispatch } = useRedux()
+    const { user_id } = userState
 
     // Debug localstorage
     const localStorage = async () => {
@@ -18,8 +19,9 @@ export default () => {
         const data = await AsyncStorage.getItem('persist:gtc-apps')
         console.log(data)
     }
+    // dispatch(slicer.unsetNotify())
 
-    localStorage()
+    // localStorage()
 
     // Debug User Information
     // console.log(userState)
@@ -29,7 +31,7 @@ export default () => {
 
     return (
         <NavigationContainer>
-            <SafeAreaView className="flex-1">{user_uid ? <MainLayouts /> : <AuthLayouts />}</SafeAreaView>
+            <SafeAreaView className="flex-1">{user_id ? <MainLayouts /> : <AuthLayouts />}</SafeAreaView>
         </NavigationContainer>
     )
 }

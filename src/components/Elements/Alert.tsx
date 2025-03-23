@@ -2,8 +2,8 @@ import Text from './Text'
 import IonIcon from 'react-native-vector-icons/Ionicons'
 import { View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { useNotify } from '~/src/hooks/Notify/useNotify'
-import { notifyInterface } from '~/src/types/typeNotify'
+import { useNotify } from '~/src/hooks/Redux/useNotify'
+import { notifyInterface } from '~/src/types/otherTypes/typeNotify'
 
 const Alert: React.FC<{ duration?: '1-second' | '2-second' | '3-second' }> = ({ duration = '3-second' }) => {
     // Get notify

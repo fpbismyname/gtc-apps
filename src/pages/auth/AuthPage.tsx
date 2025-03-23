@@ -1,4 +1,4 @@
-import useToggleAuth from '~/src/hooks/Auth/useToggleAuth'
+import useToggleAuth from '~/src/hooks/Redux/useToggleAuth'
 import AuthForm from './AuthForm'
 import Alert from '../../components/Elements/Alert'
 

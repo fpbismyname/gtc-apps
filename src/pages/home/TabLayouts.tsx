@@ -1,5 +1,5 @@
-import useStackOptions from '~/src/hooks/StackOptions/useStackOptions'
-import Navigator from '../../hooks/Navigator'
+import useStackOptions from '~/src/hooks/Others/useStackOptions'
+import Navigator from '../../hooks/Others/Navigator'
 import Home from './Home'
 import Materi from './Materi'
 import Profile from './Profile'

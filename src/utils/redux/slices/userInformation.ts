@@ -1,18 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { User } from '~/src/types/userType/User'
+import { UserType } from '~/src/types/userType/UserType'
 
-const getDefaultValueUserInformation = (): User => ({
-    user_uid: null
+const getDefaultValueUserInformation = (): UserType => ({
+    user_id: null
 })
 
-const initialState: User = getDefaultValueUserInformation()
+const initialState: UserType = getDefaultValueUserInformation()
 
 const userInformation = createSlice({
     name: 'userInformation',
     initialState,
     reducers: {
-        setUser: (state, action: PayloadAction<User>) => {
-            state.user_uid = action.payload.user_uid
+        setUser: (state, action: PayloadAction<UserType>) => {
+            state.user_id = action.payload.user_id
         },
         unsetUser: () => getDefaultValueUserInformation()
     }

@@ -1,7 +1,7 @@
 import React, { Children } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { colorType, sizeType } from '../../types/typeStyle'
+import { colorType, sizeType } from '../../types/otherTypes/typeStyle'
 import useRedux from '~/src/hooks/Redux/useRedux'
 
 interface buttonType {

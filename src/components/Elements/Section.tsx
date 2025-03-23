@@ -1,6 +1,6 @@
 import React from 'react'
 // import { SafeAreaView } from 'react-native-safe-area-context'
-import { colorType, directionType, sizeType } from '../../types/typeStyle'
+import { colorType, directionType, sizeType } from '../../types/otherTypes/typeStyle'
 import { Keyboard, TouchableWithoutFeedback } from 'react-native'
 import { View } from 'react-native'
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text as T } from 'react-native'
-import { sizeType, weightType } from '../../types/typeStyle'
+import { sizeType, weightType } from '../../types/otherTypes/typeStyle'
 
 interface typeText {
     size?: sizeType | '2xl' | '3xl'

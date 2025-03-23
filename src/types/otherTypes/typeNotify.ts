@@ -1,14 +1,17 @@
 export type notifyMessage =
     | 'loading'
     | 'reset'
+    // Signup
     | 'auth/signUp-success'
-    | 'auth/invalid-email'
-    | 'auth/empty-data'
+    | 'auth/signUp-failed'
     | 'auth/email-already-in-use'
+    // SignIn
     | 'auth/invalid-credential'
-    | 'auth/weak-password'
     | 'auth/user-disabled'
+    // Signout
     | 'auth/signOut'
+    // Others
+    | 'auth/empty-data'
     | 'auth/too-many-requests'
 
 export interface notifyInterface {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text } from 'react-native'
-import { sizeType, weightType } from '~/src/types/typeStyle'
+import { sizeType, weightType } from '~/src/types/otherTypes/typeStyle'
 
 interface linkType {
     title: string

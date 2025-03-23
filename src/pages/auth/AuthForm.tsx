@@ -7,11 +7,11 @@ import TextInput from '../../components/Elements/TextInput'
 import Button from '../../components/Elements/Button'
 import Link from '../../components/Elements/Link'
 import useAuth from '~/src/hooks/Auth/useAuth'
-import { sizeType } from '~/src/types/typeStyle'
+import { sizeType } from '~/src/types/otherTypes/typeStyle'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import { inputMessage } from '~/src/types/authType/AuthInterface'
-import { account } from '~/src/types/accountType/Account'
+import { AuthSignIn, AuthSignUp } from '~/src/types/authType/authType'
 
 // Card Auth Form
 const CardForm: React.FC<{ children: React.ReactNode; gap: sizeType }> = ({ children, gap }) => {
@@ -41,20 +41,14 @@ const HeaderForm: React.FC = () => {
 // Validation Auth Schema
 const ValidationSchema = {
     Register: Yup.object().shape({
-        username: Yup.string()
-            .required(inputMessage.signUp.username.required)
-            .min(2, inputMessage.signUp.username.min)
-            .max(50, inputMessage.signUp.username.max),
+        username: Yup.string().required(inputMessage.signUp.username.required).min(2, inputMessage.signUp.username.min).max(50, inputMessage.signUp.username.max),
         phone_number: Yup.number().typeError(inputMessage.signUp.phone_number.typeError).required(inputMessage.signUp.phone_number.required),
         email: Yup.string()
             .required(inputMessage.signUp.email.required)
             .email(inputMessage.signUp.email.email)
             .min(4, inputMessage.signUp.email.min)
             .max(50, inputMessage.signUp.email.max),
-        password: Yup.string()
-            .required(inputMessage.signUp.password.required)
-            .min(4, inputMessage.signUp.password.min)
-            .max(50, inputMessage.signUp.password.max)
+        password: Yup.string().required(inputMessage.signUp.password.required).min(4, inputMessage.signUp.password.min).max(50, inputMessage.signUp.password.max)
     }),
     Login: Yup.object().shape({
         email: Yup.string()
@@ -62,10 +56,7 @@ const ValidationSchema = {
             .email(inputMessage.signUp.email.email)
             .min(4, inputMessage.signUp.email.min)
             .max(50, inputMessage.signUp.email.max),
-        password: Yup.string()
-            .required(inputMessage.signUp.password.required)
-            .min(4, inputMessage.signUp.password.min)
-            .max(50, inputMessage.signUp.password.max)
+        password: Yup.string().required(inputMessage.signUp.password.required).min(4, inputMessage.signUp.password.min).max(50, inputMessage.signUp.password.max)
     })
 }
 
@@ -83,7 +74,7 @@ const FormRegister: React.FC = () => {
                     password: ''
                 }}
                 validationSchema={ValidationSchema.Register}
-                onSubmit={(values: account) => {
+                onSubmit={(values: AuthSignUp) => {
                     authSignUp(values)
                 }}
             >
@@ -142,7 +133,7 @@ const FormLogin: React.FC = () => {
                     password: ''
                 }}
                 validationSchema={ValidationSchema.Login}
-                onSubmit={(values: Partial<account>) => {
+                onSubmit={(values: AuthSignIn) => {
                     authSignIn(values)
                 }}
             >

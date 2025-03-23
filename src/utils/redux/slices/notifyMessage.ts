@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { notifyInterface } from '~/src/types/typeNotify'
+import { notifyInterface } from '~/src/types/otherTypes/typeNotify'
 
 const initialState: notifyInterface = {
     loading: false,

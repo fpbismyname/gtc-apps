@@ -1,4 +1,4 @@
-import { notifyMessage } from '../../types/typeNotify'
+import { notifyMessage } from '../../types/otherTypes/typeNotify'
 import useRedux from '../Redux/useRedux'
 
 export const useNotify = () => {
@@ -12,15 +12,16 @@ export const useNotify = () => {
 
         switch (messages) {
             // Sign Up Notify
-            case 'auth/weak-password':
+            case 'auth/signUp-failed':
                 dispatch(
                     setNotify({
-                        message: 'Password anda terlalu rentan, cobalah password lain.',
+                        message: 'Gagal mencoba untuk SignUp, silahkan coba lagi nanti.',
                         loading: false,
                         type: 'warning'
                     })
                 )
                 break
+            // email used
             case 'auth/email-already-in-use':
                 dispatch(
                     setNotify({
@@ -40,7 +41,7 @@ export const useNotify = () => {
                     })
                 )
                 break
-            // User Disable
+            // user disabled
             case 'auth/user-disabled':
                 dispatch(
                     setNotify({
@@ -60,7 +61,8 @@ export const useNotify = () => {
                     })
                 )
                 break
-            // User Signout
+            // Others Use case
+            // too many request
             case 'auth/too-many-requests':
                 dispatch(
                     setNotify({
@@ -70,7 +72,6 @@ export const useNotify = () => {
                     })
                 )
                 break
-            // Other Utility
             // Loading
             case 'loading':
                 dispatch(

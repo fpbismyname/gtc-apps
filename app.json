@@ -30,6 +30,9 @@
       "expo-asset"
     ],
     "extra": {
+      "password_hash":{
+        "salt": 20
+      },
       "eas": {
         "projectId": "6a358ec8-e329-4409-8293-51faf40a2983"
       }

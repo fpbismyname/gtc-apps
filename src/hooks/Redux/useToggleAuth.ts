@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import useRedux from '../Redux/useRedux'
+import useRedux from './useRedux'
 
 const useToggleAuth = () => {
     // Get state form Redux

@@ -1,5 +1,5 @@
 import { Image as Img } from 'react-native'
-import { sizeType } from '~/src/types/typeStyle'
+import { sizeType } from '~/src/types/otherTypes/typeStyle'
 
 interface imageInterface {
     imageSource: any
