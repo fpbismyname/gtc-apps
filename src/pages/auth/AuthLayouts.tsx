@@ -1,5 +1,5 @@
-import useStackOptions from '~/src/hooks/Others/useStackOptions'
-import Navigator from '../../hooks/Others/Navigator'
+import useStackOptions from '~/src/hooks/Navigation/useStackOptions'
+import Navigator from '../../hooks/Navigation/Navigator'
 import AuthPage from './AuthPage'
 
 export default () => {

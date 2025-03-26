@@ -40,11 +40,11 @@ const ListProfile: React.FC = () => {
 const Profile = () => {
     const { userState } = useRedux()
     const { data_user } = useFetch(userState.user_id)
-    const { ...data }: AuthType = data_user?.data
+    const data: AuthType = data_user?.data
 
     return (
         <ProfileLayout padding="sm" direction="column" color="light" gap="sm" expand>
-            <HeaderProfile username={data.username} id={userState.user_id} email={data.email} />
+            <HeaderProfile username={data.username} email={data.email} id={userState.user_id} />
             <ListProfile />
         </ProfileLayout>
     )

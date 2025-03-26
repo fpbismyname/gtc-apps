@@ -2,6 +2,7 @@ export const colorPallet = {
     // Basic color
     light: '#ffffff',
     dark: '#000000',
+    gray: '#6a6a6a',
     transparent: '#RRGGBBAA',
     //Normal color
     primary: '#ffd642',

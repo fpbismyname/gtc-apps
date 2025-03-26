@@ -1,7 +1,7 @@
-import { BottomTabBarProps, BottomTabNavigationOptions } from '@react-navigation/bottom-tabs'
+import { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs'
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack'
 
-export default () => {
+const useStackOptions = () => {
     const stackHeader: NativeStackNavigationOptions = {
         headerShown: false
     }
@@ -11,3 +11,5 @@ export default () => {
 
     return { stackHeader, bottomTabBar }
 }
+
+export default useStackOptions
