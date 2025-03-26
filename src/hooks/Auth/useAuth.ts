@@ -15,7 +15,7 @@ const useAuth = () => {
     // Manage Auth user
     const { addAuth, getAuth } = useAuthentication()
     // Manage Account user
-    const { addAccount, getAccount } = useAccount()
+    const { addAccount } = useAccount()
 
     // Hash password
     const createPassword = async (password: string = '') => {

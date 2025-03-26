@@ -4,14 +4,17 @@ import Home from './Home'
 import Materi from './Materi'
 import Profile from './Profile'
 
-export default () => {
+const TabLayouts = () => {
     const { Tabs } = Navigator()
     const { bottomTabBar } = useStackOptions()
+
     return (
-        <Tabs.Navigator initialRouteName="home" screenOptions={bottomTabBar}>
-            <Tabs.Screen name="home" component={Home} />
-            <Tabs.Screen name="materi" component={Materi} />
-            <Tabs.Screen name="profile" component={Profile} />
+        <Tabs.Navigator initialRouteName="Home" screenOptions={bottomTabBar}>
+            <Tabs.Screen name="Home" component={Home} />
+            <Tabs.Screen name="Materi" component={Materi} />
+            <Tabs.Screen name="Profile" component={Profile} />
         </Tabs.Navigator>
     )
 }
+
+export default TabLayouts

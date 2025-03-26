@@ -10,7 +10,7 @@ export interface AddCollection {
 export interface GetCollection {
     collection: {
         col_name: string
-        doc_id?: string
+        doc_id?: string | null
         query_data?: [{ field: string; operator: WhereFilterOp; value: any }]
     }
 }

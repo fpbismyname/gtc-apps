@@ -1,10 +1,9 @@
+import { addDoc, collection as collect, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore'
 import { AddCollection, DeleteCollection, EditCollection, GetCollection } from '~/src/types/firebaseType/Firebase'
 import { useNotify } from '../Redux/useNotify'
 import { db } from '~/src/utils/firebase/firebase'
-import { addDoc, collection as collect, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore'
-import { object } from 'yup'
-
 const useFirebase = () => {
+    // Set Notify message
     const { setNotifyMessage } = useNotify()
     // Add collection data
     const addCollectionData = async ({ collection }: Partial<AddCollection>) => {
@@ -29,7 +28,7 @@ const useFirebase = () => {
     const getCollectionData = async ({ collection }: Partial<GetCollection>) => {
         try {
             let queryData
-            if (!collection) return { data: null }
+            if (!collection) return { id: null, data: null }
             // queryCheck logic
             if (collection.doc_id) {
                 queryData = doc(db, collection.col_name, collection.doc_id)
@@ -48,7 +47,7 @@ const useFirebase = () => {
         } catch (err: any) {
             setNotifyMessage(err.code)
             // console.log(err)
-            return { data: null }
+            return { id: null, data: null }
         }
     }
     // Edit collectiondata

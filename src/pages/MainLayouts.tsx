@@ -1,10 +1,10 @@
 import useStackOptions from '~/src/hooks/Others/useStackOptions'
-import Navigator from '../hooks/Others/Navigator'
-import TabLayouts from './home/TabLayouts'
-import useUser from '~/src/hooks/Redux/useUser'
-import useRedux from '~/src/hooks/Redux/useRedux'
-import { useEffect } from 'react'
 import useAuthentication from '../hooks/Database/Authentication'
+import useRedux from '~/src/hooks/Redux/useRedux'
+import Navigator from '../hooks/Others/Navigator'
+import useUser from '~/src/hooks/Redux/useUser'
+import { useEffect } from 'react'
+import TabLayouts from './home/TabLayouts'
 
 export default () => {
     // Stack & Navigator
@@ -13,8 +13,8 @@ export default () => {
 
     // Check user expirations
     const { userState, dispatch, slicer } = useRedux()
-    const { user_id } = userState
     const { checkUserAvailable } = useAuthentication()
+    const { user_id } = userState
     const { unsetUser } = useUser()
 
     // Check User Existed
@@ -30,9 +30,10 @@ export default () => {
         })
         return () => unsubscribe()
     }, [userState.user_id])
+
     return (
         <Stack.Navigator screenOptions={stackHeader}>
-            <Stack.Screen name="TabsLayout" component={TabLayouts} />
+            <Stack.Screen name="TabLayouts" component={TabLayouts} />
         </Stack.Navigator>
     )
 }

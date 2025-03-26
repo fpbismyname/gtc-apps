@@ -7,7 +7,7 @@ import { Layouts } from '~/src/types/otherTypes/Layout'
 import useAuth from '~/src/hooks/Auth/useAuth'
 import useFirebase from '~/src/hooks/Firebase/useFirebase'
 import { AuthType } from '~/src/types/databaseType/AuthType'
-import { DocumentData } from 'firebase/firestore'
+import useFetch from '~/src/hooks/Fetch/useFetch'
 
 const ProfileLayout: React.FC<Layouts> = ({ children, padding, direction, color = 'light', expand = false, gap }) => {
     return (
@@ -38,33 +38,13 @@ const ListProfile: React.FC = () => {
 }
 
 const Profile = () => {
-    // Get use
-    const { getCollectionData } = useFirebase()
-    const [data, setData] = useState<Partial<AuthType> | null>(null)
     const { userState } = useRedux()
-    // Get Data
-    const getData = async () => {
-        const response = await getCollectionData({
-            collection: {
-                col_name: 'Authentication',
-                doc_id: userState.user_id || ''
-            }
-        })
-        const data: AuthType = response.data as AuthType
-        setData(data)
-    }
-    // Run get Data
-    useEffect(() => {
-        if (userState.user_id) {
-            getData()
-        }
-    }, [])
-    // debug data
-    // console.log(data)
-    
+    const { data_user } = useFetch(userState.user_id)
+    const { ...data }: AuthType = data_user?.data
+
     return (
         <ProfileLayout padding="sm" direction="column" color="light" gap="sm" expand>
-            <HeaderProfile username={data?.username} id={userState.user_id} email={data?.email} />
+            <HeaderProfile username={data.username} id={userState.user_id} email={data.email} />
             <ListProfile />
         </ProfileLayout>
     )

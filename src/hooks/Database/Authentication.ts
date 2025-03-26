@@ -2,7 +2,7 @@ import { GetCollection } from '~/src/types/firebaseType/Firebase'
 import useFirebase from '../Firebase/useFirebase'
 import { AuthType } from '~/src/types/databaseType/AuthType'
 import { useNotify } from '../Redux/useNotify'
-import { collection, doc, onSnapshot } from 'firebase/firestore'
+import { collection, doc, DocumentData, onSnapshot } from 'firebase/firestore'
 import { db } from '~/src/utils/firebase/firebase'
 import { AuthSignIn } from '~/src/types/authType/authType'
 
@@ -87,19 +87,20 @@ const useAuthentication = () => {
         }
     }
     // Check user
-    const checkUserAvailable = (user_id: string | null, callback: (exist: boolean) => void) => {
+    const checkUserAvailable = (user_id: string | null, callback: (exist: DocumentData | null) => void) => {
         if (!user_id) {
-            callback(false)
+            callback(null)
             return () => {}
         }
         const collect = doc(db, collection_name, user_id)
         const unsubscribe = onSnapshot(
             collect,
-            (data) => {
-                callback(data.exists())
+            (datas) => {
+                const { password, ...data }: AuthType = datas.data() as AuthType
+                callback({ data })
             },
             (error) => {
-                callback(false)
+                callback(null)
             }
         )
         return unsubscribe
