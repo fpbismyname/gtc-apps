@@ -9,20 +9,12 @@ interface sectionType {
     expand?: boolean
     color?: colorType
     padding?: sizeType
-    gap?: sizeType
+    gap?: 'xs' | sizeType
     direction?: directionType
     customStyle?: string
 }
 
-const Section: React.FC<sectionType> = ({
-    children,
-    color = 'light',
-    padding = 'none',
-    gap = 'none',
-    direction = 'column',
-    customStyle = '',
-    expand
-}) => {
+const Section: React.FC<sectionType> = ({ children, color = 'transparent', padding = 'none', gap = 'none', direction = 'column', customStyle = '', expand }) => {
     const style = [
         'flex',
         customStyle,
@@ -40,12 +32,14 @@ const Section: React.FC<sectionType> = ({
         color === 'light' && 'bg-light',
         color === 'dark' && 'bg-dark',
         color === 'transparent' && 'bg-transparent',
+        color === 'gray' && 'bg-gray',
         padding === 'none' && 'p-0',
         padding === 'sm' && 'p-2',
         padding === 'md' && 'p-6',
         padding === 'xl' && 'p-8',
         padding === 'lg' && 'p-12',
         gap === 'none' && 'gap-0',
+        gap === 'xs' && 'gap-1',
         gap === 'sm' && 'gap-4',
         gap === 'md' && 'gap-6',
         gap === 'xl' && 'gap-8',

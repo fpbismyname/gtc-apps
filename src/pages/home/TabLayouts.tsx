@@ -1,8 +1,8 @@
 import useStackOptions from '~/src/hooks/Navigation/useStackOptions'
-import CustomTabBar from '~/src/hooks/Navigation/CustomTabBar'
+import CustomTabBar from '~/src/components/Elements/Navigation/CustomTabBar'
 import Navigator from '../../hooks/Navigation/Navigator'
 import Home from './Home'
-import Materi from './Materi'
+import Module from './Module'
 import Profile from './Profile'
 
 const TabLayouts = () => {
@@ -11,9 +11,9 @@ const TabLayouts = () => {
 
     return (
         <Tabs.Navigator initialRouteName="Home" screenOptions={bottomTabBar} tabBar={(props) => <CustomTabBar {...props} />}>
-            <Tabs.Screen name="Home" component={Home} />
-            <Tabs.Screen name="Materi" component={Materi} />
-            <Tabs.Screen name="Profile" component={Profile} />
+            <Tabs.Screen name="Home" component={Home} options={{ title: 'Beranda' }} />
+            <Tabs.Screen name="Module" component={Module} options={{ title: 'Materi' }} />
+            <Tabs.Screen name="Profile" component={Profile} options={{ title: 'Profil' }} />
         </Tabs.Navigator>
     )
 }

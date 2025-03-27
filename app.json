@@ -27,7 +27,12 @@
       "favicon": "./src/assets/images/gtc_icon.png"
     },
     "plugins": [
-      "expo-asset"
+      [
+        "expo-asset"
+      ],
+      ["expo-video",{
+        "supportsPictureInPicture": false
+      }]
     ],
     "extra": {
       "eas": {

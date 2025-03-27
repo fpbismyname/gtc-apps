@@ -1,23 +1,32 @@
 import React, { Children } from 'react'
 import { Pressable, Text, View } from 'react-native'
-import Icon from 'react-native-vector-icons/Ionicons'
-import { colorType, sizeType } from '../../types/otherTypes/typeStyle'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { colorType, sizeType, weightType } from '../../types/otherTypes/typeStyle'
 import useRedux from '~/src/hooks/Redux/useRedux'
 
 interface buttonType {
     title?: string
     color?: colorType
-    size?: sizeType
+    size?: 'xs' | sizeType
     onPress?: () => void
     expand?: boolean
     icon?: string
+    iconSize?: sizeType | '2xl' | '3xl'
+    iconColor?: string
+    weight?: weightType
+    text_position?: 'center' | 'left' | 'right'
 }
 
-export default function Button({ title, color = 'secondary', size = 'md', onPress, icon, expand }: buttonType) {
+export default function Button({ title, color = 'secondary', size = 'md', onPress, icon, expand, text_position = 'left', weight = 'normal', iconSize, iconColor }: buttonType) {
     const { notifyState } = useRedux()
     const { loading } = notifyState
     const style = [
-        'flex flex-row rounded-xl items-center justify-center',
+        'flex flex-row rounded-xl items-center',
+        // Text position
+        text_position === 'center' && ' justify-center',
+        text_position === 'left' && ' justify-left',
+        text_position === 'right' && ' justify-right',
+        // Expand
         expand && 'flex-1',
         // loading color
         color === 'primary' && loading && 'bg-primary-loading',
@@ -35,20 +44,33 @@ export default function Button({ title, color = 'secondary', size = 'md', onPres
         color === 'danger' && !loading && 'bg-danger',
         color === 'active' && !loading && 'bg-active',
         color === 'inactive' && !loading && 'bg-inactive',
-        size === 'sm' && 'px-2 py-2',
-        size === 'md' && 'px-4 py-4',
-        size === 'xl' && 'px-6 py-6',
-        size === 'lg' && 'px-8 py-8'
+        color === 'gray' && !loading && 'bg-gray',
+        // Size Buttom
+        size === 'sm' && 'px-2 py-2 text-sm',
+        size === 'md' && 'px-4 py-4 text-md',
+        size === 'xl' && 'px-6 py-6 text-xl',
+        size === 'lg' && 'px-8 py-8 text-2xl'
     ]
         .filter(Boolean)
         .join(' ')
-    const styleText = [size === 'sm' && 'text-sm', size === 'md' && 'text-base', size === 'xl' && 'text-xl', size === 'lg' && 'text-2xl']
+    const styleText = [
+        // Size Text
+        size === 'sm' && 'text-sm',
+        size === 'md' && 'text-base',
+        size === 'xl' && 'text-xl',
+        size === 'lg' && 'text-2xl',
+        // Weight Text
+        weight === 'bolder' && 'font-bold',
+        weight === 'bold' && 'font-semibold',
+        weight === 'normal' && 'font-normal',
+        weight === 'thin' && 'font-light'
+    ]
         .filter(Boolean)
         .join(' ')
-    const styleIcon = [size === 'sm' && 12, size === 'md' && 14, size === 'xl' && 16, size === 'lg' && 20].filter(Boolean).join(' ')
+    const styleIcon = [iconSize === 'sm' && 12, iconSize === 'md' && 14, iconSize === 'xl' && 16, iconSize === '2xl' && 20, iconSize === '3xl' && 24].filter(Boolean).join(' ')
     return (
         <Pressable onPress={onPress} className={style} disabled={loading}>
-            {icon ? <Icon name={icon} size={parseInt(styleIcon)} className={icon && title ? 'mr-1' : ''} /> : null}
+            {icon ? <Icon name={icon} size={parseInt(styleIcon)} color={iconColor} className={icon && title ? 'mr-1' : ''} /> : null}
             {title ? <Text className={styleText}>{loading ? '•••' : title}</Text> : null}
         </Pressable>
     )

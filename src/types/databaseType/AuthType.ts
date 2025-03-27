@@ -4,6 +4,6 @@ export interface AuthType {
     email: string
     password: string
     phone_number: string
-    role: 'student' | 'teacher' | 'admin' | 'new_user'
+    role: 'student' | 'teacher' | 'admin' | 'new_user' | null
     isActive: boolean
 }

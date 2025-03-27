@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 import { TextInput as TI, View } from 'react-native'
 import { colorType } from '../../types/otherTypes/typeStyle'
 import { inputMode } from '~/src/types/otherTypes/inputMode'
@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import Link from './Link'
 
 interface textInputType {
-    placeholder: string
+    placeholder?: string
     color?: colorType
     size?: 'sm' | 'md' | 'xl' | 'lg'
     onChange?: (e: string) => void
@@ -18,19 +18,11 @@ interface textInputType {
     value?: string
     expand?: boolean
     errors?: string
+    children?: ReactNode
+    disable?: boolean
 }
 
-export default function TextInput({
-    placeholder,
-    inputMode = 'default',
-    color,
-    size = 'sm',
-    onChange,
-    onBlur,
-    value,
-    expand,
-    errors
-}: textInputType) {
+export default function TextInput({ placeholder, inputMode = 'default', color, size = 'sm', onChange, onBlur, value, expand, errors, children, disable }: textInputType) {
     let inputText: any = []
     const { notifyState } = useRedux()
     const [showPassword, setShowPassword] = useState<boolean>(false)
@@ -61,6 +53,7 @@ export default function TextInput({
         .filter(Boolean)
         .join(' ')
 
+    const errorStyle = [size === 'sm' && 'text-sm', size === 'md' && 'text-base', size === 'xl' && 'text-xl', size === 'lg' && 'text-2xl'].filter(Boolean).join(' ')
     return (
         <Section direction="column">
             <TI
@@ -73,16 +66,14 @@ export default function TextInput({
                 value={value}
                 onBlur={onBlur}
                 maxLength={37}
-                editable={!loading}
-            />
-            {errors ? <Text customStyle="absolute right-0 top-0 bg-danger rounded-md px-2 text-white">{errors}</Text> : null}
+                editable={disable ? !disable : !loading}
+            >
+                {children ? <>{children}</> : null}
+            </TI>
+            {errors ? <Text customStyle={`absolute right-0 top-0 bg-danger rounded-md px-2 text-white ${errorStyle}`}>{errors}</Text> : null}
             {inputMode === 'password' ? (
                 <Section padding="sm" direction="row">
-                    <Link
-                        title={!showPassword ? 'Tampilkan' : 'Sembunyikan'}
-                        customStyle="absolute right-0 px-2"
-                        onPress={() => setShowPassword((prev) => !prev)}
-                    />
+                    <Link title={!showPassword ? 'Tampilkan' : 'Sembunyikan'} customStyle="absolute right-0 px-2" onPress={() => setShowPassword((prev) => !prev)} />
                 </Section>
             ) : null}
         </Section>

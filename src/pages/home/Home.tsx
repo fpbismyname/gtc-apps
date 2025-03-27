@@ -1,12 +1,15 @@
 import Alert from '~/src/components/Elements/Alert'
 import Section from '../../components/Elements/Section'
 import Text from '../../components/Elements/Text'
+import { FC } from 'react'
 
-export default () => {
+const Home = () => {
     return (
-        <Section>
+        <Section direction="column" expand>
             <Alert />
             <Text>Home</Text>
         </Section>
     )
 }
+
+export default Home

@@ -28,7 +28,7 @@ const HeaderForm: React.FC = () => {
         <Section customStyle="items-center" gap="sm">
             <Image imageSource={Gtcicon} size="md" />
             <Section gap="sm">
-                <Text weight="bolder" size="3xl" customStyle="text-center">
+                <Text weight="bolder" size="2xl" customStyle="text-center">
                     Gading Training Center
                 </Text>
                 <Text weight="normal" size="sm" customStyle="text-center">
@@ -113,7 +113,7 @@ const FormRegister: React.FC = () => {
                             onChange={handleChange('password')}
                             errors={errors.password}
                         />
-                        <Button key={12} title="Daftar" color="primary" onPress={handleSubmit} />
+                        <Button key={12} title="Daftar" color="primary" text_position="center" onPress={handleSubmit} />
                     </>
                 )}
             </Formik>
@@ -155,7 +155,7 @@ const FormLogin: React.FC = () => {
                             onChange={handleChange('password')}
                             errors={errors.password}
                         />
-                        <Button title="Login" color="primary" onPress={handleSubmit} />
+                        <Button title="Login" color="primary" text_position="center" onPress={handleSubmit} />
                     </>
                 )}
             </Formik>

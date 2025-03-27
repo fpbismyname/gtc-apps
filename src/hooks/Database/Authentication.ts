@@ -55,7 +55,7 @@ const useAuthentication = () => {
                 }
             })
             setNotifyMessage('reset')
-            const user_auth: AuthType = data?.shift()
+            const user_auth = data?.shift()
             return callback(user_auth)
         } catch (err: any) {
             callback(null)
@@ -76,7 +76,7 @@ const useAuthentication = () => {
                     ]
                 }
             }
-            const { data } = await getCollectionData(prepareData)
+            const data = await getCollectionData(prepareData)
             if (data?.toString() !== '') {
                 return true
             } else {
