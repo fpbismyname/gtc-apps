@@ -1,3 +1,5 @@
+import { ToastType } from 'react-native-toast-message'
+
 export type notifyMessage =
     | 'loading'
     | 'reset'
@@ -17,5 +19,5 @@ export type notifyMessage =
 export interface notifyInterface {
     loading?: boolean
     message?: string | null
-    type?: 'success' | 'warning' | 'danger' | null
+    type?: ToastType | null
 }

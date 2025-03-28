@@ -1,10 +1,9 @@
 import MainLayouts from './pages/MainLayouts'
 import AuthLayouts from './pages/auth/AuthLayouts'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { NavigationContainer } from '@react-navigation/native'
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native'
 import useRedux from './hooks/Redux/useRedux'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import constant from 'expo-constants'
 
 export default () => {
     // React State, call clearReduxData for cleaning past data
@@ -29,8 +28,16 @@ export default () => {
     // Reset Redux localstorage
     // clearReduxData()
 
+    const themeNavigator = {
+        ...DefaultTheme,
+        colors: {
+            ...DefaultTheme.colors,
+            background: '#ffffff'
+        }
+    }
+
     return (
-        <NavigationContainer>
+        <NavigationContainer theme={themeNavigator}>
             <SafeAreaView className="flex-1">{user_id ? <MainLayouts /> : <AuthLayouts />}</SafeAreaView>
         </NavigationContainer>
     )

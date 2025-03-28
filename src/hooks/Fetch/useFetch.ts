@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import useAuthentication from '../Database/Authentication'
-import { DocumentData } from 'firebase/firestore'
 import { AuthType } from '~/src/types/databaseType/AuthType'
 
 const useFetch = (user_id: string | null) => {

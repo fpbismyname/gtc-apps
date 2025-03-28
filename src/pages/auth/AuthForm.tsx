@@ -12,7 +12,7 @@ import { Formik } from 'formik'
 import * as Yup from 'yup'
 import { inputMessage } from '~/src/types/authType/AuthInterface'
 import { AuthSignIn, AuthSignUp } from '~/src/types/authType/authType'
-
+import Notify from '~/src/components/Elements/Notify'
 // Card Auth Form
 const CardForm: React.FC<{ children: React.ReactNode; gap: sizeType }> = ({ children, gap }) => {
     return (
@@ -177,6 +177,7 @@ const AuthChangeMethod: React.FC<{ sizeFont?: sizeType; onPress?: () => void; au
 const AuthForm: React.FC<{ toggleAuth: boolean; changeAuthMethod: () => void }> = ({ toggleAuth, changeAuthMethod }) => {
     return (
         <CardForm gap="sm">
+            <Notify />
             <HeaderForm />
             {toggleAuth ? <FormRegister /> : <FormLogin />}
             <AuthChangeMethod sizeFont="md" onPress={changeAuthMethod} authMethod={toggleAuth} />

@@ -1,12 +1,12 @@
 import useStackOptions from '~/src/hooks/Navigation/useStackOptions'
-import CustomTabBar from '~/src/components/Elements/Navigation/CustomTabBar'
-import Navigator from '../../hooks/Navigation/Navigator'
+import CustomTabBar from '~/src/components/Navigation/CustomTabBar'
+import useNavigator from '../../hooks/Navigation/useNavigator'
 import Home from './Home'
 import Module from './Module'
 import Profile from './Profile'
 
 const TabLayouts = () => {
-    const { Tabs } = Navigator()
+    const { Tabs } = useNavigator()
     const { bottomTabBar } = useStackOptions()
 
     return (

@@ -7,5 +7,6 @@ export interface Layouts {
     direction?: directionType
     color?: colorType
     expand?: boolean
-    gap: sizeType
+    gap?: sizeType
+    customStyle?: string
 }

@@ -4,13 +4,20 @@ export const colorPallet = {
     dark: '#000000',
     gray: '#6a6a6a',
     transparent: '#RRGGBBAA',
-    //Normal color
     primary: '#ffd642',
     secondary: '#bfa251',
-    info: '#4fc7ff',
-    danger: '#ff3b3b',
+    //condition Color
+    get info() {
+        return this.secondary
+    },
+    get success() {
+        return this.primary
+    },
+    get error() {
+        return this.danger
+    },
+    danger: '#ff763b',
     warning: '#ffc184',
-    success: '#75ff6b',
     active: '#ffd642',
     inactive: '#8a7322',
     link: '#6c5509',

@@ -17,7 +17,7 @@ export const useNotify = () => {
                     setNotify({
                         message: 'Gagal mencoba untuk SignUp, silahkan coba lagi nanti.',
                         loading: false,
-                        type: 'warning'
+                        type: 'info'
                     })
                 )
                 break
@@ -27,7 +27,7 @@ export const useNotify = () => {
                     setNotify({
                         message: 'Email sudah terdaftar, coba akun email lainnya.',
                         loading: false,
-                        type: 'warning'
+                        type: 'info'
                     })
                 )
                 break
@@ -37,7 +37,7 @@ export const useNotify = () => {
                     setNotify({
                         message: 'Kombinasi email/password tidak tepat.',
                         loading: false,
-                        type: 'warning'
+                        type: 'info'
                     })
                 )
                 break
@@ -47,7 +47,7 @@ export const useNotify = () => {
                     setNotify({
                         message: 'Akun belum aktif, silahkan hubungi admin.',
                         loading: false,
-                        type: 'warning'
+                        type: 'info'
                     })
                 )
                 break
@@ -68,7 +68,7 @@ export const useNotify = () => {
                     setNotify({
                         message: 'Terlalu banyak permintaaan, cobalah beberapa saat lagi.',
                         loading: false,
-                        type: 'warning'
+                        type: 'info'
                     })
                 )
                 break
@@ -91,7 +91,7 @@ export const useNotify = () => {
                     setNotify({
                         message: message,
                         loading: false,
-                        type: 'danger'
+                        type: 'error'
                     })
                 )
                 break
