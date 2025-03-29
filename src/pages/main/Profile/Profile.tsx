@@ -1,8 +1,8 @@
 import { Layouts } from '~/src/types/otherTypes/Layout'
 import { AuthType } from '~/src/types/databaseType/AuthType'
 import useRedux from '~/src/hooks/Redux/useRedux'
-import Section from '../../components/Elements/Section'
-import Text from '../../components/Elements/Text'
+import Section from '../../../components/Elements/Section'
+import Text from '../../../components/Elements/Text'
 import Button from '~/src/components/Elements/Button'
 import useAuth from '~/src/hooks/Auth/useAuth'
 import useFetch from '~/src/hooks/Fetch/useFetch'
@@ -11,7 +11,7 @@ import { FC } from 'react'
 import { colorPallet } from '~/src/constants/colorPallete'
 import Navigator from '~/src/hooks/Navigation/useNavigator'
 
-const checkRolesUser = (roles: string | null | undefined) => {
+export const checkRolesUser = (roles: string | null | undefined) => {
     let role_user
     switch (roles) {
         case 'admin':
@@ -73,16 +73,60 @@ const ListProfileInformation: FC<{ user_id: string | null }> = ({ user_id }) => 
             <Text padding="sm" weight="bold">
                 Informasi Lembaga
             </Text>
-            <Button title="Gading Training Center" icon="bank" color="primary" />
+            <Button
+                title="Gading Training Center"
+                icon="bank"
+                color="primary"
+                onPress={() =>
+                    router.navigate('ProfileMenu', {
+                        title: 'Gading Training Center',
+                        route: 'institution_information',
+                        data: data_user
+                    })
+                }
+            />
             <Text padding="sm" weight="bold">
                 Informasi Modul
             </Text>
-            <Button title="Materi terselesaikan" icon="book-check" color="primary" />
+            <Button
+                title="Materi terselesaikan"
+                icon="book-check"
+                color="primary"
+                onPress={() =>
+                    router.navigate('ProfileMenu', {
+                        title: 'Materi Terselesaikan',
+                        route: 'done_module',
+                        data: data_user
+                    })
+                }
+            />
             <Text padding="sm" weight="bold">
                 Informasi Akun
             </Text>
-            <Button title="Membership" icon="account-group" color="primary" onPress={() => router.navigate('Membership', data_user)} />
-            <Button title="Akun saya" icon="account" color="primary" onPress={() => router.navigate('MyAccount', data_user)} />
+            <Button
+                title="Membership"
+                icon="account-group"
+                color="primary"
+                onPress={() =>
+                    router.navigate('ProfileMenu', {
+                        title: 'Membership',
+                        route: 'membership',
+                        data: data_user
+                    })
+                }
+            />
+            <Button
+                title="Akun saya"
+                icon="account"
+                color="primary"
+                onPress={() =>
+                    router.navigate('ProfileMenu', {
+                        title: 'Akun Saya',
+                        route: 'my_account',
+                        data: data_user
+                    })
+                }
+            />
         </Section>
     )
 }

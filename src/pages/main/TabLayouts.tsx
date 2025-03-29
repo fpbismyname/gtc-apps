@@ -1,9 +1,9 @@
 import useStackOptions from '~/src/hooks/Navigation/useStackOptions'
 import CustomTabBar from '~/src/components/Navigation/CustomTabBar'
 import useNavigator from '../../hooks/Navigation/useNavigator'
-import Home from './Home'
-import Module from './Module'
-import Profile from './Profile'
+import Home from './Home/Home'
+import Module from './Module/Module'
+import Profile from './Profile/Profile'
 
 const TabLayouts = () => {
     const { Tabs } = useNavigator()

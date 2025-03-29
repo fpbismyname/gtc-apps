@@ -1,6 +1,6 @@
 import Alert from '~/src/components/Elements/Alert'
-import Section from '../../components/Elements/Section'
-import Text from '../../components/Elements/Text'
+import Section from '../../../components/Elements/Section'
+import Text from '../../../components/Elements/Text'
 import { FC } from 'react'
 
 const Home = () => {

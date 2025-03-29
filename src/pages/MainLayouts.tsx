@@ -5,9 +5,7 @@ import useNavigator from '../hooks/Navigation/useNavigator'
 import useUser from '~/src/hooks/Redux/useUser'
 import { useEffect } from 'react'
 import TabLayouts from './main/TabLayouts'
-import MyAccount from './main/profile_page/MyAccount'
-import CustomHeader from '../components/Navigation/CustomHeader'
-import Membership from './main/profile_page/Membership'
+import ProfileMenu from './main/Profile/ProfileMenu'
 
 export default () => {
     // Stack & Navigator
@@ -38,8 +36,7 @@ export default () => {
         <Stack.Navigator screenOptions={stackHeader(false)}>
             <Stack.Screen name="TabLayouts" component={TabLayouts} />
             {/* Profile Page */}
-            <Stack.Screen name="MyAccount" component={MyAccount} options={stackHeader(true, 'Akun Saya')} />
-            <Stack.Screen name="Membership" component={Membership} options={stackHeader(true, 'Membership')} />
+            <Stack.Screen name="ProfileMenu" component={ProfileMenu} options={stackHeader(true)} />
         </Stack.Navigator>
     )
 }

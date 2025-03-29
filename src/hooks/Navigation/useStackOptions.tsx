@@ -5,12 +5,13 @@ import CustomHeader from '~/src/components/Navigation/CustomHeader'
 const useStackOptions = () => {
     const stackHeader = (headerShown: boolean, screenName?: string): NativeStackNavigationOptions => ({
         animation: 'fade_from_bottom',
+        animationDuration: 1000,
         title: screenName,
         headerShown: headerShown,
         header: (props) => <CustomHeader {...props} />
     })
     const bottomTabBar: BottomTabNavigationOptions = {
-        animation: 'fade',
+        animation: 'shift',
         headerShown: false
     }
 
