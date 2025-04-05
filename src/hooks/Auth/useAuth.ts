@@ -3,8 +3,6 @@ import { useNotify } from '../Redux/useNotify'
 import useAuthentication from '../Database/Authentication'
 import { AuthType } from '~/src/types/databaseType/AuthType'
 import useAccount from '../Database/Account'
-import constants from 'expo-constants'
-import bcrypt from 'react-native-bcrypt'
 import * as Crypto from 'expo-crypto'
 
 const useAuth = () => {
@@ -38,6 +36,7 @@ const useAuth = () => {
                 ...data,
                 password: hashedPassword
             })
+
             if (auth_data.added) {
                 const Account = await addAccount({
                     user_id: auth_data.id

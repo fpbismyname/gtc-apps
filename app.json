@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Gading Training Center",
-    "slug": "gading-training-center",
+    "slug": "gading-training-center-apps",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/gtc_icon.png",
@@ -30,14 +30,18 @@
       [
         "expo-asset"
       ],
-      ["expo-video",{
-        "supportsPictureInPicture": false
-      }]
+      [
+        "expo-video",
+        {
+          "supportsPictureInPicture": false
+        }
+      ]
     ],
     "extra": {
       "eas": {
         "projectId": "6a358ec8-e329-4409-8293-51faf40a2983"
       }
-    }
+    },
+    "owner": "fajarpb"
   }
 }

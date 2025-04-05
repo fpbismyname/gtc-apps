@@ -60,6 +60,7 @@ export default function Button({
         color === 'active' && !loading && 'bg-active',
         color === 'inactive' && !loading && 'bg-inactive',
         color === 'gray' && !loading && 'bg-gray',
+        color === 'dark' && !loading && 'bg-dark',
         // Size Buttom
         size === 'sm' && !customStyle && 'px-2 py-2 text-sm',
         size === 'md' && !customStyle && 'px-4 py-4 text-md',

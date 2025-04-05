@@ -76,7 +76,7 @@ const useAuthentication = () => {
                     ]
                 }
             }
-            const data = await getCollectionData(prepareData)
+            const { data } = await getCollectionData(prepareData)
             if (data?.toString() !== '') {
                 return true
             } else {

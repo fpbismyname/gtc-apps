@@ -6,7 +6,7 @@ export default () => {
     const { Stack } = Navigator()
     const { stackHeader } = useStackOptions()
     return (
-        <Stack.Navigator initialRouteName="Auth" screenOptions={stackHeader}>
+        <Stack.Navigator initialRouteName="Auth" screenOptions={stackHeader(false)}>
             <Stack.Screen name="Auth" component={AuthPage} />
         </Stack.Navigator>
     )

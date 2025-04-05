@@ -10,6 +10,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { FC } from 'react'
 import { colorPallet } from '~/src/constants/colorPallete'
 import Navigator from '~/src/hooks/Navigation/useNavigator'
+import { institutionType, MasterDataType } from '~/src/types/databaseType/MasterDataType'
 
 export const checkRolesUser = (roles: string | null | undefined) => {
     let role_user
@@ -48,24 +49,26 @@ const HeaderProfile: FC<{ user_id: string | null }> = ({ user_id }) => {
     return (
         <Section color="primary" direction="row" customStyle="rounded-xl p-4 items-center">
             <Section direction="row" gap="sm" expand customStyle="items-center">
-                <Icon name="account-circle" size={42} color={colorPallet.gray} />
+                <Icon name="account-circle" size={42} color={colorPallet.dark} />
                 <Section direction="column" gap="xs">
                     <Text size="xl">{data_user?.username}</Text>
-                    <Text size="xs" color="gray">
+                    <Text size="xs" color="dark">
                         {checkRolesUser(data_user?.role)}
                     </Text>
                 </Section>
             </Section>
             <Section>
-                <Button icon="exit-to-app" color="gray" iconSize="xl" iconColor="active" onPress={authSignOut} />
+                <Button icon="exit-to-app" color="dark" iconSize="xl" iconColor="active" onPress={authSignOut} />
             </Section>
         </Section>
     )
 }
 
 const ListProfileInformation: FC<{ user_id: string | null }> = ({ user_id }) => {
-    // Get user information
-    const { data_user } = useFetch(user_id)
+    // Fetch Data
+    const { data_user, masterData } = useFetch(user_id)
+
+    // Get Navigator
     const { router } = Navigator()
 
     return (
@@ -81,7 +84,7 @@ const ListProfileInformation: FC<{ user_id: string | null }> = ({ user_id }) => 
                     router.navigate('ProfileMenu', {
                         title: 'Gading Training Center',
                         route: 'institution_information',
-                        data: data_user
+                        data: masterData as institutionType
                     })
                 }
             />

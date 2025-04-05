@@ -9,7 +9,7 @@ import { StackParamList, TabMenuPage } from '~/src/types/navigatorType/Navigator
 const CustomHeader = ({ navigation }: NativeStackHeaderProps) => {
     const { router } = useNavigator()
     const { params } = useRoute<RouteProp<StackParamList>>()
-    const { title } = params as TabMenuPage
+    const data = params as TabMenuPage
     return (
         <Section customStyle="px-4 pt-2">
             {navigation.canGoBack() && (
@@ -18,7 +18,7 @@ const CustomHeader = ({ navigation }: NativeStackHeaderProps) => {
                         <Button icon="arrow-left" iconSize="2xl" color="transparent" onPress={() => router.navigate('TabLayouts', { screen: 'Profile' })} />
                     </Section>
                     <Section direction="column" customStyle="justify-center items-end">
-                        <Text size="xl">{title}</Text>
+                        <Text size="xl">{data?.title || ''}</Text>
                     </Section>
                 </Section>
             )}
