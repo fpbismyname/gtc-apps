@@ -12,7 +12,7 @@ const TabLayouts = () => {
     return (
         <Tabs.Navigator initialRouteName="Home" screenOptions={bottomTabBar} tabBar={(props) => <CustomTabBar {...props} />}>
             <Tabs.Screen name="Home" component={Home} options={{ title: 'Beranda' }} />
-            <Tabs.Screen name="Module" component={Module} options={{ title: 'Materi' }} />
+            <Tabs.Screen name="Module" component={Module} options={{ title: 'Modul' }} />
             <Tabs.Screen name="Profile" component={Profile} options={{ title: 'Profil' }} />
         </Tabs.Navigator>
     )

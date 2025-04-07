@@ -47,6 +47,12 @@ const Notify = () => {
                 <Icon name={'information'} size={18} />
                 <Text>{text1}</Text>
             </Section>
+        ),
+        error: ({ text1 }: ToastConfigParams<'error'>) => (
+            <Section color="danger" direction="row" customStyle="items-center rounded-full p-4 gap-2">
+                <Icon name={'alert-circle'} size={18} />
+                <Text>{text1}</Text>
+            </Section>
         )
     }
 

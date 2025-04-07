@@ -15,7 +15,7 @@ const CustomHeader = ({ navigation }: NativeStackHeaderProps) => {
             {navigation.canGoBack() && (
                 <Section direction="row" gap="xs" color="primary" customStyle="rounded-xl items-center">
                     <Section direction="column">
-                        <Button icon="arrow-left" iconSize="2xl" color="transparent" onPress={() => router.navigate('TabLayouts', { screen: 'Profile' })} />
+                        <Button icon="arrow-left" iconSize="2xl" color="transparent" onPress={() => navigation.goBack()} />
                     </Section>
                     <Section direction="column" customStyle="justify-center items-end">
                         <Text size="xl">{data?.title || ''}</Text>
