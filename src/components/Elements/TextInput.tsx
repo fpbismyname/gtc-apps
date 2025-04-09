@@ -5,7 +5,7 @@ import { inputMode } from '~/src/types/otherTypes/inputMode'
 import Section from './Section'
 import Text from './Text'
 import useRedux from '~/src/hooks/Redux/useRedux'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons'
 import Link from './Link'
 
 interface textInputType {
@@ -16,7 +16,7 @@ interface textInputType {
     onBlur?: (e: any) => void
     inputMode?: inputMode
     label?: string
-    labelIcon?: string
+    labelIcon?: any
     value?: string
     expand?: boolean
     errors?: string
@@ -94,13 +94,11 @@ export default function TextInput({
                 >
                     {children ? <>{children}</> : null}
                 </TI>
-                {errors ? <Text customStyle={`absolute right-0 top-0 bg-danger rounded-md px-2 text-white ${errorStyle}`}>{errors}</Text> : null}
+                {errors ? <Text customStyle={`z-10 absolute right-0 top-0 bg-danger rounded-md px-2 text-white ${errorStyle}`}>{errors}</Text> : null}
+                {inputMode === 'password' ? (
+                    <Icon className="absolute right-0 px-4" size={18} name={!showPassword ? 'eye' : 'eye-off'} onPress={() => setShowPassword((prev) => !prev)} />
+                ) : null}
             </Section>
-            {inputMode === 'password' ? (
-                <Section padding="sm" direction="row">
-                    <Link title={!showPassword ? 'Tampilkan' : 'Sembunyikan'} customStyle="absolute right-0 px-2" onPress={() => setShowPassword((prev) => !prev)} />
-                </Section>
-            ) : null}
         </Section>
     )
 }

@@ -1,16 +1,15 @@
 import { Layouts } from '~/src/types/otherTypes/Layout'
-import { AuthType } from '~/src/types/databaseType/AuthType'
 import useRedux from '~/src/hooks/Redux/useRedux'
 import Section from '../../../components/Elements/Section'
 import Text from '../../../components/Elements/Text'
 import Button from '~/src/components/Elements/Button'
 import useAuth from '~/src/hooks/Auth/useAuth'
 import useFetch from '~/src/hooks/Fetch/useFetch'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons'
 import { FC } from 'react'
 import { colorPallet } from '~/src/constants/colorPallete'
 import Navigator from '~/src/hooks/Navigation/useNavigator'
-import { institutionType, MasterDataType } from '~/src/types/databaseType/MasterDataType'
+import { institutionType } from '~/src/types/databaseType/MasterDataType'
 
 export const checkRolesUser = (roles: string | null | undefined) => {
     let role_user
@@ -49,7 +48,7 @@ const HeaderProfile: FC<{ user_id: string | null }> = ({ user_id }) => {
     return (
         <Section color="primary" direction="row" customStyle="rounded-xl p-4 items-center">
             <Section direction="row" gap="sm" expand customStyle="items-center">
-                <Icon name="account-circle" size={42} color={colorPallet.dark} />
+                <Icon name="account" size={42} color={colorPallet.dark} />
                 <Section direction="column" gap="xs">
                     <Text size="xl">{data_user?.username}</Text>
                     <Text size="xs" color="dark">
@@ -85,21 +84,6 @@ const ListProfileInformation: FC<{ user_id: string | null }> = ({ user_id }) => 
                         title: 'Gading Training Center',
                         route: 'institution_information',
                         data: masterData as institutionType
-                    })
-                }
-            />
-            <Text padding="sm" weight="bold">
-                Informasi Modul
-            </Text>
-            <Button
-                title="Materi terselesaikan"
-                icon="book-check"
-                color="primary"
-                onPress={() =>
-                    router.navigate('ProfileMenu', {
-                        title: 'Materi Terselesaikan',
-                        route: 'done_module',
-                        data: data_user
                     })
                 }
             />

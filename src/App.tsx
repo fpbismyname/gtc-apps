@@ -15,7 +15,7 @@ export default () => {
     const { user_id } = userState
 
     // State Internet Connection
-    const [isInternetConnected, setIsInternetConnected] = useState<boolean | null>(null)
+    const [isInternetConnected, setIsInternetConnected] = useState<boolean>(true)
 
     // Debug localstorage
     const localStorage = async () => {

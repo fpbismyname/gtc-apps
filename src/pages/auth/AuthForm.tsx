@@ -154,6 +154,7 @@ const FormLogin: React.FC = () => {
                             inputMode="password"
                             onChange={handleChange('password')}
                             errors={errors.password}
+                            expand
                         />
                         <Button title="Login" color="primary" text_position="center" onPress={handleSubmit} />
                     </>

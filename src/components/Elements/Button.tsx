@@ -1,6 +1,6 @@
 import React, { Children } from 'react'
 import { Pressable, Text, View } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons'
 import { colorType, sizeType, weightType } from '../../types/otherTypes/typeStyle'
 import useRedux from '~/src/hooks/Redux/useRedux'
 import { colorPallet } from '~/src/constants/colorPallete'
@@ -12,7 +12,7 @@ interface buttonType {
     onPress?: () => void
     customStyle?: string
     expand?: boolean
-    icon?: string
+    icon?: any
     iconSize?: sizeType | '2xl' | '3xl'
     iconColor?: colorType
     weight?: weightType
@@ -28,7 +28,7 @@ export default function Button({
     expand,
     text_position = 'left',
     weight = 'normal',
-    iconSize,
+    iconSize = 'xl',
     iconColor,
     customStyle
 }: buttonType) {
@@ -62,10 +62,10 @@ export default function Button({
         color === 'gray' && !loading && 'bg-gray',
         color === 'dark' && !loading && 'bg-dark',
         // Size Buttom
-        size === 'sm' && !customStyle && 'px-2 py-2 text-sm',
-        size === 'md' && !customStyle && 'px-4 py-4 text-md',
-        size === 'xl' && !customStyle && 'px-6 py-6 text-xl',
-        size === 'lg' && !customStyle && 'px-8 py-8 text-2xl'
+        size === 'sm' && !customStyle && 'p-2 text-sm',
+        size === 'md' && !customStyle && 'p-4 text-md',
+        size === 'xl' && !customStyle && 'p-6 text-xl',
+        size === 'lg' && !customStyle && 'p-8 text-2xl'
     ]
         .filter(Boolean)
         .join(' ')

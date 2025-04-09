@@ -11,7 +11,7 @@ interface typeText {
     padding?: sizeType
 }
 
-const Text = ({ size = 'sm', weight = 'normal', children, customStyle = '', color = 'dark', padding }: typeText) => {
+const Text = ({ size = 'md', weight = 'normal', children, customStyle = '', color = 'dark', padding }: typeText) => {
     const style = [
         customStyle,
         // Padding size
