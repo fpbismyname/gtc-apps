@@ -12,12 +12,14 @@ interface sectionType {
     gap?: 'xs' | sizeType
     direction?: directionType
     customStyle?: string
+    flexWrap?: boolean
 }
 
-const Section: React.FC<sectionType> = ({ children, color = 'transparent', padding = 'none', gap = 'none', direction = 'column', customStyle = '', expand }) => {
+const Section: React.FC<sectionType> = ({ children, color = 'transparent', padding = 'none', gap = 'none', direction = 'column', customStyle = '', expand, flexWrap }) => {
     const style = [
         'flex',
         customStyle,
+        flexWrap && 'flex-wrap',
         expand && 'flex-1',
         color === 'primary' && 'bg-primary',
         color === 'secondary' && 'bg-secondary',

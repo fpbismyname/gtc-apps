@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react'
+import { FC, PropsWithChildren, ReactNode } from 'react'
 import Section from '../../../components/Elements/Section'
 import GtcIcon from '~/src/assets/images/gtc_icon.png'
 import Text from '../../../components/Elements/Text'
@@ -9,9 +9,9 @@ import Image from '~/src/components/Elements/Image'
 import Carousel from '~/src/components/Elements/Carousel'
 import { ScrollView } from 'react-native'
 
-const HomeLayouts: FC<Layouts> = ({ children, padding, color = 'light', direction, gap, customStyle, expand = false }) => {
+const HomeLayouts: FC<Layouts> = ({ children, ...props }) => {
     return (
-        <Section padding={padding} direction={direction} color={color} expand={expand} gap={gap} customStyle={customStyle}>
+        <Section {...props}>
             <>{children}</>
         </Section>
     )
@@ -19,7 +19,7 @@ const HomeLayouts: FC<Layouts> = ({ children, padding, color = 'light', directio
 
 const SearchBar: FC = () => {
     return (
-        <Section direction="row" customStyle="justify-between items-center" gap="sm">
+        <Section direction="row" customStyle="justify-between items-center py-1s" gap="sm">
             <Image imageSource={GtcIcon} size="sm" />
             <Section direction="column" customStyle="justify-center" expand>
                 <TextInput placeholder="Cari modul untuk dipelajari..." size="sm" />
@@ -36,19 +36,19 @@ const InformationHeading: FC = () => {
     ]
     return (
         <>
-            <Carousel images={imagesData} imagesSize="panorama" duration={3000} />
+            <Carousel images={imagesData} imagesSize="panorama" duration={5000} />
         </>
     )
 }
 
-const HorizontalScrollView: FC<{ title: string; children: ReactNode }> = ({ title, children }) => {
+const HorizontalScrollView: FC<PropsWithChildren<{ title: string; children: ReactNode }>> = ({ title, children }) => {
     return (
         <Section direction="column" gap="sm">
             <Section direction="row">
                 <Text size="xl">{title}</Text>
             </Section>
             <ScrollView horizontal overScrollMode="never" showsHorizontalScrollIndicator={false} className="gap-2 scroll-m-0 rounded-xl">
-                <>{children}</>
+                {children}
             </ScrollView>
         </Section>
     )
@@ -119,7 +119,7 @@ const StudentInformation: FC = () => {
     ]
     return (
         <>
-            <Carousel title="Informasi Pemberangkatan" images={imageStudent} imagesSize="panorama" duration={3000} />
+            <Carousel title="Informasi Pemberangkatan" images={imageStudent} imagesSize="panorama" duration={5000} />
         </>
     )
 }

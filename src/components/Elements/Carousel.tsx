@@ -1,9 +1,11 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import Section from './Section'
-import { Dimensions, ScrollView } from 'react-native'
+import { Dimensions, findNodeHandle, ScrollView, UIManager } from 'react-native'
 import Image from './Image'
 import { sizeType } from '~/src/types/otherTypes/typeStyle'
 import Text from './Text'
+import React from 'react'
+import { Float } from 'react-native/Libraries/Types/CodegenTypes'
 
 interface ImageItem {
     image: string
@@ -20,18 +22,27 @@ const Carousel: FC<CarouselInterface> = ({ images, imagesSize, duration = 3000, 
     const imageData = images
     if (!imageData) return null
     const carouselRef = useRef<ScrollView>(null)
+    const [carouselWidth, setCarouselWidth] = useState<Float>(0)
     const [currentImage, setCurrentImage] = useState<number>(0)
+    const [slideCarousel, setSlideCarousel] = useState<boolean>(true)
 
     useEffect(() => {
         const Scroll = setInterval(() => {
+            if (!slideCarousel) return null
             const nextScroll = (currentImage + 1) % imageData.length
+            const node = findNodeHandle(carouselRef.current)
+            if (node) {
+                UIManager.measure(node, (x, y, width) => {
+                    setCarouselWidth(width)
+                })
+            }
             carouselRef.current?.scrollTo({
-                x: Dimensions.get('window').width * nextScroll,
+                x: carouselWidth * nextScroll,
                 animated: true
             })
             setCurrentImage(nextScroll)
             // console.log('scrolled')
-        }, duration + Math.floor(Math.random() * (100 - -500) + -500))
+        }, duration + Math.floor(Math.random() * (500 - -500) + -500))
 
         return () => clearInterval(Scroll)
     }, [currentImage])
@@ -53,11 +64,17 @@ const Carousel: FC<CarouselInterface> = ({ images, imagesSize, duration = 3000, 
         <Section direction="column" gap="sm">
             {title ? <Text size="xl">{title}</Text> : null}
             <Section customStyle="items-center">
-                <ScrollView className={styleCarousel} showsHorizontalScrollIndicator={false} ref={carouselRef} horizontal pagingEnabled overScrollMode="never">
+                <ScrollView
+                    className={styleCarousel}
+                    decelerationRate="fast"
+                    showsHorizontalScrollIndicator={false}
+                    ref={carouselRef}
+                    pagingEnabled
+                    horizontal
+                    overScrollMode="never"
+                >
                     {imageData.map((data, index) => (
-                        <>
-                            <Image key={index} imageUri={data?.image} size={imagesSize} />
-                        </>
+                        <Image key={index} imageUri={data?.image} size={imagesSize} />
                     ))}
                 </ScrollView>
             </Section>

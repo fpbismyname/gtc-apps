@@ -13,7 +13,7 @@ export interface TabMenuPage {
     data?: any
 }
 
-export type routeTabMenu = 'institution_information' | 'done_module' | 'membership' | 'my_account'
+export type routeTabMenu = 'institution_information' | 'membership_information' | 'account_information'
 
 export type TabsParamList = {
     Profile?: {}

@@ -106,7 +106,29 @@ const useAuthentication = () => {
         return unsubscribe
     }
 
-    return { addAuth, checkEmailDuplication, checkUserAvailable, getAuth }
+    /**
+     * CRUD FOR COLLECTION AUTENTICATION DATA
+     */
+
+    const getAuthData = (user_id: string | null, callback: (data: AuthType | null) => void) => {
+        if (!user_id) {
+            callback(null)
+            return () => {}
+        }
+        const collect = doc(db, collection_name, user_id)
+        const unsubscribeAuthData = onSnapshot(
+            collect,
+            (data) => {
+                if (data) callback(data.data() as AuthType)
+            },
+            (error) => {
+                callback(null)
+            }
+        )
+        return unsubscribeAuthData
+    }
+
+    return { addAuth, checkEmailDuplication, checkUserAvailable, getAuth, getAuthData }
 }
 
 export default useAuthentication

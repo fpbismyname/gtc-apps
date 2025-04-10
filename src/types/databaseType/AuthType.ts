@@ -6,4 +6,5 @@ export interface AuthType {
     phone_number: string
     role: 'student' | 'teacher' | 'admin' | 'new_user' | null
     isActive: boolean
+    picture?: string
 }

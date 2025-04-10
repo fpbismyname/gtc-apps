@@ -4,6 +4,7 @@ import { MaterialCommunityIcons as Icon } from '@expo/vector-icons'
 import { colorType, sizeType, weightType } from '../../types/otherTypes/typeStyle'
 import useRedux from '~/src/hooks/Redux/useRedux'
 import { colorPallet } from '~/src/constants/colorPallete'
+import useNavigator from '~/src/hooks/Navigation/useNavigator'
 
 interface buttonType {
     title?: string
@@ -34,6 +35,8 @@ export default function Button({
 }: buttonType) {
     const { notifyState } = useRedux()
     const { loading } = notifyState
+
+    const { router } = useNavigator()
     const style = [
         customStyle,
         'flex flex-row rounded-xl items-center',

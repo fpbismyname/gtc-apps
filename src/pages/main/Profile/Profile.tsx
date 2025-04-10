@@ -4,11 +4,12 @@ import Section from '../../../components/Elements/Section'
 import Text from '../../../components/Elements/Text'
 import Button from '~/src/components/Elements/Button'
 import useAuth from '~/src/hooks/Auth/useAuth'
-import useFetch from '~/src/hooks/Fetch/useFetch'
-import { MaterialCommunityIcons as Icon } from '@expo/vector-icons'
-import { FC } from 'react'
-import { colorPallet } from '~/src/constants/colorPallete'
+import { FC, useCallback, useEffect, useState } from 'react'
 import Navigator from '~/src/hooks/Navigation/useNavigator'
+import Image from '~/src/components/Elements/Image'
+import useAuthentication from '~/src/hooks/Database/Authentication'
+import { useFocusEffect } from '@react-navigation/native'
+import { AuthType } from '~/src/types/databaseType/AuthType'
 import { institutionType } from '~/src/types/databaseType/MasterDataType'
 
 export const checkRolesUser = (roles: string | null | undefined) => {
@@ -27,7 +28,7 @@ export const checkRolesUser = (roles: string | null | undefined) => {
             role_user = 'Sensei'
             break
         default:
-            role_user = 'None'
+            role_user = '---'
     }
     return role_user
 }
@@ -40,33 +41,32 @@ const ProfileLayout: FC<Layouts> = ({ children, padding, direction, color = 'lig
     )
 }
 
-const HeaderProfile: FC<{ user_id: string | null }> = ({ user_id }) => {
-    // Get user information
-    const { data_user } = useFetch(user_id)
-    // Get signOut Auth Method
-    const { authSignOut } = useAuth()
+const HeaderProfile: FC<{ user_data: Partial<AuthType> | null; signOut: () => void }> = ({ user_data, signOut }) => {
+    const headerInformation = {
+        username: user_data?.username || '---',
+        profile_picture: user_data?.picture || '',
+        role: () => checkRolesUser(user_data?.role || '')
+    }
+
     return (
         <Section color="primary" direction="row" customStyle="rounded-xl p-4 items-center">
             <Section direction="row" gap="sm" expand customStyle="items-center">
-                <Icon name="account" size={42} color={colorPallet.dark} />
+                <Image imageUri={headerInformation.profile_picture} size="sm" />
                 <Section direction="column" gap="xs">
-                    <Text size="xl">{data_user?.username}</Text>
+                    <Text size="xl">{headerInformation.username}</Text>
                     <Text size="xs" color="dark">
-                        {checkRolesUser(data_user?.role)}
+                        {headerInformation.role()}
                     </Text>
                 </Section>
             </Section>
             <Section>
-                <Button icon="exit-to-app" color="dark" iconSize="xl" iconColor="active" onPress={authSignOut} />
+                <Button icon="exit-to-app" color="dark" iconSize="xl" iconColor="active" onPress={signOut} />
             </Section>
         </Section>
     )
 }
 
-const ListProfileInformation: FC<{ user_id: string | null }> = ({ user_id }) => {
-    // Fetch Data
-    const { data_user, masterData } = useFetch(user_id)
-
+const ListProfileInformation: FC<{ user_data: Partial<AuthType> | null; institution_data: Partial<institutionType> }> = ({ user_data }) => {
     // Get Navigator
     const { router } = Navigator()
 
@@ -83,7 +83,7 @@ const ListProfileInformation: FC<{ user_id: string | null }> = ({ user_id }) => 
                     router.navigate('ProfileMenu', {
                         title: 'Gading Training Center',
                         route: 'institution_information',
-                        data: masterData as institutionType
+                        data: ''
                     })
                 }
             />
@@ -97,8 +97,8 @@ const ListProfileInformation: FC<{ user_id: string | null }> = ({ user_id }) => 
                 onPress={() =>
                     router.navigate('ProfileMenu', {
                         title: 'Membership',
-                        route: 'membership',
-                        data: data_user
+                        route: 'membership_information',
+                        data: user_data
                     })
                 }
             />
@@ -109,8 +109,8 @@ const ListProfileInformation: FC<{ user_id: string | null }> = ({ user_id }) => 
                 onPress={() =>
                     router.navigate('ProfileMenu', {
                         title: 'Akun Saya',
-                        route: 'my_account',
-                        data: data_user
+                        route: 'account_information',
+                        data: user_data
                     })
                 }
             />
@@ -121,11 +121,34 @@ const ListProfileInformation: FC<{ user_id: string | null }> = ({ user_id }) => 
 const Profile = () => {
     // Check User id
     const { userState } = useRedux()
+    const userId = userState.user_id || ''
+
+    // HeaderProfile fetched data
+    const { getAuthData } = useAuthentication()
+    const [userData, setUserData] = useState<Partial<AuthType> | null>(null)
+    const { authSignOut } = useAuth()
+
+    // ListProfileInformation
+
+    // Fetching data
+    useFocusEffect(
+        useCallback(() => {
+            // Get user data
+            const unsubscribeAuthData = getAuthData(userId, (data) => {
+                if (data) setUserData({ ...data, id: userId })
+            })
+
+            // Get Institution Data
+            return () => {
+                unsubscribeAuthData
+            }
+        }, [])
+    )
 
     return (
         <ProfileLayout direction="column" customStyle="px-4 pt-2" color="light" gap="sm" expand>
-            <HeaderProfile user_id={userState.user_id} />
-            <ListProfileInformation user_id={userState.user_id} />
+            <HeaderProfile user_data={userData} signOut={authSignOut} />
+            <ListProfileInformation user_data={userData} institution_data={{}} />
         </ProfileLayout>
     )
 }
