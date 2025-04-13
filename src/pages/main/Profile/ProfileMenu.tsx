@@ -6,7 +6,7 @@ import Section from '~/src/components/Elements/Section'
 import Text from '~/src/components/Elements/Text'
 import { checkRolesUser } from './Profile'
 import { institutionType } from '~/src/types/databaseType/MasterDataType'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons'
 import Link from '~/src/components/Elements/Link'
 import { FC } from 'react'
 
@@ -31,15 +31,15 @@ const MyAccount: FC<{ user: Partial<AuthType> }> = ({ user }) => {
                         <Text size="xl">{AccountInformation.email}</Text>
                     </Section>
                     <Section direction="row" customStyle="items-center" gap="sm">
-                        <Icon name="whatsapp" size={24} />
+                        <Icon name="access-point-network" size={20} />
                         <Text size="xl">{AccountInformation.phone_number}</Text>
                     </Section>
                     <Section direction="row" customStyle="items-center" gap="sm">
-                        <Icon name="account-group" size={24} />
+                        <Icon name="abjad-hebrew" size={20} />
                         <Text size="xl">{checkRolesUser(AccountInformation.role)}</Text>
                     </Section>
                     <Section direction="row" customStyle="items-center" gap="sm">
-                        <Icon name={user.isActive ? 'account-check' : 'account-off'} size={24} />
+                        <Icon name={user.isActive ? 'abacus' : 'account-off'} size={24} />
                         <Text size="xl">{AccountInformation.isActive ? 'Aktif' : 'Nonaktif'}</Text>
                     </Section>
                 </Section>
@@ -48,7 +48,7 @@ const MyAccount: FC<{ user: Partial<AuthType> }> = ({ user }) => {
     )
 }
 
-const InstitutionInfo = () => {
+const InstitutionInfo: FC<{ data: institutionType }> = ({ data }) => {
     const institution = data as institutionType
     return (
         <>
@@ -64,7 +64,7 @@ const InstitutionInfo = () => {
                         <Text size="xl">{institution?.name}</Text>
                     </Section>
                     <Section direction="row" customStyle="items-center flex-wrap" gap="sm">
-                        <Icon name="map-marker" size={24} />
+                        <Icon name="map-marker" size={10} />
                         <Link size="md" title={institution?.address} />
                     </Section>
                     <Section direction="row" customStyle="items-center" gap="sm">
@@ -85,7 +85,7 @@ const InstitutionInfo = () => {
     )
 }
 
-const MembershipInfo = () => {
+const MembershipInfo: FC<{ data: AuthType }> = ({ data }) => {
     const { ...user } = data as AuthType
     return (
         <Section>
@@ -100,13 +100,11 @@ const ProfileMenu = () => {
     const { params } = useRoute<RouteProp<StackParamList>>()
     const { data, route }: TabMenuPage = params as TabMenuPage
 
-    const { ...user } = data as AuthType
-
     return (
         <Section direction="column" gap="xl" padding="md" customStyle="items-center justify-center" expand>
-            {route === 'account_information' && <MyAccount user={user} />}
-            {route === 'institution_information' && <InstitutionInfo />}
-            {route === 'membership_information' && <MembershipInfo />}
+            {route === 'account_information' && <MyAccount user={data as AuthType} />}
+            {route === 'institution_information' && <InstitutionInfo data={data as institutionType} />}
+            {route === 'membership_information' && <MembershipInfo data={data as AuthType} />}
         </Section>
     )
 }

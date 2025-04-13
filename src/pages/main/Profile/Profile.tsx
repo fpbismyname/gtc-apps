@@ -11,6 +11,7 @@ import useAuthentication from '~/src/hooks/Database/Authentication'
 import { useFocusEffect } from '@react-navigation/native'
 import { AuthType } from '~/src/types/databaseType/AuthType'
 import { institutionType } from '~/src/types/databaseType/MasterDataType'
+import useMasterData from '~/src/hooks/Database/MasterData'
 
 export const checkRolesUser = (roles: string | null | undefined) => {
     let role_user
@@ -66,7 +67,7 @@ const HeaderProfile: FC<{ user_data: Partial<AuthType> | null; signOut: () => vo
     )
 }
 
-const ListProfileInformation: FC<{ user_data: Partial<AuthType> | null; institution_data: Partial<institutionType> }> = ({ user_data }) => {
+const ListProfileInformation: FC<{ user_data: Partial<AuthType> | null; institution_data: Partial<institutionType> | null }> = ({ user_data, institution_data }) => {
     // Get Navigator
     const { router } = Navigator()
 
@@ -83,7 +84,7 @@ const ListProfileInformation: FC<{ user_data: Partial<AuthType> | null; institut
                     router.navigate('ProfileMenu', {
                         title: 'Gading Training Center',
                         route: 'institution_information',
-                        data: ''
+                        data: institution_data
                     })
                 }
             />
@@ -129,6 +130,8 @@ const Profile = () => {
     const { authSignOut } = useAuth()
 
     // ListProfileInformation
+    const { getMasterData } = useMasterData()
+    const [institutionData, setInstitutionData] = useState<Partial<institutionType> | null>(null)
 
     // Fetching data
     useFocusEffect(
@@ -137,10 +140,14 @@ const Profile = () => {
             const unsubscribeAuthData = getAuthData(userId, (data) => {
                 if (data) setUserData({ ...data, id: userId })
             })
+            const unsubscribeInstitutionData = getMasterData('institution_information', (data) => {
+                if (data) setInstitutionData({ ...data })
+            })
 
             // Get Institution Data
             return () => {
-                unsubscribeAuthData
+                unsubscribeAuthData()
+                unsubscribeInstitutionData()
             }
         }, [])
     )
@@ -148,7 +155,7 @@ const Profile = () => {
     return (
         <ProfileLayout direction="column" customStyle="px-4 pt-2" color="light" gap="sm" expand>
             <HeaderProfile user_data={userData} signOut={authSignOut} />
-            <ListProfileInformation user_data={userData} institution_data={{}} />
+            <ListProfileInformation user_data={userData} institution_data={institutionData} />
         </ProfileLayout>
     )
 }

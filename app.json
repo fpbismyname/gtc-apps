@@ -10,7 +10,7 @@
     "splash": {
       "image": "./src/assets/images/gtc_icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#8a7322"
+      "backgroundColor": "#ffffff"
     },
     "ios": {
       "supportsTablet": true
@@ -18,7 +18,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/images/gtc_icon.png",
-        "backgroundColor": "#8a7322"
+        "backgroundColor": "#ffffff"
       },
       "package": "com.gadingtrainingcenter.apps"
     },
