@@ -31,15 +31,15 @@ const MyAccount: FC<{ user: Partial<AuthType> }> = ({ user }) => {
                         <Text size="xl">{AccountInformation.email}</Text>
                     </Section>
                     <Section direction="row" customStyle="items-center" gap="sm">
-                        <Icon name="access-point-network" size={20} />
+                        <Icon name="whatsapp" size={20} />
                         <Text size="xl">{AccountInformation.phone_number}</Text>
                     </Section>
                     <Section direction="row" customStyle="items-center" gap="sm">
-                        <Icon name="abjad-hebrew" size={20} />
+                        <Icon name="account-group" size={20} />
                         <Text size="xl">{checkRolesUser(AccountInformation.role)}</Text>
                     </Section>
                     <Section direction="row" customStyle="items-center" gap="sm">
-                        <Icon name={user.isActive ? 'abacus' : 'account-off'} size={24} />
+                        <Icon name={user.isActive ? 'account-check' : 'account-off'} size={24} />
                         <Text size="xl">{AccountInformation.isActive ? 'Aktif' : 'Nonaktif'}</Text>
                     </Section>
                 </Section>
