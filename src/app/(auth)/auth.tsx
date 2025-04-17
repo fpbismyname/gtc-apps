@@ -1,0 +1,212 @@
+import { act, Dispatch, FC, memo, SetStateAction, useEffect, useState } from 'react'
+import { Formik } from 'formik'
+import Image from '~/src/components/elements/Image'
+import View from '~/src/components/elements/View'
+import TextInput from '~/src/components/elements/TextInput'
+import { ActivityIndicator } from 'react-native-paper'
+import Button from '~/src/components/elements/Button'
+import Text from '~/src/components/elements/Text'
+import { styling } from '~/src/constants/styleSheets'
+import useCollection from '~/src/hooks/Firebase/useCollection'
+import { InsitutionInformation } from '~/src/types/Firebase/MasterData/InsitutionInformation'
+import { ValidationSchema } from '~/src/utils/ValidationSchema'
+import Link from '~/src/components/elements/Link'
+import useAuth from '~/src/hooks/Auth/useAuth'
+import Notify from '~/src/components/elements/Notify'
+import Section from '~/src/components/elements/Section'
+
+// Header Auth Form
+interface HeaderForm {
+    institution_information: {
+        name: string
+        slogan: string
+    }
+}
+
+const HeaderForm = memo(() => {
+    // Institution data
+    const { states, action } = useCollection('MasterData/Institution/Profile')
+    // States Data
+    const [datas, setDatas] = useState<Partial<InsitutionInformation> | null>(null)
+    // GetData
+    useEffect(() => {
+        const fetch = async () => {
+            await action.getData().then((doc) => setDatas(doc?.shift() as Partial<InsitutionInformation>))
+        }
+        fetch()
+    }, [])
+    // Load indicator whenLoading data
+    if (states.isLoading) return <ActivityIndicator animating />
+    return (
+        <View Style={['itemsCenter', 'rowGap4']}>
+            <View Style={['itemsCenter']}>
+                <Image source={{ uri: datas?.logo }} Width="w20" Height="h20" />
+            </View>
+            <View Style={['itemsCenter', 'rowGap2']}>
+                <Text variant="headlineSmall" Weight="fontBlack" Decoration="capitalize">
+                    {datas?.name}
+                </Text>
+                <Text>{datas?.slogan}</Text>
+            </View>
+        </View>
+    )
+})
+
+// View Form Register
+const FormRegister = () => {
+    const { states: auth, action } = useAuth()
+    return (
+        <Formik
+            initialValues={{
+                username: '',
+                phone_number: '',
+                email: '',
+                password: ''
+            }}
+            validationSchema={ValidationSchema.RegisterField}
+            validateOnMount={true}
+            onSubmit={(values) => {
+                action.signUpAccount(values)
+            }}
+        >
+            {({ handleSubmit, handleChange, errors: err, touched: submitted }) => (
+                <View Style={['rowGap4', 'flexColumn']}>
+                    <TextInput
+                        textContentType="username"
+                        mode="outlined"
+                        placeholder="Username"
+                        error={submitted.username && err.username ? true : false}
+                        onChangeText={handleChange('username')}
+                        keyboardType="default"
+                        rightItem={{
+                            text: err.username && submitted.username ? err.username : ''
+                        }}
+                    />
+                    <TextInput
+                        textContentType="telephoneNumber"
+                        mode="outlined"
+                        dense
+                        placeholder="Nomor Whatsapp"
+                        error={submitted.phone_number && err.phone_number ? true : false}
+                        onChangeText={handleChange('phone_number')}
+                        keyboardType="decimal-pad"
+                        rightItem={{
+                            text: err.phone_number && submitted.phone_number ? err.phone_number : ''
+                        }}
+                    />
+                    <TextInput
+                        textContentType="emailAddress"
+                        mode="outlined"
+                        placeholder="Email"
+                        error={submitted.email && err.email ? true : false}
+                        onChangeText={handleChange('email')}
+                        keyboardType="default"
+                        rightItem={{
+                            text: err.email && submitted.email ? err.email : ''
+                        }}
+                    />
+                    <TextInput
+                        mode="outlined"
+                        placeholder="Password"
+                        error={submitted.password && err.password ? true : false}
+                        onChangeText={handleChange('password')}
+                        textContentType="password"
+                        rightItem={{
+                            text: err.password && submitted.password ? err.password : ''
+                        }}
+                    />
+                    <Button mode="contained" onPress={() => handleSubmit()} loading={auth.isLoading} disabled={auth.isLoading}>
+                        Daftar
+                    </Button>
+                </View>
+            )}
+        </Formik>
+    )
+}
+
+// View Form Login
+const FormLogin = () => {
+    const { states: auth, action } = useAuth()
+    return (
+        <View style={styling()}>
+            <Formik
+                initialValues={{
+                    email: '',
+                    password: ''
+                }}
+                validationSchema={ValidationSchema.LoginField}
+                validateOnMount={true}
+                onSubmit={(values) => {
+                    action.signInAccount(values)
+                }}
+            >
+                {({ handleSubmit, handleChange, errors: err, touched: submitted }) => (
+                    <View Style={['rowGap4', 'flexColumn']}>
+                        <TextInput
+                            error={err.email && submitted.email ? true : false}
+                            mode="outlined"
+                            placeholder="Email"
+                            onChangeText={handleChange('email')}
+                            textContentType="emailAddress"
+                            keyboardType="default"
+                            rightItem={{
+                                text: err.email && submitted.email ? err.email : ''
+                            }}
+                        />
+                        <TextInput
+                            mode="outlined"
+                            secureTextEntry={true}
+                            textContentType="password"
+                            keyboardType="default"
+                            placeholder="Password"
+                            error={err.password && submitted.password ? true : false}
+                            onChangeText={handleChange('password')}
+                            rightItem={{
+                                text: err.password && submitted.password ? err.password : ''
+                            }}
+                        />
+                        <Button mode="contained" onPress={() => handleSubmit()} loading={auth.isLoading} disabled={auth.isLoading}>
+                            Login
+                        </Button>
+                    </View>
+                )}
+            </Formik>
+        </View>
+    )
+}
+
+// View Method auth change
+const AuthChangeMethod: FC<{ changeAuth: Dispatch<SetStateAction<boolean>>; auth: boolean }> = ({ auth, changeAuth }) => {
+    return (
+        <View Style={['flexRow', 'justifyCenter']}>
+            <Text>{auth ? 'Sudah punya akun ? ' : 'Belum punya akun ? '}</Text>
+            <Link onPress={() => changeAuth((prev) => !prev)} Decoration="underline">
+                {auth ? 'Login ke akun' : 'Daftar sekarang'}
+            </Link>
+        </View>
+    )
+}
+
+// Auth Form
+const AuthForm: FC = () => {
+    // AuthMethod
+    const [formChange, setFormChange] = useState<boolean>(false)
+    return (
+        <Section Style={['expand', 'flexColumn', 'rowGap8', 'px5', 'justifyCenter']}>
+            <HeaderForm />
+            {formChange ? <FormRegister /> : <FormLogin />}
+            <AuthChangeMethod changeAuth={setFormChange} auth={formChange} />
+        </Section>
+    )
+}
+
+const auth = () => {
+    return (
+        <>
+            <Notify />
+            <AuthForm />
+        </>
+    )
+}
+
+export default auth

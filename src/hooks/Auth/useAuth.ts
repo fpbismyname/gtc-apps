@@ -1,97 +1,131 @@
-import useUser from '../Redux/useUser'
-import { useNotify } from '../Redux/useNotify'
-import useAuthentication from '../Database/Authentication'
-import { AuthType } from '~/src/types/databaseType/AuthType'
-import useAccount from '../Database/Account'
-import * as Crypto from 'expo-crypto'
+import { useNotify } from '~/src/store/useNotify'
+import { useUsers } from '~/src/store/useUsers'
+import { SignInData, SignUpData } from '~/src/types/Auth/AuthType'
+import useCollection from '../Firebase/useCollection'
+import { createHash, generateTokenHash, compareHash, verifyTokenHash } from '~/src/utils/encryptUtility'
+import { Account } from '~/src/types/Firebase/Account'
+import { textMessages } from '~/src/constants/textMessages'
 
 const useAuth = () => {
-    // Get State and Reducer Redux
-    const { setNotifyMessage } = useNotify()
-    // Manage user localstorage
-    const { setUser, unsetUser } = useUser()
-    // Manage Auth user
-    const { addAuth, getAuth } = useAuthentication()
-    // Manage Account user
-    const { addAccount } = useAccount()
+    // getNotify data
+    const { states: notify, action: actNotify } = useNotify()
+    // getUser ID data
+    const { action: actUserID } = useUsers()
+    // Account Collection
+    const { action: actAccount } = useCollection('Account')
 
-    // Hash password
-    const createPassword = async (password: string = '') => {
-        const hashed_password = await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, password)
-        return hashed_password
-    }
-    // Compare password
-    const comparePassword = async (password: string = '', hashed_password: string = '') => {
-        const savedPass = hashed_password
-        const inputPass = await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, password)
-        return inputPass === savedPass ? true : false
-    }
-
-    // SignUp Method
-    const authSignUp = async (values: Partial<AuthType>) => {
+    // Sign In
+    const signInAccount = async (values: SignInData) => {
+        actNotify.setNotifyValue({
+            isLoading: true
+        })
+        let IDUser = null
         try {
-            const { password, isActive, role, ...data } = values
-            const hashedPassword = await createPassword(password)
-            const auth_data = await addAuth({
-                ...data,
-                password: hashedPassword
+            const checkEmail = (await checkEmailExisted(values.email)) as Account
+            if (!checkEmail) throw Error(textMessages.wrongPassword)
+            const comparePassword = await compareHash(values.password, checkEmail.authentication.password)
+            if (!comparePassword) throw Error(textMessages.wrongPassword)
+            const compareToken = await verifyTokenHash({
+                token: checkEmail.token,
+                email: checkEmail.authentication.email,
+                username: checkEmail.authentication.username
             })
-
-            if (auth_data.added) {
-                const Account = await addAccount({
-                    user_id: auth_data.id
+            if (!compareToken) throw Error('Token')
+            const HashedInputedPassword = await createHash(values.password)
+            const Account = await actAccount
+                .getData({
+                    query: { field: 'authentication.password', operator: '==', value: HashedInputedPassword }
                 })
-                if (Account) setUser({ user_id: auth_data.id })
+                .then((doc) => doc?.shift() as Account)
+            if (!Account) throw Error(textMessages.wrongPassword)
+            IDUser = Account.id || null
+        } catch (err) {
+            if (err instanceof Error) {
+                actNotify.setNotifyValue({
+                    isLoading: false,
+                    message: err.message,
+                    type: 'error'
+                })
             }
-        } catch (err: any) {
-            setNotifyMessage(err.code)
-            console.log(err)
+        } finally {
+            actNotify.clearNotify()
+            actUserID.setUserID(IDUser)
         }
     }
-
-    // SignIn Method
-    const authSignIn = async (values: Partial<AuthType>) => {
+    // Sign Up
+    const signUpAccount = async (values: SignUpData) => {
+        actNotify.setNotifyValue({
+            isLoading: true
+        })
+        let IDUser = null
         try {
-            setNotifyMessage('loading')
-            const dataInput = values
-            await getAuth(
-                {
-                    email: dataInput.email || '',
-                    password: dataInput.password || ''
+            const checkEmail = await checkEmailExisted(values.email)
+            if (checkEmail) throw new Error(textMessages.emailTaken)
+            const createdPassword = await createHash(values.password)
+            const createdToken = await generateTokenHash({ email: values.email, username: values.username })
+            const prepareData: Account = {
+                authentication: {
+                    username: values.username,
+                    email: values.email,
+                    phone_number: values.phone_number,
+                    password: createdPassword
                 },
-                async (data) => {
-                    if (data) {
-                        const checkPass = await comparePassword(dataInput.password, data.password)
-                        if (checkPass) {
-                            if (!data.id) return null
-                            setUser({ user_id: data.id })
-                        } else {
-                            setNotifyMessage('auth/invalid-credential')
-                        }
-                    }
-                    if (!data) setNotifyMessage('auth/invalid-credential')
+                token: createdToken,
+                information: {
+                    memberships: {
+                        allowed_module: ['free'],
+                        expiration_date: null
+                    },
+                    role: 'user'
                 }
-            )
+            }
+            const { id } = await actAccount.addData(prepareData)
+            IDUser = id
         } catch (err: any) {
-            setNotifyMessage(err.code)
-            // console.log(err)
+            if (err instanceof Error)
+                actNotify.setNotifyValue({
+                    isLoading: false,
+                    message: err.message,
+                    type: 'error'
+                })
+        } finally {
+            actUserID.setUserID(IDUser)
+            actNotify.clearNotify()
         }
     }
-
-    // SignOut Method
-    const authSignOut = () => {
+    // Sign out
+    const signOutAccount = () => {
         try {
-            // setNotifyMessage('loading')
-            unsetUser()
-            setNotifyMessage('auth/signOut')
+            actNotify.setNotifyValue({
+                isLoading: true
+            })
+            actUserID.deleteUserID()
         } catch (err: any) {
-            setNotifyMessage(err.code)
-            // console.log(err)
+            actNotify.setNotifyValue(err)
+        } finally {
+            actNotify.clearNotify()
         }
     }
 
-    // Return Method Auth
-    return { authSignUp, authSignIn, authSignOut }
-}
+    // Check Duplication Email
+    const checkEmailExisted = async (email: string) => {
+        const checkEmail = await actAccount.getData({
+            query: { field: 'authentication.email', operator: '==', value: email }
+        })
+        return checkEmail?.shift()
+    }
 
+    // action
+    const action = {
+        signInAccount,
+        signUpAccount,
+        signOutAccount
+    }
+
+    // states
+    const states = {
+        isLoading: notify.isLoading
+    }
+    return { states, action }
+}
 export default useAuth

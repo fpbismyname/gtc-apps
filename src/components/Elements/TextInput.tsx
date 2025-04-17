@@ -1,104 +1,49 @@
-import React, { ReactNode, useState } from 'react'
-import { TextInput as TI, View } from 'react-native'
-import { colorType } from '../../types/otherTypes/typeStyle'
-import { inputMode } from '~/src/types/otherTypes/inputMode'
-import Section from './Section'
-import Text from './Text'
-import useRedux from '~/src/hooks/Redux/useRedux'
-import { MaterialCommunityIcons as Icon } from '@expo/vector-icons'
-import Link from './Link'
+import React, { FC, useState } from 'react'
+import { HelperText, TextInput as TI, TextInputProps } from 'react-native-paper'
+import { styling, StylingType } from '~/src/constants/styleSheets'
+import { IconNameType, useTheme } from '~/src/constants/useTheme'
+import View from './View'
 
-interface textInputType {
-    placeholder?: string
-    color?: colorType
-    size?: 'sm' | 'md' | 'xl' | 'lg'
-    onChange?: (e: string) => void
-    onBlur?: (e: any) => void
-    inputMode?: inputMode
-    label?: string
-    labelIcon?: any
-    value?: string
-    expand?: boolean
-    errors?: string
-    children?: ReactNode
-    disable?: boolean
+interface TextInputType extends TextInputProps {
+    Style?: StylingType[]
+    unDense?: boolean
+    rightItem?: Partial<RightItemType>
 }
 
-export default function TextInput({
-    placeholder,
-    inputMode = 'default',
-    color,
-    size = 'sm',
-    onChange,
-    onBlur,
-    value,
-    expand,
-    errors,
-    children,
-    disable,
-    label,
-    labelIcon
-}: textInputType) {
-    let inputText: any = []
-    const { notifyState } = useRedux()
+interface RightItemType {
+    icon: {
+        name: IconNameType
+        size?: number
+    } | null
+    text: string
+    style: StylingType[]
+    onPress: () => void
+}
+
+const TextInput: FC<TextInputType> = ({ Style, unDense, rightItem, ...rest }) => {
     const [showPassword, setShowPassword] = useState<boolean>(false)
-    const { loading } = notifyState
-
-    if (inputMode === 'default') inputText = ['default', 'text']
-    if (inputMode === 'numeric') inputText = ['numeric', 'numeric']
-    if (inputMode === 'email') inputText = ['default', 'email']
-    if (inputMode === 'search') inputText = ['web-search', 'search']
-    if (inputMode === 'password') inputText = ['default', true]
-
-    const style = [
-        label && labelIcon ? 'flex-1' : 'rounded-xl outline-0 border flex-1',
-        'flex  placeholder-inactive focus:bg-primary',
-        expand && 'flex-1',
-        color === 'light' && 'border-light',
-        color === 'primary' && 'border-primary',
-        color === 'secondary' && 'border-secondary',
-        color === 'info' && 'border-info',
-        color === 'warning' && 'border-warning',
-        color === 'danger' && 'border-danger',
-        color === 'active' && 'border-active',
-        color === 'inactive' && 'border-inactive',
-        size === 'sm' && 'px-4 py-2 text-sm',
-        size === 'md' && 'px-4 py-4 text-base',
-        size === 'xl' && 'px-6 py-6 text-xl',
-        size === 'lg' && 'px-8 py-8 text-2xl'
-    ]
-        .filter(Boolean)
-        .join(' ')
-
-    const errorStyle = [size === 'sm' && 'text-sm', size === 'md' && 'text-base', size === 'xl' && 'text-xl', size === 'lg' && 'text-2xl'].filter(Boolean).join(' ')
+    const typeInputPassword = rest.textContentType === 'password'
+    const { theme } = useTheme()
     return (
-        <Section direction="column">
-            <Section direction="row" customStyle={`${label && labelIcon ? 'border' : ''} items-center rounded-xl`} gap="xs">
-                {label && labelIcon ? (
-                    <Section direction="row" customStyle="items-center gap-2 h-full p-2 w-1/3 rounded-l-xl border-r" color="primary">
-                        <Icon name={labelIcon} />
-                        <Text>{label}</Text>
-                    </Section>
-                ) : null}
-                <TI
-                    placeholder={placeholder}
-                    className={style}
-                    onChangeText={onChange}
-                    keyboardType={inputText[0]}
-                    inputMode={typeof inputText[1] !== 'boolean' ? inputText[1] : 'text'}
-                    secureTextEntry={typeof inputText[1] === 'string' ? false : !showPassword ? true : false}
-                    value={value}
-                    onBlur={onBlur}
-                    maxLength={37}
-                    editable={disable ? !disable : !loading}
-                >
-                    {children ? <>{children}</> : null}
-                </TI>
-                {errors ? <Text customStyle={`z-10 absolute right-0 top-0 bg-danger rounded-md px-2 text-white ${errorStyle}`}>{errors}</Text> : null}
-                {inputMode === 'password' ? (
-                    <Icon className="absolute right-0 px-4" size={18} name={!showPassword ? 'eye' : 'eye-off'} onPress={() => setShowPassword((prev) => !prev)} />
-                ) : null}
-            </Section>
-        </Section>
+        <View>
+            <TI
+                {...rest}
+                dense={!unDense}
+                style={styling(...(Style || []))}
+                secureTextEntry={typeInputPassword ? !showPassword : false}
+                right={
+                    rightItem?.icon ? (
+                        <TI.Icon icon={rightItem?.icon?.name} size={rightItem?.icon?.size} onPress={rightItem?.onPress} />
+                    ) : rightItem?.text && !typeInputPassword ? (
+                        <TI.Affix text={rightItem?.text} textStyle={styling('textSm', ...(rightItem?.style || []), { color: theme.error })} onPress={rightItem?.onPress} />
+                    ) : typeInputPassword ? (
+                        <TI.Icon icon={!showPassword ? 'eye' : 'eye-off'} size={rightItem?.icon?.size} onPress={() => setShowPassword((prev) => !prev)} />
+                    ) : null
+                }
+            />
+            {typeInputPassword && rightItem?.text ? <HelperText type="error">{rightItem?.text}</HelperText> : null}
+        </View>
     )
 }
+
+export default TextInput

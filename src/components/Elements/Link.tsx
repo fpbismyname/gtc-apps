@@ -1,39 +1,26 @@
-import React from 'react'
-import { Text } from 'react-native'
-import { sizeType, weightType } from '~/src/types/otherTypes/typeStyle'
+import React, { FC } from 'react'
+import { MD3Theme, Text as Links, TextProps, Icon } from 'react-native-paper'
+import { TextDecorationType, FontWeightType, styling, StylingType } from '~/src/constants/styleSheets'
+import View from './View'
+import { IconNameType } from '~/src/constants/useTheme'
 
-interface linkType {
-    title: string
-    size?: sizeType | '2xl' | '3xl'
-    weight?: weightType
-    onPress?: () => void
-    customStyle?: string
+interface LinkType extends TextProps<MD3Theme> {
+    Style?: StylingType[]
+    Weight?: FontWeightType
+    Decoration?: TextDecorationType
+    IconName?: IconNameType
 }
 
-export default function Link({ title, size = 'sm', weight, onPress, customStyle }: linkType) {
-    const style = [
-        customStyle,
-        'flex',
-        'underline',
-        'underline-offset-4',
-        'text-link',
-        'active:text-hoverPrimary',
-        'cursor-pointer',
-        size === 'sm' && 'text-sm',
-        size === 'md' && 'text-base',
-        size === 'xl' && 'text-xl',
-        size === '2xl' && 'text-2xl',
-        size === '3xl' && 'text-3xl',
-        weight === 'bolder' && 'font-bold',
-        weight === 'bold' && 'font-semibold',
-        weight === 'normal' && 'font-normal',
-        weight === 'thin' && 'font-light'
-    ]
-        .filter(Boolean)
-        .join(' ')
+const Link: FC<LinkType> = ({ Style, Weight, Decoration, IconName, variant, style, ...rest }) => {
+    const combinedStyle = styling(...(Style || []), Weight, Decoration, style as object)
     return (
-        <Text className={style} onPress={onPress}>
-            <>{title}</>
-        </Text>
+        <View Style={['flexRow', 'itemsCenter', 'gap1']}>
+            <Links {...rest} style={combinedStyle} adjustsFontSizeToFit={!rest.adjustsFontSizeToFit || true} variant={variant || 'bodyMedium'}>
+                {rest.children}
+            </Links>
+            <Icon source={IconName} size={12} />
+        </View>
     )
 }
+
+export default Link

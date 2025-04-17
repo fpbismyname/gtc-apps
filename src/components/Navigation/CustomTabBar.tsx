@@ -1,31 +1,39 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
-import { Pressable, View } from 'react-native'
-import { colorPallet } from '~/src/constants/colorPallete'
-import { MaterialCommunityIcons as Icon } from '@expo/vector-icons'
-import Text from '~/src/components/Elements/Text'
-import Section from '../Elements/Section'
+import { FC } from 'react'
+import View from '../elements/View'
+import { router } from 'expo-router'
+import Text from '../elements/Text'
+import { IconNameType, useTheme } from '~/src/constants/useTheme'
+import { Pressable } from 'react-native'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { styling } from '~/src/constants/styleSheets'
 
-const CustomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
-    const icons = ['home', 'book', 'account-circle']
+const CustomTabBar: FC<BottomTabBarProps> = ({ state, descriptors }) => {
+    const { theme } = useTheme()
+    const iconTabBar: { [key: string]: IconNameType } = {
+        home: 'home-variant',
+        module: 'book-multiple',
+        profile: 'account'
+    }
+    const excludePath = ['profile/']
     return (
-        <View className="bg-primary flex flex-row justify-between items-center">
+        <View Style={['flexRow', 'flexRow', { backgroundColor: theme.primaryContainer }]}>
             {state.routes.map((route, index) => {
+                if (excludePath.some((path) => route.name.startsWith(path))) return
                 const isFocused = state.index === index
-                const iconName: any = icons[index]
                 const { options } = descriptors[route.key]
+                const label = options.title || route.name
+                const icon = iconTabBar[route.name]
                 return (
-                    <Pressable key={route.key} className={`flex p-4 flex-row flex-1 justify-center items-center gap-2`}>
-                        <Pressable className={`flex flex-col items-center justify-center w-full`} onPress={() => navigation.navigate(route.name)}>
-                            <Icon name={isFocused ? iconName : `${iconName}-outline`} size={24} color={colorPallet.dark}></Icon>
-                            <Text customStyle="text-dark" size="md" weight={isFocused ? 'bolder' : 'normal'}>
-                                {options.title}
-                            </Text>
-                        </Pressable>
+                    <Pressable key={index} style={styling('flexColumn', 'itemsCenter', 'justifyCenter', 'expand', 'p4')} onPress={() => router.push(route.name)}>
+                        <>
+                            <MaterialCommunityIcons name={!isFocused ? (`${icon}-outline` as any) : icon} color={theme.onBackground} size={24} />
+                            <Text Weight={!isFocused ? 'fontNormal' : 'fontBold'}>{label}</Text>
+                        </>
                     </Pressable>
                 )
             })}
         </View>
     )
 }
-
 export default CustomTabBar

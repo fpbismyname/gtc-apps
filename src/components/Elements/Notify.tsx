@@ -1,62 +1,98 @@
-import { FC, useEffect, useState } from 'react'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 import Toast, { ToastConfigParams } from 'react-native-toast-message'
-import { colorPallet } from '~/src/constants/colorPallete'
-import { useNotify } from '~/src/hooks/Redux/useNotify'
-import { notifyInterface } from '~/src/types/otherTypes/typeNotify'
-import Section from './Section'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { useNotify } from '~/src/store/useNotify'
 import Text from './Text'
+import View from './View'
+import { useEffect } from 'react'
+import { useTheme } from '~/src/constants/useTheme'
 
 const Notify = () => {
-    // State for get message information
-    const { setNotifyMessage, ...data } = useNotify()
-
-    // func to show notify
-    const showNotify = () => {
-        if (data?.type === null || data?.message === null) return
+    const { states, action } = useNotify()
+    const { theme } = useTheme()
+    const ShowNotify = () => {
+        if (!states.message) return
         Toast.show({
             autoHide: true,
-            type: data?.type,
-            text1: data?.message,
+            type: states.type || 'info',
+            text1: states.message,
             visibilityTime: 3000,
-            topOffset: 12,
             swipeable: true,
             onHide: () => {
-                setNotifyMessage('reset')
+                action.setNotifyValue({
+                    isLoading: false,
+                    message: '',
+                    type: 'info'
+                })
             }
         })
     }
 
-    // Check message on every message change's
     useEffect(() => {
-        if (data.message) {
-            showNotify()
-        }
-    }, [data.message])
+        if (states.message) ShowNotify()
+    }, [states.message])
 
-    // Styled Toast
     const configToast = {
         success: ({ text1 }: ToastConfigParams<'success'>) => (
-            <Section color="primary" direction="row" customStyle="items-center rounded-full p-4 gap-2">
-                <Icon name={'check-circle'} size={18} />
+            <View
+                Style={[
+                    'absolute',
+                    'flexRow',
+                    'z5',
+                    'top2',
+                    'p4',
+                    'gap4',
+                    'itemsCenter',
+                    'flexWrap',
+                    'roundedMd',
+                    'border1',
+                    { backgroundColor: theme.primaryContainer, borderColor: theme.outline }
+                ]}
+            >
+                <MaterialCommunityIcons name={'check-circle'} size={24} color={theme.onPrimaryContainer} />
                 <Text>{text1}</Text>
-            </Section>
+            </View>
         ),
         info: ({ text1 }: ToastConfigParams<'info'>) => (
-            <Section color="info" direction="row" customStyle="items-center rounded-full p-4 gap-2">
-                <Icon name={'information'} size={18} />
+            <View
+                Style={[
+                    'absolute',
+                    'flexRow',
+                    'z5',
+                    'top2',
+                    'p4',
+                    'gap4',
+                    'itemsCenter',
+                    'flexWrap',
+                    'roundedMd',
+                    'border1',
+                    { backgroundColor: theme.tertiaryContainer, borderColor: theme.outline }
+                ]}
+            >
+                <MaterialCommunityIcons name={'information'} size={24} color={theme.onTertiaryContainer} />
                 <Text>{text1}</Text>
-            </Section>
+            </View>
         ),
         error: ({ text1 }: ToastConfigParams<'error'>) => (
-            <Section color="danger" direction="row" customStyle="items-center rounded-full p-4 gap-2">
-                <Icon name={'alert-circle'} size={18} />
+            <View
+                Style={[
+                    'absolute',
+                    'flexRow',
+                    'z5',
+                    'top2',
+                    'p4',
+                    'gap4',
+                    'itemsCenter',
+                    'flexWrap',
+                    'roundedMd',
+                    'border1',
+                    { backgroundColor: theme.errorContainer, borderColor: theme.outline }
+                ]}
+            >
+                <MaterialCommunityIcons name={'alert-circle'} size={24} color={theme.onErrorContainer} />
                 <Text>{text1}</Text>
-            </Section>
+            </View>
         )
     }
-
-    // Return toast
     return <Toast config={configToast} />
 }
 
