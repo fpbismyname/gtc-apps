@@ -7,10 +7,8 @@ type NotifyType = {
         message?: string | null
         type?: ToastType | null | undefined
     }
-    action: {
-        setNotifyValue: ({ isLoading, message, type }: { isLoading?: boolean; message?: string | null; type?: ToastType | null }) => void
-        clearNotify: () => void
-    }
+    setNotifyValue: ({ isLoading, message, type }: { isLoading?: boolean; message?: string | null; type?: ToastType | null }) => void
+    clearNotify: () => void
 }
 
 export const useNotify = create<NotifyType>((set) => ({
@@ -19,15 +17,13 @@ export const useNotify = create<NotifyType>((set) => ({
         isLoading: false,
         type: null
     },
-    action: {
-        setNotifyValue: (value) => set((prev) => ({ ...prev, states: { ...prev.states, ...value } })),
-        clearNotify: () =>
-            set((prev) => ({
-                states: {
-                    isLoading: false,
-                    message: prev.states.message,
-                    type: 'info'
-                }
-            }))
-    }
+    setNotifyValue: (value) => set((prev) => ({ ...prev, states: { ...prev.states, ...value } })),
+    clearNotify: () =>
+        set((prev) => ({
+            states: {
+                isLoading: false,
+                message: prev.states.message,
+                type: 'info'
+            }
+        }))
 }))

@@ -1,4 +1,5 @@
 export interface InsitutionInformation {
+    id?: string
     name: string
     slogan: string
     address: string

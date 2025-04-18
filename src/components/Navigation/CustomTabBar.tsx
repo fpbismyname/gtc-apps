@@ -19,7 +19,7 @@ const CustomTabBar: FC<BottomTabBarProps> = ({ state, descriptors }) => {
     return (
         <View Style={['flexRow', 'flexRow', { backgroundColor: theme.primaryContainer }]}>
             {state.routes.map((route, index) => {
-                if (excludePath.some((path) => route.name.startsWith(path))) return
+                if (excludePath.some((path) => route.name.includes(path))) return
                 const isFocused = state.index === index
                 const { options } = descriptors[route.key]
                 const label = options.title || route.name

@@ -13,7 +13,7 @@ const FontName = 'Open-Sans'
 
 export const useTheme = () => {
     // settings themes
-    const { states, action } = useSystemTheme()
+    const { states, setTheme } = useSystemTheme()
 
     // darkModeCheck
     const darkMode = states.darkMode
@@ -44,7 +44,7 @@ export const useTheme = () => {
     // check system color scheme
     useEffect(() => {
         const ThemeSystem = Appearance.addChangeListener(({ colorScheme }) => {
-            action.setTheme(colorScheme)
+            setTheme(colorScheme)
             SystemUI.setBackgroundColorAsync(theme.background)
         })
         return () => ThemeSystem.remove()

@@ -6,10 +6,7 @@ interface UserIDType {
     states: {
         user_id: string | null
     }
-    action: {
-        setUserID: (id: string | null) => void
-        deleteUserID: () => void
-    }
+    setUserID: (id: string | null) => void
     deleteUserID: () => void
 }
 
@@ -31,11 +28,8 @@ export const useUsers = create<UserIDType>()(
             states: {
                 user_id: null
             },
-            action: {
-                setUserID: (id: string | null) => set((prev) => ({ states: { ...prev.states, user_id: id } })),
-                deleteUserID: () => set((prev) => ({ states: { ...prev.states, user_id: null } }))
-            },
-            deleteUserID: () => set({ states: { user_id: null } })
+            setUserID: (id: string | null) => set((prev) => ({ states: { ...prev.states, user_id: id } })),
+            deleteUserID: () => set((prev) => ({ states: { ...prev.states, user_id: null } }))
         }),
         {
             name: 'user-storage',

@@ -8,15 +8,15 @@ import { textMessages } from '~/src/constants/textMessages'
 
 const useAuth = () => {
     // getNotify data
-    const { states: notify, action: actNotify } = useNotify()
+    const { states: notify, clearNotify, setNotifyValue } = useNotify()
     // getUser ID data
-    const { action: actUserID } = useUsers()
+    const { setUserID, deleteUserID } = useUsers()
     // Account Collection
-    const { action: actAccount } = useCollection('Account')
+    const { getData, addData } = useCollection('Account')
 
     // Sign In
     const signInAccount = async (values: SignInData) => {
-        actNotify.setNotifyValue({
+        setNotifyValue({
             isLoading: true
         })
         let IDUser = null
@@ -32,29 +32,27 @@ const useAuth = () => {
             })
             if (!compareToken) throw Error('Token')
             const HashedInputedPassword = await createHash(values.password)
-            const Account = await actAccount
-                .getData({
-                    query: { field: 'authentication.password', operator: '==', value: HashedInputedPassword }
-                })
-                .then((doc) => doc?.shift() as Account)
+            const Account = await getData({
+                query: { field: 'authentication.password', operator: '==', value: HashedInputedPassword }
+            }).then((doc) => doc?.shift() as Account)
             if (!Account) throw Error(textMessages.wrongPassword)
             IDUser = Account.id || null
         } catch (err) {
             if (err instanceof Error) {
-                actNotify.setNotifyValue({
+                setNotifyValue({
                     isLoading: false,
                     message: err.message,
                     type: 'error'
                 })
             }
         } finally {
-            actNotify.clearNotify()
-            actUserID.setUserID(IDUser)
+            clearNotify()
+            setUserID(IDUser)
         }
     }
     // Sign Up
     const signUpAccount = async (values: SignUpData) => {
-        actNotify.setNotifyValue({
+        setNotifyValue({
             isLoading: true
         })
         let IDUser = null
@@ -79,37 +77,37 @@ const useAuth = () => {
                     role: 'user'
                 }
             }
-            const { id } = await actAccount.addData(prepareData)
+            const { id } = await addData(prepareData)
             IDUser = id
         } catch (err: any) {
             if (err instanceof Error)
-                actNotify.setNotifyValue({
+                setNotifyValue({
                     isLoading: false,
                     message: err.message,
                     type: 'error'
                 })
         } finally {
-            actUserID.setUserID(IDUser)
-            actNotify.clearNotify()
+            setUserID(IDUser)
+            clearNotify()
         }
     }
     // Sign out
     const signOutAccount = () => {
         try {
-            actNotify.setNotifyValue({
+            setNotifyValue({
                 isLoading: true
             })
-            actUserID.deleteUserID()
+            deleteUserID()
         } catch (err: any) {
-            actNotify.setNotifyValue(err)
+            setNotifyValue(err)
         } finally {
-            actNotify.clearNotify()
+            clearNotify()
         }
     }
 
     // Check Duplication Email
     const checkEmailExisted = async (email: string) => {
-        const checkEmail = await actAccount.getData({
+        const checkEmail = await getData({
             query: { field: 'authentication.email', operator: '==', value: email }
         })
         return checkEmail?.shift()

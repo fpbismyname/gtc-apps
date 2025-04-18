@@ -9,7 +9,7 @@ interface ButtonType extends ButtonProps {
 
 const Button: FC<ButtonType> = ({ children, Style, ContentStyle, ...rest }) => {
     return (
-        <BT {...rest} compact={!rest.compact || true} style={styling(...(Style || []), 'roundedMd')} contentStyle={styling(...(ContentStyle || []), 'py1')}>
+        <BT {...rest} compact={!rest.compact || true} style={styling(...(Style || []), 'roundedMd')} contentStyle={styling(...(ContentStyle || []))}>
             {children}
         </BT>
     )

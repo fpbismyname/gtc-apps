@@ -10,6 +10,7 @@ const TabLayout = () => {
             tabBar={(props: BottomTabBarProps) => <CustomTabBar {...props} />}
             screenOptions={{
                 headerShown: false,
+                tabBarHideOnKeyboard: true,
                 sceneStyle: {
                     backgroundColor: theme.background
                 }

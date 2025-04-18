@@ -3,7 +3,7 @@ import { Formik } from 'formik'
 import Image from '~/src/components/elements/Image'
 import View from '~/src/components/elements/View'
 import TextInput from '~/src/components/elements/TextInput'
-import { ActivityIndicator } from 'react-native-paper'
+import { ActivityIndicator, IconButton } from 'react-native-paper'
 import Button from '~/src/components/elements/Button'
 import Text from '~/src/components/elements/Text'
 import { styling } from '~/src/constants/styleSheets'
@@ -14,6 +14,7 @@ import Link from '~/src/components/elements/Link'
 import useAuth from '~/src/hooks/Auth/useAuth'
 import Notify from '~/src/components/elements/Notify'
 import Section from '~/src/components/elements/Section'
+import useFetch from '~/src/hooks/utils/useFetch'
 
 // Header Auth Form
 interface HeaderForm {
@@ -25,20 +26,16 @@ interface HeaderForm {
 
 const HeaderForm = memo(() => {
     // Institution data
-    const { states, action } = useCollection('MasterData/Institution/Profile')
+    const { states, getData } = useCollection('MasterData/Institution/Profile')
     // States Data
-    const [datas, setDatas] = useState<Partial<InsitutionInformation> | null>(null)
-    // GetData
-    useEffect(() => {
-        const fetch = async () => {
-            await action.getData().then((doc) => setDatas(doc?.shift() as Partial<InsitutionInformation>))
-        }
-        fetch()
-    }, [])
+    const { datas: fetchedData } = useFetch('useEffect', async () => await getData())
+    // Data Institution
+    const datas = fetchedData as InsitutionInformation
     // Load indicator whenLoading data
     if (states.isLoading) return <ActivityIndicator animating />
     return (
         <View Style={['itemsCenter', 'rowGap4']}>
+            {/* BackButton */}
             <View Style={['itemsCenter']}>
                 <Image source={{ uri: datas?.logo }} Width="w20" Height="h20" />
             </View>

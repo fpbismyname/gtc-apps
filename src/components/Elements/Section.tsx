@@ -10,7 +10,7 @@ const Section: FC<SectionType> = (props) => {
     const { Style, children, ...rest } = props
     return (
         <TouchableWithoutFeedback style={styling('expand')} onPress={Keyboard.dismiss}>
-            <SafeAreaView {...rest} style={styling(...(Style || []), 'expand')}>
+            <SafeAreaView {...rest} style={styling(...(Style || []), 'expand')} edges={['top']}>
                 <>{children}</>
             </SafeAreaView>
         </TouchableWithoutFeedback>

@@ -2,6 +2,7 @@ import { addDoc, collection as collect, doc, getDoc, getDocs, where } from 'fire
 import { db } from '~/src/services/firebase'
 import { WhereFilterOp, query as q } from 'firebase/firestore'
 import { useState } from 'react'
+import { DocumentDataWithID } from '~/src/types/Firebase/DataTypeFirebase'
 
 export type collectionDocsType = string
 export type queryType = { field: any; operator: WhereFilterOp; value: any } | null
@@ -23,10 +24,12 @@ const useCollection = (collectionPath: string) => {
             if (query && !queryByDocId) {
                 const queriesSnapshot = q(colRef, where(query.field, query.operator, query.value))
                 const { docs } = await getDocs(queriesSnapshot)
+                if (!docs) return []
                 return docs.map((doc) => ({ id: doc.id, ...doc.data() }))
             }
             if (!query && !queryByDocId) {
                 const { docs } = await getDocs(colRef)
+                if (!docs) return []
                 return docs.map((doc) => ({ id: doc.id, ...doc.data() }))
             }
             if (queryByDocId && !query) {
@@ -78,7 +81,7 @@ const useCollection = (collectionPath: string) => {
         isError
     }
 
-    return { states, action }
+    return { states, ...action }
 }
 
 export default useCollection
