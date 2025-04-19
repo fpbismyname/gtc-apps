@@ -61,8 +61,7 @@
     "webpack": "^5.98.0",
     "webpack-dev-server": "^5.2.0",
     "yup": "^1.6.1",
-    "zustand": "^5.0.3",
-    "react-paper-native": "5.13.1"
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
