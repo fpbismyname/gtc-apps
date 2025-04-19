@@ -5,6 +5,7 @@ import useCollection from '../Firebase/useCollection'
 import { createHash, generateTokenHash, compareHash, verifyTokenHash } from '~/src/utils/encryptUtility'
 import { Account } from '~/src/types/Firebase/Account'
 import { textMessages } from '~/src/constants/textMessages'
+import { router } from 'expo-router'
 
 const useAuth = () => {
     // getNotify data
@@ -37,6 +38,7 @@ const useAuth = () => {
             }).then((doc) => doc?.shift() as Account)
             if (!Account) throw Error(textMessages.wrongPassword)
             IDUser = Account.id || null
+            router.replace('/(tabs)/')
         } catch (err) {
             if (err instanceof Error) {
                 setNotifyValue({
@@ -74,11 +76,13 @@ const useAuth = () => {
                         allowed_module: ['free'],
                         expiration_date: null
                     },
-                    role: 'user'
+                    role: 'user',
+                    profile_picture: ''
                 }
             }
             const { id } = await addData(prepareData)
             IDUser = id
+            router.replace('/(tabs)/')
         } catch (err: any) {
             if (err instanceof Error)
                 setNotifyValue({
@@ -87,8 +91,8 @@ const useAuth = () => {
                     type: 'error'
                 })
         } finally {
-            setUserID(IDUser)
             clearNotify()
+            setUserID(IDUser)
         }
     }
     // Sign out
@@ -99,9 +103,16 @@ const useAuth = () => {
             })
             deleteUserID()
         } catch (err: any) {
-            setNotifyValue(err)
+            if (err instanceof Error) {
+                setNotifyValue({
+                    isLoading: false,
+                    message: err.message,
+                    type: 'error'
+                })
+            }
         } finally {
             clearNotify()
+            router.replace('/(tabs)/')
         }
     }
 

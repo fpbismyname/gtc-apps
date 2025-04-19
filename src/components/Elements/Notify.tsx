@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 import { useTheme } from '~/src/constants/useTheme'
 
 const Notify = () => {
-    const { states, action } = useNotify()
+    const { states, setNotifyValue } = useNotify()
     const { theme } = useTheme()
     const ShowNotify = () => {
         if (!states.message) return
@@ -15,10 +15,10 @@ const Notify = () => {
             autoHide: true,
             type: states.type || 'info',
             text1: states.message,
-            visibilityTime: 3000,
             swipeable: true,
+            visibilityTime: 3000,
             onHide: () => {
-                action.setNotifyValue({
+                setNotifyValue({
                     isLoading: false,
                     message: '',
                     type: 'info'
@@ -35,9 +35,7 @@ const Notify = () => {
         success: ({ text1 }: ToastConfigParams<'success'>) => (
             <View
                 Style={[
-                    'absolute',
                     'flexRow',
-                    'z5',
                     'top2',
                     'p4',
                     'gap4',
@@ -55,9 +53,7 @@ const Notify = () => {
         info: ({ text1 }: ToastConfigParams<'info'>) => (
             <View
                 Style={[
-                    'absolute',
                     'flexRow',
-                    'z5',
                     'top2',
                     'p4',
                     'gap4',
@@ -74,19 +70,7 @@ const Notify = () => {
         ),
         error: ({ text1 }: ToastConfigParams<'error'>) => (
             <View
-                Style={[
-                    'absolute',
-                    'flexRow',
-                    'z5',
-                    'top2',
-                    'p4',
-                    'gap4',
-                    'itemsCenter',
-                    'flexWrap',
-                    'roundedMd',
-                    'border1',
-                    { backgroundColor: theme.errorContainer, borderColor: theme.outline }
-                ]}
+                Style={['flexRow', 'top2', 'p4', 'gap4', 'itemsCenter', 'flexWrap', 'roundedMd', 'border1', { backgroundColor: theme.errorContainer, borderColor: theme.outline }]}
             >
                 <MaterialCommunityIcons name={'alert-circle'} size={24} color={theme.onErrorContainer} />
                 <Text>{text1}</Text>

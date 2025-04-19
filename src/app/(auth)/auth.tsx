@@ -3,7 +3,6 @@ import { Formik } from 'formik'
 import Image from '~/src/components/elements/Image'
 import View from '~/src/components/elements/View'
 import TextInput from '~/src/components/elements/TextInput'
-import { ActivityIndicator, IconButton } from 'react-native-paper'
 import Button from '~/src/components/elements/Button'
 import Text from '~/src/components/elements/Text'
 import { styling } from '~/src/constants/styleSheets'
@@ -12,27 +11,17 @@ import { InsitutionInformation } from '~/src/types/Firebase/MasterData/Insitutio
 import { ValidationSchema } from '~/src/utils/ValidationSchema'
 import Link from '~/src/components/elements/Link'
 import useAuth from '~/src/hooks/Auth/useAuth'
-import Notify from '~/src/components/elements/Notify'
 import Section from '~/src/components/elements/Section'
 import useFetch from '~/src/hooks/utils/useFetch'
+import useDelay from '~/src/hooks/utils/useDelay'
+import LoadingScreen from '~/src/components/elements/LoadingScreen'
 
 // Header Auth Form
 interface HeaderForm {
-    institution_information: {
-        name: string
-        slogan: string
-    }
+    datas: InsitutionInformation
 }
 
-const HeaderForm = memo(() => {
-    // Institution data
-    const { states, getData } = useCollection('MasterData/Institution/Profile')
-    // States Data
-    const { datas: fetchedData } = useFetch('useEffect', async () => await getData())
-    // Data Institution
-    const datas = fetchedData as InsitutionInformation
-    // Load indicator whenLoading data
-    if (states.isLoading) return <ActivityIndicator animating />
+const HeaderForm: FC<HeaderForm> = ({ datas }) => {
     return (
         <View Style={['itemsCenter', 'rowGap4']}>
             {/* BackButton */}
@@ -47,7 +36,7 @@ const HeaderForm = memo(() => {
             </View>
         </View>
     )
-})
+}
 
 // View Form Register
 const FormRegister = () => {
@@ -186,13 +175,25 @@ const AuthChangeMethod: FC<{ changeAuth: Dispatch<SetStateAction<boolean>>; auth
 
 // Auth Form
 const AuthForm: FC = () => {
-    // AuthMethod
+    // Change Form auth method
     const [formChange, setFormChange] = useState<boolean>(false)
+    // Institution data
+    const { getData } = useCollection('MasterData/Institution/Profile')
+    // States Data
+    const { datas: fetchedData, isLoading } = useFetch('useEffect', async () => await getData())
+    // Loading view
+    const loadingView = useDelay(isLoading)
     return (
         <Section Style={['expand', 'flexColumn', 'rowGap8', 'px5', 'justifyCenter']}>
-            <HeaderForm />
-            {formChange ? <FormRegister /> : <FormLogin />}
-            <AuthChangeMethod changeAuth={setFormChange} auth={formChange} />
+            {loadingView ? (
+                <LoadingScreen children />
+            ) : (
+                <>
+                    <HeaderForm datas={fetchedData as InsitutionInformation} />
+                    {formChange ? <FormRegister /> : <FormLogin />}
+                    <AuthChangeMethod changeAuth={setFormChange} auth={formChange} />
+                </>
+            )}
         </Section>
     )
 }
@@ -200,7 +201,6 @@ const AuthForm: FC = () => {
 const auth = () => {
     return (
         <>
-            <Notify />
             <AuthForm />
         </>
     )

@@ -23,19 +23,12 @@ const LoadingScreen: FC<LSType> = ({ Style, children, ...rest }) => {
     }, [opacity])
 
     return (
-        <View Style={['absolute', 'wFull', 'hFull', 'z1', 'left0', 'top0', { backgroundColor: theme['inverseSurface/25'] }]}>
+        <View Style={['flexColumn', 'itemsCenter', 'justifyCenter', 'expand']}>
             <Surface
                 {...rest}
                 mode="flat"
                 elevation={5}
-                style={[
-                    styling('absolute', 'p4', 'roundedMd', ...(Style || [])),
-                    {
-                        top: height / 2 - (dimension?.height || 0),
-                        left: width / 2 - (dimension?.width || 0) / 2,
-                        opacity: opacity
-                    }
-                ]}
+                style={[styling('p4', 'roundedMd'), { backgroundColor: theme.inverseOnSurface }]}
                 onLayout={({ nativeEvent }) => {
                     const { ...dimension } = nativeEvent.layout
                     setDimension(dimension)

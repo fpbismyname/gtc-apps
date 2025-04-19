@@ -17,7 +17,7 @@ export const useNotify = create<NotifyType>((set) => ({
         isLoading: false,
         type: null
     },
-    setNotifyValue: (value) => set((prev) => ({ ...prev, states: { ...prev.states, ...value } })),
+    setNotifyValue: (value) => set((prev) => ({ states: { ...prev.states, ...value } })),
     clearNotify: () =>
         set((prev) => ({
             states: {

@@ -1,4 +1,5 @@
 import { Stack } from 'expo-router'
+import { PaperProvider } from 'react-native-paper'
 import { useTheme } from '~/src/constants/useTheme'
 
 const AuthLayout = () => {

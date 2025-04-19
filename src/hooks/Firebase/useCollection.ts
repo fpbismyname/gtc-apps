@@ -2,7 +2,6 @@ import { addDoc, collection as collect, doc, getDoc, getDocs, where } from 'fire
 import { db } from '~/src/services/firebase'
 import { WhereFilterOp, query as q } from 'firebase/firestore'
 import { useState } from 'react'
-import { DocumentDataWithID } from '~/src/types/Firebase/DataTypeFirebase'
 
 export type collectionDocsType = string
 export type queryType = { field: any; operator: WhereFilterOp; value: any } | null

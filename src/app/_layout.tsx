@@ -1,12 +1,8 @@
-import { Slot, Stack } from 'expo-router'
-import { PaperProvider } from 'react-native-paper'
 import { useEffect } from 'react'
-import { StatusBar } from 'expo-status-bar'
-import { useTheme } from '../constants/useTheme'
 import { useFonts } from 'expo-font'
 import * as Splash from 'expo-splash-screen'
-import LoadingScreen from '../components/elements/LoadingScreen'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
+import CustomSlot from '../components/navigation/CustomSlot'
+import { router } from 'expo-router'
 
 const RootLayout = () => {
     // load custom font
@@ -18,20 +14,12 @@ const RootLayout = () => {
     useEffect(() => {
         Splash.preventAutoHideAsync()
         if (fontsLoaded) Splash.hideAsync()
+        router.replace('/(tabs)/')
     }, [fontsLoaded])
-
-    // Get Theme Navigator
-    const { theme } = useTheme()
 
     return (
         <>
-            {!fontsLoaded ? <LoadingScreen children /> : null}
-            <PaperProvider theme={theme}>
-                <SafeAreaProvider>
-                    <StatusBar style="auto" />
-                    <Slot />
-                </SafeAreaProvider>
-            </PaperProvider>
+            <CustomSlot />
         </>
     )
 }

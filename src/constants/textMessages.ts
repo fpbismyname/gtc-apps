@@ -21,5 +21,8 @@ export const textMessages = {
     dateInvalid: 'Tanggal tidak valid',
     datePast: 'Tanggal tidak boleh sebelum hari ini',
 
-    checkboxRequired: 'Harap centang terlebih dahulu'
+    checkboxRequired: 'Harap centang terlebih dahulu',
+
+    logoutSuccess: 'Logout berhasil',
+    deletedAccount: 'Akun anda telah dihapus oleh admin'
 }

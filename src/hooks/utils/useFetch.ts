@@ -2,29 +2,31 @@ import { useFocusEffect } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { DocumentDataWithID } from '~/src/types/Firebase/DataTypeFirebase'
 
-const useFetch = (fetchUsing: 'useEffect' | 'useFocusEffect', method: () => Promise<DocumentDataWithID | DocumentDataWithID[] | undefined>) => {
+const useFetch = (fetchUsing: 'useEffect' | 'useFocusEffect' | 'withUnsubscribe', method: () => Promise<DocumentDataWithID | DocumentDataWithID[] | undefined>) => {
     const [datas, setDatas] = useState<DocumentDataWithID[] | DocumentDataWithID | null>(null)
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
 
     const fetchData = async () => {
         setIsLoading(true)
-        await method()
+        Promise.resolve(method() as Promise<DocumentDataWithID | DocumentDataWithID[] | undefined>)
             .then((doc) => {
-                if (doc?.length > 1) setDatas(doc || [])
-                if (doc?.length <= 1) setDatas(doc?.shift())
+                if (doc?.length > 1) setDatas((doc as DocumentDataWithID | DocumentDataWithID[]) || null)
+                if (doc?.length <= 1) setDatas(doc?.shift() || null)
             })
             .finally(() => setIsLoading(false))
     }
 
     if (fetchUsing === 'useEffect') {
         useEffect(() => {
-            fetchData()
+            if (fetchData) {
+                fetchData()
+            }
         }, [])
     }
     if (fetchUsing === 'useFocusEffect') {
         useFocusEffect(
             useCallback(() => {
-                fetchData()
+                if (fetchData) fetchData()
             }, [])
         )
     }

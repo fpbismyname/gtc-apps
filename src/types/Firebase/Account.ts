@@ -10,6 +10,7 @@ export interface Account {
             allowed_module: tierMembership[]
         }
         role: Roles
+        profile_picture: string | null
     }
 }
 export type Roles = 'user' | 'student' | 'admin' | 'teacher'

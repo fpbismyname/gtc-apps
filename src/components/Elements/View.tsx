@@ -12,11 +12,9 @@ interface ViewType extends ViewProps {
 const View: FC<ViewType> = ({ Style, children, Elevation = 0, ...rest }) => {
     const { theme } = useTheme()
     return (
-        <TouchableWithoutFeedback style={styling('expand')} onPress={Keyboard.dismiss}>
-            <V {...rest} style={styling(...(Style || []))} theme={theme} elevation={Elevation}>
-                <>{children}</>
-            </V>
-        </TouchableWithoutFeedback>
+        <V {...rest} style={styling(...(Style || []))} theme={theme} elevation={Elevation}>
+            <>{children}</>
+        </V>
     )
 }
 

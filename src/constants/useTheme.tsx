@@ -1,9 +1,8 @@
 import { configureFonts } from 'react-native-paper'
-import colorTheme, { NativeColor } from './colorTheme'
-import { useEffect, useMemo } from 'react'
+import { colorTheme, colorThemes } from './colorTheme'
+import { useEffect } from 'react'
 import { Appearance } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { IconProps } from 'react-native-paper/lib/typescript/components/MaterialCommunityIcon'
 import { useSystemTheme } from '../store/useSystemTheme'
 import * as SystemUI from 'expo-system-ui'
 
@@ -19,27 +18,41 @@ export const useTheme = () => {
     const darkMode = states.darkMode
 
     // prepare theme
-    const myTheme = darkMode ? colorTheme.dark : colorTheme.light
+    const myTheme = darkMode ? colorThemes.dark : colorThemes.light
+    const myThemeWithTransparent = darkMode ? colorTheme.dark : colorTheme.light
 
-    const theme = useMemo(
-        () => ({
-            ...myTheme,
-            colors: {
-                ...myTheme
-            },
-            fonts: configureFonts({
-                config: {
-                    fontFamily: FontName
-                }
-            }),
-            roundness: 12,
-            animation: {
-                scale: 1.0
-            },
-            icon: (props: IconProps) => <MaterialCommunityIcons {...(props as any)} />
+    const theme = {
+        ...myTheme,
+        colors: {
+            ...myTheme
+        },
+        fonts: configureFonts({
+            config: {
+                fontFamily: FontName
+            }
         }),
-        [darkMode]
-    )
+        roundness: 12,
+        animation: {
+            scale: 1.0
+        }
+    }
+
+    // Prepared theme with Transparent
+    const themeWithTransparent = {
+        ...myThemeWithTransparent,
+        colors: {
+            ...myThemeWithTransparent
+        },
+        fonts: configureFonts({
+            config: {
+                fontFamily: FontName
+            }
+        }),
+        roundness: 12,
+        animation: {
+            scale: 1.0
+        }
+    }
 
     // check system color scheme
     useEffect(() => {
@@ -50,5 +63,5 @@ export const useTheme = () => {
         return () => ThemeSystem.remove()
     }, [])
 
-    return { theme, darkMode }
+    return { theme, themeWithTransparent, darkMode }
 }

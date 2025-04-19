@@ -1,6 +1,7 @@
 import React, { FC } from 'react'
 import { Button as BT, ButtonProps } from 'react-native-paper'
 import { styling, StylingType } from '~/src/constants/styleSheets'
+import { useTheme } from '~/src/constants/useTheme'
 
 interface ButtonType extends ButtonProps {
     Style?: StylingType[]
@@ -8,8 +9,15 @@ interface ButtonType extends ButtonProps {
 }
 
 const Button: FC<ButtonType> = ({ children, Style, ContentStyle, ...rest }) => {
+    const { theme } = useTheme()
     return (
-        <BT {...rest} compact={!rest.compact || true} style={styling(...(Style || []), 'roundedMd')} contentStyle={styling(...(ContentStyle || []))}>
+        <BT
+            {...rest}
+            compact={!rest.compact || true}
+            style={styling(...(Style || []), 'roundedMd')}
+            textColor={theme.onPrimaryContainer}
+            contentStyle={styling(...(ContentStyle || []), { backgroundColor: theme.primaryContainer })}
+        >
             {children}
         </BT>
     )
