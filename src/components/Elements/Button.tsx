@@ -13,6 +13,7 @@ const Button: FC<ButtonType> = ({ children, Style, ContentStyle, ...rest }) => {
     return (
         <BT
             {...rest}
+            mode={rest.mode || 'contained'}
             compact={!rest.compact || true}
             style={styling(...(Style || []), 'roundedMd')}
             textColor={theme.onPrimaryContainer}

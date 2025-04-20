@@ -14,7 +14,8 @@ const RootLayout = () => {
     useEffect(() => {
         Splash.preventAutoHideAsync()
         if (fontsLoaded) Splash.hideAsync()
-        router.replace('/(tabs)/')
+        // router.push('my_profile/ysGdTNkMXTllCM074i3t')
+        router.push('/(tabs)/')
     }, [fontsLoaded])
 
     return (

@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { Keyboard, TouchableWithoutFeedback, ViewProps } from 'react-native'
+import { ViewProps } from 'react-native'
 import { Surface as V } from 'react-native-paper'
 import { styling, StylingType } from '~/src/constants/styleSheets'
 import { useTheme } from '~/src/constants/useTheme'

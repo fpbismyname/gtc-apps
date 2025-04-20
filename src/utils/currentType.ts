@@ -1,30 +1,39 @@
-import { Roles, tierMembership } from '../types/Firebase/Account'
+import { useTheme } from '../constants/useTheme'
+import { Roles } from '../types/Firebase/Account'
 
-export const currentType = (role?: Roles, tierMembership?: tierMembership) => {
+export const currentTypeRoles = (role?: Roles) => {
+    const { themeWithTransparent } = useTheme()
+    let Role = {}
     if (role) {
         switch (role) {
             case 'admin':
-                return 'Admin'
+                Role = {
+                    name: 'Admin',
+                    icon: 'shield-account'
+                }
+                break
             case 'student':
-                return 'Student'
+                Role = {
+                    name: 'Pelajar',
+                    icon: 'school'
+                }
+                break
             case 'teacher':
-                return 'Sensei'
+                Role = {
+                    name: 'Sensei',
+                    icon: 'account-tie-hat'
+                }
+                break
             case 'user':
-                return 'User'
+                Role = {
+                    name: 'Reguler',
+                    icon: 'account-circle'
+                }
+                break
             default:
-                return 'None'
+                Role = {}
+                break
         }
     }
-    if (tierMembership) {
-        switch (tierMembership) {
-            case 'free':
-                return 'Free'
-            case 'tier-1':
-                return 'Membership-1'
-            case 'tier-2':
-                return 'Membership-2'
-            default:
-                return 'None'
-        }
-    }
+    return Role
 }

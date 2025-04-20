@@ -73,7 +73,7 @@ const useAuth = () => {
                 token: createdToken,
                 information: {
                     memberships: {
-                        allowed_module: ['free'],
+                        allowed_module: [],
                         expiration_date: null
                     },
                     role: 'user',

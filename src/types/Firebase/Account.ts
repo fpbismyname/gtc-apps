@@ -1,4 +1,5 @@
 import { SignUpData } from '../Auth/AuthType'
+import { Module } from './MasterData/Module'
 
 export interface Account {
     id?: string
@@ -7,11 +8,10 @@ export interface Account {
     information: {
         memberships: {
             expiration_date: string | null
-            allowed_module: tierMembership[]
+            allowed_module?: Module[]
         }
         role: Roles
         profile_picture: string | null
     }
 }
-export type Roles = 'user' | 'student' | 'admin' | 'teacher'
-export type tierMembership = 'free' | 'tier-1' | 'tier-2' | 'student'
+export type Roles = 'user' | 'student' | 'admin' | 'teacher' | 'tier-1' | 'tier-2'

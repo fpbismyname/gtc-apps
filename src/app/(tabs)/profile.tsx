@@ -1,14 +1,12 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { router } from 'expo-router'
-import { FC, useState } from 'react'
-import { ScrollView, View as V } from 'react-native'
-import { Avatar, Divider, IconButton, List, Menu, PaperProvider } from 'react-native-paper'
+import { Dispatch, FC, SetStateAction, useState } from 'react'
+import { Avatar, Divider, IconButton, Menu, PaperProvider, Portal } from 'react-native-paper'
 import Button from '~/src/components/elements/Button'
 import LoadingScreen from '~/src/components/elements/LoadingScreen'
 import Section from '~/src/components/elements/Section'
 import Text from '~/src/components/elements/Text'
 import View from '~/src/components/elements/View'
-import { styling } from '~/src/constants/styleSheets'
 import { useTheme } from '~/src/constants/useTheme'
 import useCollection from '~/src/hooks/Firebase/useCollection'
 import useDelay from '~/src/hooks/utils/useDelay'
@@ -16,6 +14,7 @@ import useFetch from '~/src/hooks/utils/useFetch'
 import { useUsers } from '~/src/store/useUsers'
 import { Account } from '~/src/types/Firebase/Account'
 import { DocumentDataWithID } from '~/src/types/Firebase/DataTypeFirebase'
+import DefaultImage from '~/src/assets/images/profile/defaultProfile.png'
 
 interface ProfilePage {
     fetchedData: DocumentDataWithID
@@ -40,12 +39,9 @@ const HeaderProfile: FC<ProfilePage & { account: { isLoading: boolean; isError: 
     // Provide Headed profile
     return (
         <View Style={['flexRow', 'itemsCenter', 'px4', 'py5', 'gap2', 'roundedMd']}>
-            <View Style={['flexColumn', 'gap2']}>
+            <View Style={['flexColumn', 'gap2', 'expand']}>
                 <View Style={['flexRow', 'itemsCenter', 'gap4']}>
-                    <Avatar.Image
-                        source={datas.information.profile_picture ? { uri: datas.information.profile_picture } : require('~/src/assets/images/profile/defaultProfile.png')}
-                        size={64}
-                    />
+                    <Avatar.Image source={datas.information.profile_picture ? { uri: datas.information.profile_picture } : DefaultImage} size={64} />
                     <View>
                         <Text variant="bodyMedium" Weight="fontBold">
                             {datas.authentication.username}
@@ -54,70 +50,55 @@ const HeaderProfile: FC<ProfilePage & { account: { isLoading: boolean; isError: 
                     </View>
                 </View>
             </View>
-            <View Style={['relative']}>
-                <Menu
-                    visible={menuVisible}
-                    onDismiss={closeMenu}
-                    statusBarHeight={24}
-                    anchorPosition="bottom"
-                    mode="flat"
-                    anchor={<IconButton icon={'dots-vertical'} onPress={openMenu} />}
-                >
-                    <Menu.Item trailingIcon={'pencil'} title="Edit Profil" />
-                    <Divider />
-                    <Menu.Item trailingIcon={'logout'} title="Logout" onPress={logout} />
-                </Menu>
+            <View Style={['flexColumn', 'itemsEnd']}>
+                <MenuView closeMenu={closeMenu} openMenu={openMenu} datas={datas} logout={logout} menuVisible={menuVisible} setMenuVisible={setMenuVisible} />
             </View>
         </View>
     )
 }
 
-const MenuView = () => {
-    const { themeWithTransparent } = useTheme()
+const MenuView = ({
+    datas,
+    menuVisible,
+    closeMenu,
+    openMenu,
+    setMenuVisible,
+    logout
+}: {
+    datas: Account
+    menuVisible: boolean
+    logout: () => void
+    closeMenu: () => void
+    openMenu: () => void
+    setMenuVisible: Dispatch<SetStateAction<boolean>>
+}) => {
+    const [ready, setReady] = useState<boolean>(false)
     return (
-        <ScrollView>
-            <List.Section>
-                <List.Subheader>Some title</List.Subheader>
-                <View Style={['px4']}>
-                    <List.Item title="First Item" left={() => <List.Icon icon="folder" />} />
-                    <List.Item title="Second Item" left={() => <List.Icon color={themeWithTransparent.primary} icon="folder" />} />
-                    <List.Item title="First Item" left={() => <List.Icon icon="folder" />} />
-                    <List.Item title="Second Item" left={() => <List.Icon color={themeWithTransparent.primary} icon="folder" />} />
-                    <List.Item title="First Item" left={() => <List.Icon icon="folder" />} />
-                    <List.Item title="Second Item" left={() => <List.Icon color={themeWithTransparent.primary} icon="folder" />} />
-                    <List.Item title="First Item" left={() => <List.Icon icon="folder" />} />
-                    <List.Item title="Second Item" left={() => <List.Icon color={themeWithTransparent.primary} icon="folder" />} />
-                    <List.Item title="First Item" left={() => <List.Icon icon="folder" />} />
-                    <List.Item title="Second Item" left={() => <List.Icon color={themeWithTransparent.primary} icon="folder" />} />
-                    <List.Item title="First Item" left={() => <List.Icon icon="folder" />} />
-                    <List.Item title="Second Item" left={() => <List.Icon color={themeWithTransparent.primary} icon="folder" />} />
-                    <List.Item title="First Item" left={() => <List.Icon icon="folder" />} />
-                    <List.Item title="Second Item" left={() => <List.Icon color={themeWithTransparent.primary} icon="folder" />} />
-                    <List.Item title="First Item" left={() => <List.Icon icon="folder" />} />
-                    <List.Item title="Second Item" left={() => <List.Icon color={themeWithTransparent.primary} icon="folder" />} />
-                    <List.Item title="First Item" left={() => <List.Icon icon="folder" />} />
-                    <List.Item title="Second Item" left={() => <List.Icon color={themeWithTransparent.primary} icon="folder" />} />
-                    <List.Item title="First Item" left={() => <List.Icon icon="folder" />} />
-                    <List.Item title="Second Item" left={() => <List.Icon color={themeWithTransparent.primary} icon="folder" />} />
-                    <List.Item title="First Item" left={() => <List.Icon icon="folder" />} />
-                    <List.Item title="Second Item" left={() => <List.Icon color={themeWithTransparent.primary} icon="folder" />} />
-                    <List.Item title="First Item" left={() => <List.Icon icon="folder" />} />
-                    <List.Item title="Second Item" left={() => <List.Icon color={themeWithTransparent.primary} icon="folder" />} />
-                    <List.Item title="First Item" left={() => <List.Icon icon="folder" />} />
-                    <List.Item title="Second Item" left={() => <List.Icon color={themeWithTransparent.primary} icon="folder" />} />
-                    <List.Item title="First Item" left={() => <List.Icon icon="folder" />} />
-                    <List.Item title="Second Item" left={() => <List.Icon color={themeWithTransparent.primary} icon="folder" />} />
-                    <List.Item title="First Item" left={() => <List.Icon icon="folder" />} />
-                    <List.Item title="Second Item" left={() => <List.Icon color={themeWithTransparent.primary} icon="folder" />} />
-                    <List.Item title="First Item" left={() => <List.Icon icon="folder" />} />
-                    <List.Item title="Second Item" left={() => <List.Icon color={themeWithTransparent.primary} icon="folder" />} />
-                    <List.Item title="First Item" left={() => <List.Icon icon="folder" />} />
-                    <List.Item title="Second Item" left={() => <List.Icon color={themeWithTransparent.primary} icon="folder" />} />
-                    <List.Item title="First Item" left={() => <List.Icon icon="folder" />} />
-                    <List.Item title="Second Item" left={() => <List.Icon color={themeWithTransparent.primary} icon="folder" />} />
-                </View>
-            </List.Section>
-        </ScrollView>
+        <Menu
+            visible={ready ? menuVisible : false}
+            onDismiss={closeMenu}
+            statusBarHeight={24}
+            anchorPosition="bottom"
+            mode="flat"
+            anchor={<IconButton onLayout={() => setReady(true)} icon={'dots-vertical'} onPress={openMenu} />}
+        >
+            <Menu.Item
+                trailingIcon={'badge-account-horizontal'}
+                title="Akun Saya"
+                onPress={() => {
+                    router.push({
+                        pathname: `my_profile/[id]`,
+                        params: {
+                            id: datas.id,
+                            title: 'Akun Saya'
+                        }
+                    })
+                    setMenuVisible(false)
+                }}
+            />
+            <Divider />
+            <Menu.Item trailingIcon={'logout'} title="Logout" onPress={logout} />
+        </Menu>
     )
 }
 
@@ -139,7 +120,7 @@ const NewUserView = () => {
                         </Text>
                     </View>
                     <View Style={['flexRow', 'gap2', 'justifyCenter']}>
-                        <Button mode="contained" compact onPress={() => router.push('/auth')}>
+                        <Button compact onPress={() => router.push('/auth')}>
                             Dapatkan akses
                         </Button>
                     </View>
@@ -170,7 +151,6 @@ const profile = () => {
             ) : users.user_id ? (
                 <>
                     <HeaderProfile account={account} fetchedData={datas as DocumentDataWithID} theme={theme} />
-                    <MenuView />
                 </>
             ) : (
                 <NewUserView />

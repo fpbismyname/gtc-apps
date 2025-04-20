@@ -8,3 +8,10 @@ export const FormatPath = (value: string) => {
     const path = encodeURIComponent(value)
     return path
 }
+
+export const UpperCaseText = (value: string | string[]) => {
+    if (typeof value !== 'string') return
+    const splitText = value.includes('_') ? value.split('_') : [value]
+    const ResultText = splitText.map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+    return ResultText
+}

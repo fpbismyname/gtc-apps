@@ -10,8 +10,11 @@ const useFetch = (fetchUsing: 'useEffect' | 'useFocusEffect' | 'withUnsubscribe'
         setIsLoading(true)
         Promise.resolve(method() as Promise<DocumentDataWithID | DocumentDataWithID[] | undefined>)
             .then((doc) => {
-                if (doc?.length > 1) setDatas((doc as DocumentDataWithID | DocumentDataWithID[]) || null)
-                if (doc?.length <= 1) setDatas(doc?.shift() || null)
+                if (Array.isArray(doc)) {
+                    setDatas(doc.length > 1 ? (doc as DocumentDataWithID[]) : (doc[0] as DocumentDataWithID))
+                } else {
+                    setDatas(doc as DocumentDataWithID)
+                }
             })
             .finally(() => setIsLoading(false))
     }

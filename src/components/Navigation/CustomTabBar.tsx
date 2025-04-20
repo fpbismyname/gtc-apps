@@ -4,10 +4,12 @@ import { useTheme } from '~/src/constants/useTheme'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { BottomNavigation } from 'react-native-paper'
 import { CommonActions } from '@react-navigation/native'
+import Text from '../elements/Text'
+import View from '../elements/View'
 
 const CustomTabBar: FC<BottomTabBarProps> = ({ state, descriptors, insets, navigation }) => {
     const { themeWithTransparent } = useTheme()
-    const excludePath = ['profile/']
+    const excludePath = ['']
     const filteredRoutes = state.routes.filter((route) => !excludePath.some((path) => route.name.startsWith(path)))
     const filteredRouteNames = state.routeNames.filter((name) => !excludePath.some((path) => name.startsWith(path)))
     const filteredHistory = state.history.filter((entry) => {
@@ -21,9 +23,14 @@ const CustomTabBar: FC<BottomTabBarProps> = ({ state, descriptors, insets, navig
         history: filteredHistory
     }
 
+    const getLabel = (route: (typeof state.routes)[number]) => {
+        const { options } = descriptors[route.key]
+        return options.title || route.name
+    }
+
     return (
         <BottomNavigation.Bar
-            navigationState={filteredState}
+            navigationState={state}
             safeAreaInsets={insets}
             theme={themeWithTransparent}
             keyboardHidesNavigationBar
@@ -55,9 +62,15 @@ const CustomTabBar: FC<BottomTabBarProps> = ({ state, descriptors, insets, navig
                     navigation.dispatch({ ...CommonActions.navigate(route.name, route.params), target: state.key })
                 }
             }}
-            getLabelText={({ route }) => {
-                const { options } = descriptors[route.key]
-                return options.title || route.name
+            renderLabel={({ route, color }) => {
+                const label = getLabel(route)
+                return (
+                    <View Style={['itemsCenter', 'justifyCenter']}>
+                        <Text Style={[{ color: color }]} Weight={'fontBold'}>
+                            {label}
+                        </Text>
+                    </View>
+                )
             }}
         />
     )

@@ -101,7 +101,7 @@ const FormRegister = () => {
                             text: err.password && submitted.password ? err.password : ''
                         }}
                     />
-                    <Button mode="contained" onPress={() => handleSubmit()} loading={auth.isLoading} disabled={auth.isLoading}>
+                    <Button onPress={() => handleSubmit()} loading={auth.isLoading} disabled={auth.isLoading}>
                         Daftar
                     </Button>
                 </View>
@@ -151,7 +151,7 @@ const FormLogin = () => {
                                 text: err.password && submitted.password ? err.password : ''
                             }}
                         />
-                        <Button mode="contained" onPress={() => handleSubmit()} loading={auth.isLoading} disabled={auth.isLoading}>
+                        <Button onPress={() => handleSubmit()} loading={auth.isLoading} disabled={auth.isLoading}>
                             Login
                         </Button>
                     </View>

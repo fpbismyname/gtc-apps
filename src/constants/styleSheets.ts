@@ -1,4 +1,4 @@
-import { StyleSheet, ViewStyle } from 'react-native'
+import { FlexStyle, ImageStyle, StyleSheet, TextStyle, ViewStyle } from 'react-native'
 
 const FlexType = {
     expand: { flex: 1 },
@@ -298,6 +298,10 @@ export type StylingType =
     | keyof typeof ZIndexType
     | keyof typeof OpacityType
     | ViewStyle
+    | TextStyle
+    | ImageStyle
+    | FlexStyle
+    | LinkStyle
     | object
 
 export type FlexType = keyof typeof FlexType

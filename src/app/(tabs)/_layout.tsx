@@ -1,7 +1,6 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import { Tabs } from 'expo-router'
 import { useEffect } from 'react'
-import { PaperProvider } from 'react-native-paper'
 import CustomTabBar from '~/src/components/navigation/CustomTabBar'
 import { textMessages } from '~/src/constants/textMessages'
 import { useTheme } from '~/src/constants/useTheme'
