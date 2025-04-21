@@ -1,9 +1,10 @@
 import { Stack } from 'expo-router'
 import { useTheme } from '~/src/constants/useTheme'
-import Notify from '../elements/Notify'
 import { PaperProvider } from 'react-native-paper'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
+import Toast from 'react-native-toast-message'
+import Notify from '../elements/Notify'
 
 const CustomSlot = () => {
     const { theme } = useTheme()
@@ -12,7 +13,6 @@ const CustomSlot = () => {
             <PaperProvider theme={theme}>
                 <SafeAreaProvider>
                     <StatusBar style="auto" />
-                    <Notify />
                     <Stack
                         screenOptions={{
                             headerShown: false,
@@ -30,6 +30,7 @@ const CustomSlot = () => {
                             animation: 'fade_from_bottom'
                         }}
                     />
+                    <Notify />
                 </SafeAreaProvider>
             </PaperProvider>
         </>

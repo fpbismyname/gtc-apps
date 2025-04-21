@@ -54,6 +54,22 @@ export const ValidationSchema = {
             .min(setInputLength('password', 'minLength'), textMessages.tooShort(setInputLength('password', 'minLength')))
             .max(setInputLength('password', 'maxLength'), textMessages.tooLong(setInputLength('password', 'maxLength')))
     }),
+    RegisterFieldNoRequired: Yup.object().shape({
+        username: Yup.string()
+            .min(setInputLength('username', 'minLength'), textMessages.tooShort(setInputLength('username', 'minLength')))
+            .max(setInputLength('username', 'maxLength'), textMessages.tooLong(setInputLength('username', 'maxLength'))),
+        phone_number: Yup.string()
+            .matches(/^\d+$/, textMessages.phone)
+            .min(setInputLength('phone', 'minLength'), textMessages.tooShort(setInputLength('phone', 'minLength')))
+            .max(setInputLength('phone', 'maxLength'), textMessages.tooLong(setInputLength('phone', 'maxLength'))),
+        email: Yup.string()
+            .email(textMessages.email)
+            .min(setInputLength('email', 'minLength'), textMessages.tooShort(setInputLength('email', 'minLength')))
+            .max(setInputLength('email', 'maxLength'), textMessages.tooLong(setInputLength('email', 'maxLength'))),
+        password: Yup.string()
+            .min(setInputLength('password', 'minLength'), textMessages.tooShort(setInputLength('password', 'minLength')))
+            .max(setInputLength('password', 'maxLength'), textMessages.tooLong(setInputLength('password', 'maxLength')))
+    }),
     LoginField: Yup.object().shape({
         email: Yup.string()
             .required(textMessages.required)

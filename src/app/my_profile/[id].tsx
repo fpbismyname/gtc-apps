@@ -4,7 +4,6 @@ import Section from '~/src/components/elements/Section'
 import View from '~/src/components/elements/View'
 import DefaultImage from '~/src/assets/images/profile/defaultProfile.png'
 import useCollection from '~/src/hooks/Firebase/useCollection'
-import useFetch from '~/src/hooks/utils/useFetch'
 import useDelay from '~/src/hooks/utils/useDelay'
 import LoadingScreen from '~/src/components/elements/LoadingScreen'
 import { Account } from '~/src/types/Firebase/Account'
@@ -18,24 +17,28 @@ import Button from '~/src/components/elements/Button'
 import { Formik } from 'formik'
 import { ValidationSchema } from '~/src/utils/ValidationSchema'
 import TextInput from '~/src/components/elements/TextInput'
+import { useNotify } from '~/src/store/useNotify'
+import { textAction, textMessages } from '~/src/constants/textMessages'
+import Notify from '~/src/components/elements/Notify'
+import useCollectionRealTime from '~/src/hooks/Firebase/useCollectionRealTime'
 import Text from '~/src/components/elements/Text'
+import useAuth from '~/src/hooks/Auth/useAuth'
 
 const MyProfile = ({ datas, theme }: { datas: Account; theme: any }) => {
     if (!datas) return
     const UserData = Object.entries(datas.authentication)
     const UserRoles = currentTypeRoles(datas.information.role) as { name: string; icon: string }
-    const [prepareEditData, setPrepareEditData] = useState<{ [key: string]: string }>({})
-    const [showEdit, setShowEdit] = useState<boolean>(false)
+    // setup Modal variable
+    const [modalEdit, setModalEdit] = useState<boolean>(false)
+    const [modalDelete, setModalDelete] = useState<boolean>(false)
     const [keyData, setKeyData] = useState<string | null>(null)
 
     useEffect(() => {
         if (!keyData) {
-            setShowEdit(false)
-            setPrepareEditData({})
+            setModalEdit(false)
         }
         if (keyData) {
-            setShowEdit(true)
-            setPrepareEditData({ [keyData]: '' })
+            setModalEdit(true)
         }
     }, [keyData])
 
@@ -52,7 +55,7 @@ const MyProfile = ({ datas, theme }: { datas: Account; theme: any }) => {
                 </View>
                 <View Style={['flexRow']}>
                     <List.Section style={styling('flexColumn', 'expand', 'columnGap4')} theme={theme}>
-                        {UserData.sort(([a], [b]) => a.localeCompare(b)).map(([key, value]) => {
+                        {UserData.sort(([a], [b]) => b.localeCompare(a)).map(([key, value]) => {
                             let keys = {
                                 title: '',
                                 icon: ''
@@ -76,44 +79,91 @@ const MyProfile = ({ datas, theme }: { datas: Account; theme: any }) => {
                 </View>
                 <View Style={['flexRow', 'itemsCenter', 'justifyCenter']}>
                     <View Style={['flexColumn', 'itemsCenter', 'justifyCenter']}>
-                        <Button icon={'trash-can'} onPress={() => ''}>
+                        <Button icon={'trash-can'} onPress={() => setModalDelete(true)}>
                             Hapus akun
                         </Button>
                     </View>
                 </View>
             </View>
-            <EditProfile visible={showEdit} title={keyData ? keyData : ''} onDismiss={setKeyData} editedValueData={prepareEditData} />
+            <EditProfile
+                theme={theme}
+                username={datas.authentication.username}
+                editModal={{
+                    setModalEdit: setKeyData,
+                    visible: modalEdit
+                }}
+                title={keyData}
+                idProfile={datas.id}
+                deleteModal={{
+                    setModalDelete: setModalDelete,
+                    visible: modalDelete
+                }}
+            />
         </>
     )
 }
 
 const EditProfile = ({
-    onDismiss,
-    visible,
     title,
-    editedValueData
+    editModal,
+    deleteModal,
+    idProfile,
+    username,
+    theme
 }: {
-    visible: boolean
-    onDismiss: Dispatch<SetStateAction<string | null>>
-    title?: string
-    editedValueData: { [key: string]: string }
+    title: string | null
+    editModal: {
+        visible: boolean
+        setModalEdit: Dispatch<SetStateAction<string | null>>
+    }
+    deleteModal: {
+        visible: boolean
+        setModalDelete: Dispatch<SetStateAction<boolean>>
+    }
+    idProfile?: string
+    username: string
+    theme: any
 }) => {
+    const { deleteAccount, isLoading: authLoading } = useAuth()
+    const { editData, isLoading } = useCollection('Account')
+    const { setNotifyValue } = useNotify()
+    const [newPassword, setNewPassword] = useState<string | null>(null)
+    const initialValuesForms = {
+        [title || '']: ''
+    }
     return (
         <Portal>
-            <Dialog onDismiss={() => onDismiss(null)} visible={visible} style={styling('roundedXl')}>
+            <Notify />
+            <Dialog onDismiss={() => editModal.setModalEdit(null)} visible={editModal.visible} style={styling('roundedXl')}>
                 <Formik
-                    initialValues={editedValueData}
-                    validationSchema={ValidationSchema.RegisterField}
+                    initialValues={initialValuesForms}
+                    validationSchema={ValidationSchema.RegisterFieldNoRequired}
                     onSubmit={async (values) => {
-                        console.log(values)
+                        const editProfile = await editData({
+                            id: idProfile,
+                            field: `authentication.${title}`,
+                            values: title === 'password' ? { ...values, newPassword: newPassword } : values[title || ''],
+                            type: title === 'password' ? 'password' : 'text'
+                        })
+                        if (editProfile) {
+                            editModal.setModalEdit(null)
+                            setNotifyValue({ message: textMessages.editedAccountSuccess })
+                        } else {
+                            setNotifyValue({ message: title === 'password' ? textMessages.editedAccountFailedWrongPass : textMessages.editedAccountFailed })
+                        }
                     }}
                 >
-                    {({ handleSubmit, handleChange, errors: err, touched: submitted }) => (
+                    {({ handleChange, errors: err, touched: submitted, submitForm }) => (
                         <>
                             <Dialog.Content style={styling('gap4', 'py5')}>
-                                <View style={styling('flexRow', 'itemsCenter', 'justifyCenter')}>
-                                    {title ? <Text Weight="fontBold" variant="bodyLarge">{`Edit ${UpperCaseText(title)}`}</Text> : <ActivityIndicator animating />}
-                                </View>
+                                {title ? (
+                                    <>
+                                        <Dialog.Icon icon={'account-edit'} size={36} color={theme.onPrimaryContainer}></Dialog.Icon>
+                                        <Dialog.Title style={styling('textCenter')}>{`Edit ${UpperCaseText(title)}`}</Dialog.Title>
+                                    </>
+                                ) : (
+                                    <ActivityIndicator animating />
+                                )}
                                 <View Style={['flexColumn', 'gap2', 'py5']}>
                                     {title === 'username' && (
                                         <TextInput
@@ -170,11 +220,11 @@ const EditProfile = ({
                                             <TextInput
                                                 mode="outlined"
                                                 placeholder="Password baru"
-                                                error={submitted.password && err.password ? true : false}
-                                                onChangeText={handleChange('password')}
+                                                error={submitted.newPassword && err.newPassword ? true : false}
+                                                onChangeText={(value) => setNewPassword(value)}
                                                 textContentType="password"
                                                 rightItem={{
-                                                    text: err.password && submitted.password ? err.password : ''
+                                                    text: err.newPassword && submitted.newPassword ? err.newPassword : ''
                                                 }}
                                             />
                                         </>
@@ -184,10 +234,10 @@ const EditProfile = ({
                             <Dialog.Actions>
                                 {title ? (
                                     <View Style={['flexRow', 'gap2']}>
-                                        <Button mode="text" onPress={() => onDismiss(null)} icon={'arrow-left'}>
+                                        <Button mode="text" onPress={() => editModal.setModalEdit(null)} icon={'arrow-left'} disabled={isLoading}>
                                             Kembali
                                         </Button>
-                                        <Button mode="text" onPress={() => handleSubmit()} icon={'pencil'}>
+                                        <Button mode="text" onPress={() => submitForm()} icon={'pencil'} disabled={isLoading} loading={isLoading}>
                                             Edit
                                         </Button>
                                     </View>
@@ -196,6 +246,23 @@ const EditProfile = ({
                         </>
                     )}
                 </Formik>
+            </Dialog>
+            <Dialog onDismiss={() => deleteModal.setModalDelete(false)} visible={deleteModal.visible} style={styling('roundedXl')}>
+                <Dialog.Content>
+                    <Text variant="bodyMedium" Weight="fontBold">
+                        {textAction.delete(`akun ${username}`)}
+                    </Text>
+                </Dialog.Content>
+                <Dialog.Actions>
+                    <View Style={['flexRow', 'gap2']}>
+                        <Button mode="text" onPress={() => deleteModal.setModalDelete(false)} icon={'arrow-left'} disabled={authLoading}>
+                            Kembali
+                        </Button>
+                        <Button mode="text" onPress={() => deleteAccount(idProfile)} icon={'pencil'} disabled={authLoading} loading={authLoading}>
+                            Hapus
+                        </Button>
+                    </View>
+                </Dialog.Actions>
             </Dialog>
         </Portal>
     )
@@ -206,17 +273,17 @@ export default () => {
     const { theme } = useTheme()
     // Get Params from navigating
     const { id } = useLocalSearchParams<LocalPushParams>()
-    // Get User Data
-    const { datas: fetchedData, isLoading } = useFetch('useEffect', async () => {
-        return await getData({ queryByDocId: id })
-    })
+    // Fetch account data
+    const { datas: fetchedData, isLoading } = useCollectionRealTime('Account', { queryByDocId: id })
     // Users
     const Users = fetchedData as Account
-    // Get Method Data
-    const { getData } = useCollection('Account')
     // Set Loading View
     const loadingView = useDelay(isLoading)
     return (
-        <Section Style={['flexColumn']}>{loadingView ? <LoadingScreen children /> : <>{id === Users.id && <MyProfile datas={fetchedData as Account} theme={theme} />}</>}</Section>
+        <>
+            <Section Style={['flexColumn']}>
+                {loadingView || !fetchedData ? <LoadingScreen children /> : <>{id === Users.id && <MyProfile datas={fetchedData as Account} theme={theme} />}</>}
+            </Section>
+        </>
     )
 }

@@ -21,11 +21,11 @@ interface ProfilePage {
     theme: any
 }
 
-const HeaderProfile: FC<ProfilePage & { account: { isLoading: boolean; isError: any } }> = ({ fetchedData, theme, account }) => {
+const HeaderProfile: FC<ProfilePage & { isLoading: boolean }> = ({ fetchedData, theme, isLoading }) => {
     // Profile Datas
     const datas = fetchedData as Account
     // Checking Data
-    if (account.isLoading || !datas || !datas.id) return
+    if (isLoading || !datas || !datas.id) return
     // Users
     const { deleteUserID } = useUsers()
     // Logout func
@@ -136,7 +136,7 @@ const profile = () => {
     // Get User ID
     const { states: users } = useUsers()
     // AccountCollection
-    const { states: account, getData } = useCollection('Account')
+    const { getData } = useCollection('Account')
     // fetchData
     const { datas, isLoading } = useFetch('useFocusEffect', async () => {
         if (!users.user_id) return
@@ -150,7 +150,7 @@ const profile = () => {
                 <LoadingScreen children />
             ) : users.user_id ? (
                 <>
-                    <HeaderProfile account={account} fetchedData={datas as DocumentDataWithID} theme={theme} />
+                    <HeaderProfile isLoading={isLoading} fetchedData={datas as DocumentDataWithID} theme={theme} />
                 </>
             ) : (
                 <NewUserView />

@@ -6,20 +6,21 @@ import { createHash, generateTokenHash, compareHash, verifyTokenHash } from '~/s
 import { Account } from '~/src/types/Firebase/Account'
 import { textMessages } from '~/src/constants/textMessages'
 import { router } from 'expo-router'
+import { useState } from 'react'
 
 const useAuth = () => {
     // getNotify data
-    const { states: notify, clearNotify, setNotifyValue } = useNotify()
+    const { clearNotify, setNotifyValue } = useNotify()
+    // States Load
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     // getUser ID data
     const { setUserID, deleteUserID } = useUsers()
     // Account Collection
-    const { getData, addData } = useCollection('Account')
+    const { getData, addData, deleteData } = useCollection('Account')
 
     // Sign In
     const signInAccount = async (values: SignInData) => {
-        setNotifyValue({
-            isLoading: true
-        })
+        setIsLoading(true)
         let IDUser = null
         try {
             const checkEmail = (await checkEmailExisted(values.email)) as Account
@@ -42,21 +43,22 @@ const useAuth = () => {
         } catch (err) {
             if (err instanceof Error) {
                 setNotifyValue({
-                    isLoading: false,
                     message: err.message,
                     type: 'error'
                 })
             }
         } finally {
-            clearNotify()
+            setIsLoading(false)
+            setNotifyValue({
+                message: textMessages.signInSuccess,
+                type: 'success'
+            })
             setUserID(IDUser)
         }
     }
     // Sign Up
     const signUpAccount = async (values: SignUpData) => {
-        setNotifyValue({
-            isLoading: true
-        })
+        setIsLoading(true)
         let IDUser = null
         try {
             const checkEmail = await checkEmailExisted(values.email)
@@ -86,32 +88,57 @@ const useAuth = () => {
         } catch (err: any) {
             if (err instanceof Error)
                 setNotifyValue({
-                    isLoading: false,
                     message: err.message,
                     type: 'error'
                 })
         } finally {
-            clearNotify()
+            setIsLoading(false)
+            setNotifyValue({
+                message: textMessages.createdAccount,
+                type: 'success'
+            })
             setUserID(IDUser)
         }
     }
     // Sign out
     const signOutAccount = () => {
         try {
-            setNotifyValue({
-                isLoading: true
-            })
+            setIsLoading(true)
             deleteUserID()
         } catch (err: any) {
             if (err instanceof Error) {
                 setNotifyValue({
-                    isLoading: false,
                     message: err.message,
                     type: 'error'
                 })
             }
         } finally {
-            clearNotify()
+            setIsLoading(false)
+
+            router.replace('/(tabs)/')
+        }
+    }
+    // Delete Account
+    const deleteAccount = async (id?: string | null) => {
+        if (!id) return false
+        setIsLoading(true)
+        try {
+            const deleteAccount = await deleteData(id)
+            if (!deleteAccount) throw new Error(textMessages.deleteAccountFailed)
+            setNotifyValue({
+                message: textMessages.deleteAccountSuccess,
+                type: 'success'
+            })
+            return true
+        } catch (err) {
+            if (err instanceof Error) {
+                setNotifyValue({
+                    message: err.message,
+                    type: 'error'
+                })
+            }
+        } finally {
+            setIsLoading(false)
             router.replace('/(tabs)/')
         }
     }
@@ -128,13 +155,12 @@ const useAuth = () => {
     const action = {
         signInAccount,
         signUpAccount,
-        signOutAccount
+        signOutAccount,
+        deleteAccount
     }
-
-    // states
     const states = {
-        isLoading: notify.isLoading
+        isLoading
     }
-    return { states, action }
+    return { ...action, ...states }
 }
 export default useAuth

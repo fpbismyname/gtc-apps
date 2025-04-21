@@ -19,7 +19,6 @@ const Notify = () => {
             visibilityTime: 3000,
             onHide: () => {
                 setNotifyValue({
-                    isLoading: false,
                     message: '',
                     type: 'info'
                 })
@@ -43,7 +42,7 @@ const Notify = () => {
                     'flexWrap',
                     'roundedMd',
                     'border1',
-                    { backgroundColor: theme.primaryContainer, borderColor: theme.outline }
+                    { backgroundColor: theme.primaryContainer, borderColor: theme.onPrimaryContainer }
                 ]}
             >
                 <MaterialCommunityIcons name={'check-circle'} size={24} color={theme.onPrimaryContainer} />
@@ -61,7 +60,7 @@ const Notify = () => {
                     'flexWrap',
                     'roundedMd',
                     'border1',
-                    { backgroundColor: theme.tertiaryContainer, borderColor: theme.outline }
+                    { backgroundColor: theme.tertiaryContainer, borderColor: theme.onTertiaryContainer }
                 ]}
             >
                 <MaterialCommunityIcons name={'information'} size={24} color={theme.onTertiaryContainer} />
@@ -70,7 +69,17 @@ const Notify = () => {
         ),
         error: ({ text1 }: ToastConfigParams<'error'>) => (
             <View
-                Style={['flexRow', 'top2', 'p4', 'gap4', 'itemsCenter', 'flexWrap', 'roundedMd', 'border1', { backgroundColor: theme.errorContainer, borderColor: theme.outline }]}
+                Style={[
+                    'flexRow',
+                    'top2',
+                    'p4',
+                    'gap4',
+                    'itemsCenter',
+                    'flexWrap',
+                    'roundedMd',
+                    'border1',
+                    { backgroundColor: theme.errorContainer, borderColor: theme.onErrorContainer }
+                ]}
             >
                 <MaterialCommunityIcons name={'alert-circle'} size={24} color={theme.onErrorContainer} />
                 <Text>{text1}</Text>

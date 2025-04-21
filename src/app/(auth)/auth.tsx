@@ -15,6 +15,7 @@ import Section from '~/src/components/elements/Section'
 import useFetch from '~/src/hooks/utils/useFetch'
 import useDelay from '~/src/hooks/utils/useDelay'
 import LoadingScreen from '~/src/components/elements/LoadingScreen'
+import Notify from '~/src/components/elements/Notify'
 
 // Header Auth Form
 interface HeaderForm {
@@ -40,7 +41,7 @@ const HeaderForm: FC<HeaderForm> = ({ datas }) => {
 
 // View Form Register
 const FormRegister = () => {
-    const { states: auth, action } = useAuth()
+    const { signUpAccount, isLoading } = useAuth()
     return (
         <Formik
             initialValues={{
@@ -52,7 +53,7 @@ const FormRegister = () => {
             validationSchema={ValidationSchema.RegisterField}
             validateOnMount={true}
             onSubmit={(values) => {
-                action.signUpAccount(values)
+                signUpAccount(values)
             }}
         >
             {({ handleSubmit, handleChange, errors: err, touched: submitted }) => (
@@ -101,7 +102,7 @@ const FormRegister = () => {
                             text: err.password && submitted.password ? err.password : ''
                         }}
                     />
-                    <Button onPress={() => handleSubmit()} loading={auth.isLoading} disabled={auth.isLoading}>
+                    <Button onPress={() => handleSubmit()} loading={isLoading} disabled={isLoading}>
                         Daftar
                     </Button>
                 </View>
@@ -112,7 +113,7 @@ const FormRegister = () => {
 
 // View Form Login
 const FormLogin = () => {
-    const { states: auth, action } = useAuth()
+    const { isLoading, signInAccount } = useAuth()
     return (
         <View style={styling()}>
             <Formik
@@ -123,7 +124,7 @@ const FormLogin = () => {
                 validationSchema={ValidationSchema.LoginField}
                 validateOnMount={true}
                 onSubmit={(values) => {
-                    action.signInAccount(values)
+                    signInAccount(values)
                 }}
             >
                 {({ handleSubmit, handleChange, errors: err, touched: submitted }) => (
@@ -151,7 +152,7 @@ const FormLogin = () => {
                                 text: err.password && submitted.password ? err.password : ''
                             }}
                         />
-                        <Button onPress={() => handleSubmit()} loading={auth.isLoading} disabled={auth.isLoading}>
+                        <Button onPress={() => handleSubmit()} loading={isLoading} disabled={isLoading}>
                             Login
                         </Button>
                     </View>

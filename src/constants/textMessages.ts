@@ -15,14 +15,27 @@ export const textMessages = {
     fileType: 'Jenis file tidak didukung',
     fileSize: (maxMB: number) => `Ukuran file tidak boleh lebih dari ${maxMB}MB`,
 
-    emailTaken: 'Email sudah digunakan',
-    wrongPassword: 'Kombinasi email/password salah',
+    checkboxRequired: 'Harap centang terlebih dahulu',
 
     dateInvalid: 'Tanggal tidak valid',
     datePast: 'Tanggal tidak boleh sebelum hari ini',
 
-    checkboxRequired: 'Harap centang terlebih dahulu',
+    // Sign Up message
+    emailTaken: 'Email sudah digunakan',
+    wrongPassword: 'Kombinasi email/password salah',
 
+    // ActionAccount
+    signInSuccess: 'Akun berhasil login',
     logoutSuccess: 'Logout berhasil',
-    deletedAccount: 'Akun anda telah dihapus oleh admin'
+    createdAccount: 'Akun berhasil dibuat',
+    deleteAccountByAdmin: 'Akun anda telah dihapus oleh admin',
+    deleteAccountFailed: 'Akun anda gagal dihapus',
+    deleteAccountSuccess: 'Akun anda berhasil dihapus',
+    editedAccountSuccess: 'Data akun berhasil diubah',
+    editedAccountFailedWrongPass: 'Data password gagal diubah, password lama salah.',
+    editedAccountFailed: 'Data akun gagal diubah'
+}
+
+export const textAction = {
+    delete: (text: string) => `Apakah anda yakin ingin menghapus ${text} ?`
 }

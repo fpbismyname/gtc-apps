@@ -1,17 +1,17 @@
-import { addDoc, collection as collect, doc, getDoc, getDocs, where } from 'firebase/firestore'
+import { addDoc, collection as collect, doc, getDoc, getDocs, updateDoc, deleteDoc, where } from 'firebase/firestore'
 import { db } from '~/src/services/firebase'
 import { WhereFilterOp, query as q } from 'firebase/firestore'
 import { useState } from 'react'
+import { compareHash, createHash } from '~/src/utils/encryptUtility'
+import { useNotify } from '~/src/store/useNotify'
 
 export type collectionDocsType = string
 export type queryType = { field: any; operator: WhereFilterOp; value: any } | null
 
 const useCollection = (collectionPath: string) => {
-    // Loading collection
-    const [isLoading, setIsLoading] = useState<boolean>(true)
-
-    // Error
-    const [isError, setIsError] = useState<any>()
+    // Notify data
+    const { clearNotify, setNotifyValue } = useNotify()
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
     // Fetching All Data
     const getData = async ({ queryByDocId, query }: { query?: queryType; queryByDocId?: string | null } = {}) => {
@@ -38,7 +38,12 @@ const useCollection = (collectionPath: string) => {
                 return [{ id: snapshot.id, ...snapshot.data() }]
             }
         } catch (err) {
-            setIsError(err)
+            if (err instanceof Error) {
+                setNotifyValue({
+                    message: err.message,
+                    type: 'error'
+                })
+            }
         } finally {
             setIsLoading(false)
         }
@@ -46,26 +51,80 @@ const useCollection = (collectionPath: string) => {
 
     // Adding data
     const addData = async (values?: any) => {
+        if (!values) return { id: null }
+        setIsLoading(true)
         try {
-            setIsLoading(true)
             const colSnapshot = collect(db, collectionPath)
             const { id } = await addDoc(colSnapshot, values)
             return id ? { id: id } : { id: null }
         } catch (err) {
-            setIsError(err)
+            if (err instanceof Error) {
+                setNotifyValue({ message: err.message, type: 'error' })
+            }
             return { id: null }
         } finally {
             setIsLoading(false)
         }
     }
+
     // Editing Data
-    const editData = async () => {
-        // console.log('edit : ', data)
+    const editData = async ({ id, field, values, type }: { id?: string; field?: string; values?: any; type: 'password' | 'text' }) => {
+        if (!id || !values || !field) return false
+        setIsLoading(true)
+        try {
+            if (type === 'password') {
+                const oldPassword = values?.password
+                const newPassword = values?.newPassword
+                const hashedNewPassword = await createHash(newPassword)
+                const preparedData = field
+                    ? {
+                          [field]: hashedNewPassword
+                      }
+                    : values
+                const colRef = doc(db, collectionPath, id)
+                const account = await getDoc(colRef)
+                const userData = { ...account.data() }
+                const checkPassword = await compareHash(oldPassword, userData?.authentication?.password)
+                console.log(oldPassword, userData)
+                if (!checkPassword) return false
+                await updateDoc(colRef, preparedData)
+                return true
+            }
+            if (type === 'text') {
+                const preparedData = field
+                    ? {
+                          [field]: values
+                      }
+                    : values
+                const colRef = doc(db, collectionPath, id)
+                await updateDoc(colRef, preparedData)
+                return true
+            }
+        } catch (err) {
+            if (err instanceof Error) {
+                setNotifyValue({ message: err.message, type: 'error' })
+                return false
+            }
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     // Delete Data
-    const deleteData = async () => {
-        // console.log('delete:', data)
+    const deleteData = async (id: string) => {
+        setIsLoading(true)
+        try {
+            const colRef = doc(db, collectionPath, id)
+            await deleteDoc(colRef)
+            return true
+        } catch (err) {
+            if (err instanceof Error) {
+                setNotifyValue({ message: err.message, type: 'error' })
+                return false
+            }
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     // CRUD Method
@@ -75,12 +134,12 @@ const useCollection = (collectionPath: string) => {
         addData,
         getData
     }
+
     const states = {
-        isLoading,
-        isError
+        isLoading
     }
 
-    return { states, ...action }
+    return { ...action, ...states }
 }
 
 export default useCollection

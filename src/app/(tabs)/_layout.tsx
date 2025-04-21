@@ -13,7 +13,6 @@ const TabLayout = () => {
     // Users ID
     const { states: users, deleteUserID } = useUsers()
     // Notify
-    const { setNotifyValue } = useNotify()
 
     // Check user availablility data
     const { datas } = useCollectionRealTime(`Account`, { queryByDocId: users.user_id || '' })
@@ -26,7 +25,6 @@ const TabLayout = () => {
         const checkUser = setTimeout(() => {
             if (!Users?.id && users.user_id) {
                 deleteUserID()
-                setNotifyValue({ message: textMessages.deletedAccount })
             }
         }, 3000)
         return () => clearTimeout(checkUser)
