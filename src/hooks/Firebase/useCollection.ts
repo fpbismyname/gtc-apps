@@ -4,13 +4,14 @@ import { WhereFilterOp, query as q } from 'firebase/firestore'
 import { useState } from 'react'
 import { compareHash, createHash } from '~/src/utils/encryptUtility'
 import { useNotify } from '~/src/store/useNotify'
+import { textAction } from '~/src/constants/textMessages'
 
 export type collectionDocsType = string
 export type queryType = { field: any; operator: WhereFilterOp; value: any } | null
 
 const useCollection = (collectionPath: string) => {
     // Notify data
-    const { clearNotify, setNotifyValue } = useNotify()
+    const { setNotifyValue } = useNotify()
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
     // Fetching All Data
@@ -68,11 +69,11 @@ const useCollection = (collectionPath: string) => {
     }
 
     // Editing Data
-    const editData = async ({ id, field, values, type }: { id?: string; field?: string; values?: any; type: 'password' | 'text' }) => {
-        if (!id || !values || !field) return false
+    const editData = async ({ id, field, values, type }: { id: string; field?: string; values?: any; type: 'password' | 'text' }) => {
         setIsLoading(true)
         try {
             if (type === 'password') {
+                if (!id || !values?.password || !values?.newPassword || !field) return false
                 const oldPassword = values?.password
                 const newPassword = values?.newPassword
                 const hashedNewPassword = await createHash(newPassword)
@@ -85,12 +86,12 @@ const useCollection = (collectionPath: string) => {
                 const account = await getDoc(colRef)
                 const userData = { ...account.data() }
                 const checkPassword = await compareHash(oldPassword, userData?.authentication?.password)
-                console.log(oldPassword, userData)
                 if (!checkPassword) return false
                 await updateDoc(colRef, preparedData)
                 return true
             }
             if (type === 'text') {
+                if (!id || !values || !field) return false
                 const preparedData = field
                     ? {
                           [field]: values
@@ -102,7 +103,6 @@ const useCollection = (collectionPath: string) => {
             }
         } catch (err) {
             if (err instanceof Error) {
-                setNotifyValue({ message: err.message, type: 'error' })
                 return false
             }
         } finally {

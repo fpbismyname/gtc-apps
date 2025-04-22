@@ -22,6 +22,12 @@ const Notify = () => {
                     message: '',
                     type: 'info'
                 })
+            },
+            onPress: () => {
+                setNotifyValue({
+                    message: '',
+                    type: 'info'
+                })
             }
         })
     }

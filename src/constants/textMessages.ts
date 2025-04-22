@@ -37,5 +37,12 @@ export const textMessages = {
 }
 
 export const textAction = {
+    edit: (text: string) => {
+        if (text === 'isEmpty') {
+            return `Kolom wajib diisi`
+        } else {
+            return `Data ${text} berhasil dubah`
+        }
+    },
     delete: (text: string) => `Apakah anda yakin ingin menghapus ${text} ?`
 }

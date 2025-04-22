@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { router } from 'expo-router'
-import { Dispatch, FC, SetStateAction, useState } from 'react'
-import { Avatar, Divider, IconButton, Menu, PaperProvider, Portal } from 'react-native-paper'
+import { FC } from 'react'
+import { Avatar, Chip } from 'react-native-paper'
 import Button from '~/src/components/elements/Button'
 import LoadingScreen from '~/src/components/elements/LoadingScreen'
 import Section from '~/src/components/elements/Section'
@@ -15,90 +15,49 @@ import { useUsers } from '~/src/store/useUsers'
 import { Account } from '~/src/types/Firebase/Account'
 import { DocumentDataWithID } from '~/src/types/Firebase/DataTypeFirebase'
 import DefaultImage from '~/src/assets/images/profile/defaultProfile.png'
+import { currentTypeRoles } from '~/src/utils/currentType'
 
 interface ProfilePage {
     fetchedData: DocumentDataWithID
-    theme: any
+    theme?: any
 }
 
-const HeaderProfile: FC<ProfilePage & { isLoading: boolean }> = ({ fetchedData, theme, isLoading }) => {
+const HeaderProfile: FC<ProfilePage & { isLoading: boolean }> = ({ fetchedData, isLoading }) => {
     // Profile Datas
     const datas = fetchedData as Account
     // Checking Data
     if (isLoading || !datas || !datas.id) return
-    // Users
-    const { deleteUserID } = useUsers()
-    // Logout func
-    const logout = () => deleteUserID()
-    // Menu State
-    const [menuVisible, setMenuVisible] = useState<boolean>(false)
-    // Menu Func
-    const openMenu = () => setMenuVisible(true)
-    const closeMenu = () => setMenuVisible(false)
+    // Theme
+    const { themeWithTransparent, theme } = useTheme()
+    // CurrentUser Roles
+    const UserRoles = currentTypeRoles(datas.information.role)
 
     // Provide Headed profile
     return (
-        <View Style={['flexRow', 'itemsCenter', 'px4', 'py5', 'gap2', 'roundedMd']}>
-            <View Style={['flexColumn', 'gap2', 'expand']}>
-                <View Style={['flexRow', 'itemsCenter', 'gap4']}>
-                    <Avatar.Image source={datas.information.profile_picture ? { uri: datas.information.profile_picture } : DefaultImage} size={64} />
-                    <View>
-                        <Text variant="bodyMedium" Weight="fontBold">
+        <View Style={['flexRow', 'justifyCenter', 'gap2', 'p4', 'itemsCenter', 'roundedXl', { backgroundColor: themeWithTransparent['primaryContainer/50'] }]}>
+            <View Style={['flexColumn', 'expand-2']}>
+                <View Style={['flexRow', 'gap2', 'itemsCenter']}>
+                    <View Style={['flexColumn']}>
+                        <Avatar.Image source={datas.information.profile_picture ? { uri: datas.information.profile_picture } : DefaultImage} size={64} />
+                    </View>
+                    <View Style={['flexColumn', 'expand']}>
+                        <Text variant="bodyLarge" Weight="fontBold" numberOfLines={1}>
                             {datas.authentication.username}
                         </Text>
-                        <Text variant="labelSmall">{datas.authentication.email}</Text>
+                        <Text numberOfLines={1} ellipsizeMode="tail">
+                            {datas.authentication.email}
+                        </Text>
                     </View>
                 </View>
             </View>
-            <View Style={['flexColumn', 'itemsEnd']}>
-                <MenuView closeMenu={closeMenu} openMenu={openMenu} datas={datas} logout={logout} menuVisible={menuVisible} setMenuVisible={setMenuVisible} />
+            <View Style={['flexColumn', 'expand']}>
+                <View Style={['flexRow', 'itemsCenter', 'justifyEnd']}>
+                    <Chip mode="flat" icon={UserRoles.icon} textStyle={{ color: theme.onTertiaryContainer }} style={{ backgroundColor: theme.tertiaryContainer }}>
+                        {UserRoles.name}
+                    </Chip>
+                </View>
             </View>
         </View>
-    )
-}
-
-const MenuView = ({
-    datas,
-    menuVisible,
-    closeMenu,
-    openMenu,
-    setMenuVisible,
-    logout
-}: {
-    datas: Account
-    menuVisible: boolean
-    logout: () => void
-    closeMenu: () => void
-    openMenu: () => void
-    setMenuVisible: Dispatch<SetStateAction<boolean>>
-}) => {
-    const [ready, setReady] = useState<boolean>(false)
-    return (
-        <Menu
-            visible={ready ? menuVisible : false}
-            onDismiss={closeMenu}
-            statusBarHeight={24}
-            anchorPosition="bottom"
-            mode="flat"
-            anchor={<IconButton onLayout={() => setReady(true)} icon={'dots-vertical'} onPress={openMenu} />}
-        >
-            <Menu.Item
-                trailingIcon={'badge-account-horizontal'}
-                title="Akun Saya"
-                onPress={() => {
-                    router.push({
-                        pathname: `my_profile/[id]`,
-                        params: {
-                            id: datas.id,
-                            title: 'Akun Saya'
-                        }
-                    })
-                    setMenuVisible(false)
-                }}
-            />
-            <Divider />
-            <Menu.Item trailingIcon={'logout'} title="Logout" onPress={logout} />
-        </Menu>
     )
 }
 
@@ -131,8 +90,6 @@ const NewUserView = () => {
 }
 
 const profile = () => {
-    // Theme
-    const { theme } = useTheme()
     // Get User ID
     const { states: users } = useUsers()
     // AccountCollection
@@ -145,12 +102,12 @@ const profile = () => {
     // Delay View
     const loadingView = useDelay(isLoading)
     return (
-        <Section Style={['flexColumn']}>
+        <Section Style={['flexColumn', 'px4']}>
             {loadingView ? (
                 <LoadingScreen children />
             ) : users.user_id ? (
                 <>
-                    <HeaderProfile isLoading={isLoading} fetchedData={datas as DocumentDataWithID} theme={theme} />
+                    <HeaderProfile isLoading={isLoading} fetchedData={datas as DocumentDataWithID} />
                 </>
             ) : (
                 <NewUserView />

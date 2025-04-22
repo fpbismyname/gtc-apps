@@ -1,21 +1,14 @@
-import { FC } from 'react'
+import { forwardRef } from 'react'
 import { ViewProps } from 'react-native'
-import { Surface as V } from 'react-native-paper'
+import { View as V } from 'react-native'
 import { styling, StylingType } from '~/src/constants/styleSheets'
-import { useTheme } from '~/src/constants/useTheme'
 
 interface ViewType extends ViewProps {
     Style?: StylingType[]
-    Elevation?: 0 | 1 | 2 | 3 | 4 | 5
 }
 
-const View: FC<ViewType> = ({ Style, children, Elevation = 0, ...rest }) => {
-    const { theme } = useTheme()
-    return (
-        <V {...rest} style={styling(...(Style || []))} theme={theme} elevation={Elevation}>
-            <>{children}</>
-        </V>
-    )
-}
+const View = forwardRef<V, ViewType>(({ Style, ...rest }, ref) => {
+    return <V ref={ref} style={styling(...(Style || []))} {...rest} />
+})
 
 export default View

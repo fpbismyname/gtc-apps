@@ -2,7 +2,7 @@ import { useFocusEffect } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { DocumentDataWithID } from '~/src/types/Firebase/DataTypeFirebase'
 
-const useFetch = (fetchUsing: 'useEffect' | 'useFocusEffect' | 'withUnsubscribe', method: () => Promise<DocumentDataWithID | DocumentDataWithID[] | undefined>) => {
+const useFetch = (fetchUsing: 'useEffect' | 'useFocusEffect', method: () => Promise<DocumentDataWithID | DocumentDataWithID[] | undefined>) => {
     const [datas, setDatas] = useState<DocumentDataWithID[] | DocumentDataWithID | null>(null)
     const [isLoading, setIsLoading] = useState<boolean>(true)
 

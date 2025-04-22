@@ -3,7 +3,7 @@ import { Roles } from '../types/Firebase/Account'
 
 export const currentTypeRoles = (role?: Roles) => {
     const { themeWithTransparent } = useTheme()
-    let Role = {}
+    let Role = { name: '', icon: '' }
     if (role) {
         switch (role) {
             case 'admin':
@@ -31,7 +31,7 @@ export const currentTypeRoles = (role?: Roles) => {
                 }
                 break
             default:
-                Role = {}
+                Role = Role
                 break
         }
     }

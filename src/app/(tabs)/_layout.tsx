@@ -1,11 +1,10 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import { Tabs } from 'expo-router'
 import { useEffect } from 'react'
+import CustomHeaderBottomTabBar from '~/src/components/navigation/CustomHeaderBottomTabBar'
 import CustomTabBar from '~/src/components/navigation/CustomTabBar'
-import { textMessages } from '~/src/constants/textMessages'
 import { useTheme } from '~/src/constants/useTheme'
 import useCollectionRealTime from '~/src/hooks/Firebase/useCollectionRealTime'
-import { useNotify } from '~/src/store/useNotify'
 import { useUsers } from '~/src/store/useUsers'
 import { Account } from '~/src/types/Firebase/Account'
 
@@ -36,13 +35,13 @@ const TabLayout = () => {
         <Tabs
             tabBar={(props: BottomTabBarProps) => <CustomTabBar {...props} />}
             screenOptions={{
-                headerShown: false,
+                header: (props) => <CustomHeaderBottomTabBar {...props} />,
                 tabBarHideOnKeyboard: true,
                 sceneStyle: {
                     backgroundColor: theme.background,
                     elevation: 0
-                },
-                animation: 'shift'
+                }
+                // animation: 'shift'
             }}
             initialRouteName="index"
         >

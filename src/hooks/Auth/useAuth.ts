@@ -10,13 +10,13 @@ import { useState } from 'react'
 
 const useAuth = () => {
     // getNotify data
-    const { clearNotify, setNotifyValue } = useNotify()
+    const { setNotifyValue } = useNotify()
     // States Load
     const [isLoading, setIsLoading] = useState<boolean>(false)
     // getUser ID data
     const { setUserID, deleteUserID } = useUsers()
     // Account Collection
-    const { getData, addData, deleteData } = useCollection('Account')
+    const { getData, addData, deleteData, editData } = useCollection('Account')
 
     // Sign In
     const signInAccount = async (values: SignInData) => {
@@ -40,6 +40,10 @@ const useAuth = () => {
             if (!Account) throw Error(textMessages.wrongPassword)
             IDUser = Account.id || null
             router.replace('/(tabs)/')
+            setNotifyValue({
+                message: textMessages.signInSuccess,
+                type: 'success'
+            })
         } catch (err) {
             if (err instanceof Error) {
                 setNotifyValue({
@@ -49,10 +53,6 @@ const useAuth = () => {
             }
         } finally {
             setIsLoading(false)
-            setNotifyValue({
-                message: textMessages.signInSuccess,
-                type: 'success'
-            })
             setUserID(IDUser)
         }
     }
@@ -75,7 +75,8 @@ const useAuth = () => {
                 token: createdToken,
                 information: {
                     memberships: {
-                        allowed_module: [],
+                        accessible_module: [],
+                        purchased_module: [],
                         expiration_date: null
                     },
                     role: 'user',
@@ -85,6 +86,10 @@ const useAuth = () => {
             const { id } = await addData(prepareData)
             IDUser = id
             router.replace('/(tabs)/')
+            setNotifyValue({
+                message: textMessages.createdAccount,
+                type: 'success'
+            })
         } catch (err: any) {
             if (err instanceof Error)
                 setNotifyValue({
@@ -93,10 +98,6 @@ const useAuth = () => {
                 })
         } finally {
             setIsLoading(false)
-            setNotifyValue({
-                message: textMessages.createdAccount,
-                type: 'success'
-            })
             setUserID(IDUser)
         }
     }
@@ -114,7 +115,10 @@ const useAuth = () => {
             }
         } finally {
             setIsLoading(false)
-
+            setNotifyValue({
+                message: textMessages.logoutSuccess,
+                type: 'success'
+            })
             router.replace('/(tabs)/')
         }
     }
@@ -142,6 +146,38 @@ const useAuth = () => {
             router.replace('/(tabs)/')
         }
     }
+    // Edit Account
+    const editAccount = async ({ id, field, values, type }: { id: string; field?: string; values?: any; type: 'password' | 'text' }) => {
+        setIsLoading(true)
+        try {
+            const params = { id, field, values, type }
+            const editStatus = await editData({
+                id: params.id,
+                type: params.type,
+                values: params.values,
+                field: params.field
+            })
+            if (editStatus) {
+                const getUser = await getData({ queryByDocId: id })
+                const dataUser = getUser?.shift() as Account
+                const createToken = await generateTokenHash({
+                    email: dataUser.authentication.email,
+                    username: dataUser.authentication.username
+                })
+                const editToken = await editData({
+                    id: params.id,
+                    type: 'text',
+                    field: 'token',
+                    values: createToken
+                })
+                return editToken
+            } else {
+                console.log('GAgal')
+            }
+        } finally {
+            setIsLoading(false)
+        }
+    }
 
     // Check Duplication Email
     const checkEmailExisted = async (email: string) => {
@@ -156,7 +192,8 @@ const useAuth = () => {
         signInAccount,
         signUpAccount,
         signOutAccount,
-        deleteAccount
+        deleteAccount,
+        editAccount
     }
     const states = {
         isLoading

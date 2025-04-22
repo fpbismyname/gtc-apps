@@ -16,6 +16,8 @@ import useFetch from '~/src/hooks/utils/useFetch'
 import useDelay from '~/src/hooks/utils/useDelay'
 import LoadingScreen from '~/src/components/elements/LoadingScreen'
 import Notify from '~/src/components/elements/Notify'
+import { IconButton } from 'react-native-paper'
+import { router } from 'expo-router'
 
 // Header Auth Form
 interface HeaderForm {
@@ -70,13 +72,13 @@ const FormRegister = () => {
                         }}
                     />
                     <TextInput
-                        textContentType="telephoneNumber"
+                        textContentType="none"
                         mode="outlined"
                         dense
                         placeholder="Nomor Whatsapp"
                         error={submitted.phone_number && err.phone_number ? true : false}
                         onChangeText={handleChange('phone_number')}
-                        keyboardType="decimal-pad"
+                        keyboardType="number-pad"
                         rightItem={{
                             text: err.phone_number && submitted.phone_number ? err.phone_number : ''
                         }}

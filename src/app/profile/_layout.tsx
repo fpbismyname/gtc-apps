@@ -2,7 +2,7 @@ import { Stack } from 'expo-router'
 import CustomHeader from '~/src/components/navigation/CustomHeader'
 import { useTheme } from '~/src/constants/useTheme'
 
-const ProfilesLayout = () => {
+const ProfileLayout = () => {
     const { theme } = useTheme()
     return (
         <Stack
@@ -24,8 +24,9 @@ const ProfilesLayout = () => {
             }}
         >
             <Stack.Screen name="[id]" />
+            <Stack.Screen name="institution" />
         </Stack>
     )
 }
 
-export default ProfilesLayout
+export default ProfileLayout

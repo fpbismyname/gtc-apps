@@ -12,10 +12,10 @@ const FontName = 'Open-Sans'
 
 export const useTheme = () => {
     // settings themes
-    const { states, setTheme } = useSystemTheme()
+    const { isDarkMode, setTheme } = useSystemTheme()
 
     // darkModeCheck
-    const darkMode = states.darkMode
+    const darkMode = isDarkMode
 
     // prepare theme
     const myTheme = darkMode ? colorThemes.dark : colorThemes.light

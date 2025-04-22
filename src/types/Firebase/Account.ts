@@ -8,7 +8,8 @@ export interface Account {
     information: {
         memberships: {
             expiration_date: string | null
-            allowed_module?: Module[]
+            accessible_module?: Module[]
+            purchased_module?: Module[]
         }
         role: Roles
         profile_picture: string | null

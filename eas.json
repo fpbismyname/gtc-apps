@@ -5,7 +5,6 @@
   },
   "build": {
     "development": {
-      
     },
     "preview": {
       "distribution": "internal"
@@ -16,7 +15,12 @@
     "production-apps": {
       "autoIncrement": true,
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease",
+        "env":{
+          "EXPO_PUBLIC_SALT_HASH":"G@DINGTRAININGCENTER:CIANJUR",
+          "EXPO_PUBLIC_PEPPER":"P3P!PerSc#t1PT^AWOkawokaw0ok)WOKA"
+        }
       }
     }
   },

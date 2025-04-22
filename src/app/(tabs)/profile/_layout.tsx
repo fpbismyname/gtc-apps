@@ -2,13 +2,13 @@ import { Stack } from 'expo-router'
 import CustomHeader from '~/src/components/navigation/CustomHeader'
 import { useTheme } from '~/src/constants/useTheme'
 
-const AuthLayout = () => {
+const ProfileLayout = () => {
     const { theme } = useTheme()
     return (
         <Stack
             screenOptions={{
-                headerShown: true,
                 header: (props) => <CustomHeader {...props} />,
+                headerShown: true,
                 headerTintColor: theme.onBackground,
                 headerStyle: {
                     backgroundColor: theme.background
@@ -22,7 +22,10 @@ const AuthLayout = () => {
                 },
                 animation: 'fade_from_bottom'
             }}
-        />
+        >
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+        </Stack>
     )
 }
-export default AuthLayout
+
+export default ProfileLayout
