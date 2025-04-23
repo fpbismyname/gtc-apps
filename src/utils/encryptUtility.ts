@@ -1,8 +1,10 @@
 import * as Crypto from 'expo-crypto'
-import { SignUpData } from '../types/Auth/AuthType'
+import Constants from 'expo-constants'
+import CryptoJS from 'crypto-js'
 
-const SALT = process.env.EXPO_PUBLIC_SALT_HASH
-const PEPPER = process.env.EXPO_PUBLIC_PEPPER
+const SALT = Constants.expoConfig?.extra?.salt
+const PEPPER = Constants.expoConfig?.extra?.pepper
+const PEPPERONY = Constants.expoConfig?.extra?.pepperony
 
 export const createHash = async (password: string) => {
     const combinedPassword = `${SALT}${password}${PEPPER}`
@@ -27,4 +29,12 @@ export const verifyTokenHash = async ({ token, email, username }: { token: strin
     const hashedToken = await createHash(combinedToken)
     const verifyToken = token === hashedToken
     return verifyToken
+}
+
+export const encryptWithAes = (valueToEncrypt: string) => {
+    return CryptoJS.AES.encrypt(valueToEncrypt, PEPPERONY).toString()
+}
+
+export const decryptWithAes = (valueToDecrypt: string) => {
+    return CryptoJS.AES.decrypt(valueToDecrypt, PEPPERONY).toString(CryptoJS.enc.Utf8)
 }

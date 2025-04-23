@@ -24,7 +24,8 @@ const CustomSlot = ({ route }: { route?: string }) => {
         const loading = async () => {
             await new Promise(() =>
                 setTimeout(() => {
-                    router.replace(route || '/(tabs)/')
+                    if (!route) return
+                    router.replace(route)
                 }, 500)
             )
         }

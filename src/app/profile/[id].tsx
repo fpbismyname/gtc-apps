@@ -67,7 +67,7 @@ const MyProfile = ({ datas, theme }: { datas: Account; theme: any }) => {
         <>
             <View Style={['flexRow', 'itemsCenter', 'justifyCenter']}>
                 <View Style={['flexColumn', 'itemsCenter', 'justifyCenter', 'gap4']}>
-                    <Avatar.Image size={128} source={DefaultImage} />
+                    <Avatar.Image size={108} source={DefaultImage} />
                     <View>
                         <Chip mode="flat" icon={UserRoles.icon} textStyle={{ color: theme.onTertiaryContainer }} style={{ backgroundColor: theme.tertiaryContainer }}>
                             {UserRoles.name}

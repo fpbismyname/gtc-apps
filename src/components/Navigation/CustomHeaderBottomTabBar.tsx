@@ -65,8 +65,7 @@ const CustomHeaderBottomTabBar: FC<BottomTabHeaderProps> = ({ options, route }) 
                                             router.push({
                                                 pathname: 'profile/[id]',
                                                 params: {
-                                                    id: users.user_id,
-                                                    title: 'Akun Saya'
+                                                    id: users.user_id
                                                 }
                                             })
                                             closeMenu()
@@ -83,10 +82,7 @@ const CustomHeaderBottomTabBar: FC<BottomTabHeaderProps> = ({ options, route }) 
                                     leadingIcon={'bank' as IconNameType}
                                     onPress={() => {
                                         router.push({
-                                            pathname: 'profile/institution',
-                                            params: {
-                                                title: 'Tentang Lembaga'
-                                            }
+                                            pathname: 'profile/institution'
                                         })
                                         closeMenu()
                                     }}

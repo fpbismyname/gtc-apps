@@ -1,0 +1,68 @@
+export default {
+    'expo': {
+        'name': 'Gading Training Center',
+        'slug': 'gading-training-center-apps',
+        'scheme': 'gading-apps-scheme',
+        'deepLinking': true,
+        'version': '1.0.0',
+        'orientation': 'portrait',
+        'icon': './src/assets/images/gtc_icon.png',
+        'userInterfaceStyle': 'automatic',
+        'newArchEnabled': true,
+        'splash': {
+            'image': './src/assets/images/gtc_icon.png',
+            'resizeMode': 'contain',
+            'backgroundColor': '#ffffff'
+        },
+        'ios': {
+            'supportsTablet': true,
+            'bundleIdentifier': 'com.gadingtrainingcenter.apps'
+        },
+        'android': {
+            'adaptiveIcon': {
+                'foregroundImage': './src/assets/images/gtc_icon.png',
+                'backgroundColor': '#ffffff'
+            },
+            'package': 'com.gadingtrainingcenter.apps'
+        },
+        'web': {
+            'bundler': 'metro',
+            'favicon': './src/assets/images/gtc_icon.png'
+        },
+        'plugins': [
+            ['expo-asset'],
+            [
+                'expo-video',
+                {
+                    'supportsPictureInPicture': false
+                }
+            ],
+            ['expo-font'],
+            [
+                'expo-router',
+                {
+                    'root': './src/app'
+                }
+            ],
+            [
+                'expo-build-properties',
+                {
+                    'android': {
+                        'minifyEnabled': true,
+                        'shrinkResources': true
+                    }
+                }
+            ],
+            'expo-secure-store'
+        ],
+        'extra': {
+            'eas': {
+                'projectId': '6a358ec8-e329-4409-8293-51faf40a2983'
+            },
+            'salt': process.env.MEDIUMSALT || 'mySalt',
+            'pepper': process.env.SUPERPEPPER || 'myPepper',
+            'pepperony': process.env.PEPPERONY || 'myPepperony'
+        },
+        'owner': 'fajarpb'
+    }
+}

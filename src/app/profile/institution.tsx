@@ -63,14 +63,16 @@ const checkKeyForDefaultValue = (key: string, value: string) => {
 
 const HeaderInstitution = ({ datas }: { datas: InsitutionInformation }) => {
     const { themeWithTransparent } = useTheme()
-    const DataInstitution = Object.entries(datas).filter(([key]) => key !== 'social_media' && key !== 'id' && key !== 'logo' && key !== 'slogan' && key !== 'maps')
-    const DataSocialMedia = Object.entries(datas.social_media || {})
+    const DataInstitution = Object.entries(datas)
+        .filter(([key]) => key !== 'social_media' && key !== 'id' && key !== 'logo' && key !== 'slogan' && key !== 'maps')
+        .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
+    const DataSocialMedia = Object.entries(datas.social_media || {}).sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
     return (
         <>
             <View Style={['flexRow', 'itemsCenter', 'justifyCenter', 'gap4']}>
                 <View Style={['flexColumn', 'gap6', 'itemsCenter', 'justifyCenter']}>
                     <View Style={['flexColumn', 'itemsCenter', 'justifyCenter']}>
-                        <Avatar.Image source={{ uri: datas.logo }} size={128} />
+                        <Avatar.Image source={{ uri: datas.logo }} size={108} />
                     </View>
                     <View Style={['flexColumn', 'itemsCenter', 'justifyCenter', 'gap4']}>
                         <Chip textStyle={{ color: themeWithTransparent.onTertiaryContainer }} style={{ backgroundColor: themeWithTransparent['tertiaryContainer/50'] }}>
@@ -80,10 +82,10 @@ const HeaderInstitution = ({ datas }: { datas: InsitutionInformation }) => {
                     </View>
                 </View>
             </View>
-            <ScrollView overScrollMode="never">
+            <ScrollView overScrollMode="never" showsVerticalScrollIndicator={false}>
                 <List.Section>
                     <List.Subheader>Profil Lembaga</List.Subheader>
-                    {DataInstitution.sort(([keyA], [keyB]) => keyA.localeCompare(keyB)).map(([key, value]) => {
+                    {DataInstitution.map(([key, value]) => {
                         return <List.Item key={key} title={value} description={getLabelKey(key)} left={(props) => <List.Icon {...props} icon={getIconKey(key)} />} />
                     })}
                     <List.Subheader>Media sosial kami</List.Subheader>

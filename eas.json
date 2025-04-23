@@ -19,7 +19,8 @@
         "gradleCommand": ":app:assembleRelease",
         "env":{
           "EXPO_PUBLIC_SALT_HASH":"G@DINGTRAININGCENTER:CIANJUR",
-          "EXPO_PUBLIC_PEPPER":"P3P!PerSc#t1PT^AWOkawokaw0ok)WOKA"
+          "EXPO_PUBLIC_PEPPER":"P3P!PerSc#t1PT^AWOkawokaw0ok)WOKA",
+          "EXPO_PUBLIC_PEPPERONY":"TH!S1S7h3PeP3R0N!"
         }
       }
     }
