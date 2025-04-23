@@ -18,12 +18,14 @@ import DefaultImage from '~/src/assets/images/profile/defaultProfile.png'
 import { currentTypeRoles } from '~/src/utils/currentType'
 import * as Linking from 'expo-linking'
 import { styling } from '~/src/constants/styleSheets'
-import Link from '~/src/components/elements/Link'
+import { Platform, ScrollView } from 'react-native'
 
 interface ProfilePage {
     fetchedData: DocumentDataWithID
     theme?: any
 }
+
+const onPlatform = Platform.OS
 
 const HeaderProfile: FC<ProfilePage & { isLoading: boolean }> = ({ fetchedData, isLoading }) => {
     // Profile Datas
@@ -55,9 +57,11 @@ const HeaderProfile: FC<ProfilePage & { isLoading: boolean }> = ({ fetchedData, 
             </View>
             <View Style={['flexColumn', 'expand']}>
                 <View Style={['flexRow', 'itemsCenter', 'justifyEnd']}>
-                    <Chip mode="flat" icon={UserRoles.icon} textStyle={{ color: theme.onTertiaryContainer }} style={{ backgroundColor: theme.tertiaryContainer }}>
-                        {UserRoles.name}
-                    </Chip>
+                    <View Style={['flexColumn', 'itemsCenter']}>
+                        <Chip mode="flat" icon={UserRoles.icon} textStyle={{ color: theme.onTertiaryContainer }} style={{ backgroundColor: theme.tertiaryContainer }}>
+                            {UserRoles.name}
+                        </Chip>
+                    </View>
                 </View>
             </View>
         </View>
@@ -92,26 +96,45 @@ const NewUserView = () => {
     )
 }
 
-const ProfileList = () => {
+const ProfileList: FC<ProfilePage> = ({ fetchedData }) => {
+    if (!fetchedData) return
+    const dataUser = fetchedData as Account
+    const userRole = dataUser.information.role
     return (
-        <View Style={['flexRow', 'expand']}>
-            <List.Section style={styling('expand', 'roundedXl')}>
-                <List.Subheader>Membership & program pelatihan</List.Subheader>
-                <List.Item
-                    style={styling('roundedXl')}
-                    title="Gabung program pelatihan"
-                    left={(props) => <List.Icon {...props} icon={'school' as IconNameType} />}
-                    onPress={() => ''}
-                />
-                <List.Item style={styling('roundedXl')} title="Gabung membership" left={(props) => <List.Icon {...props} icon={'star-box' as IconNameType} />} onPress={() => ''} />
-                <List.Subheader>Pusat bantuan</List.Subheader>
-                <List.Item
-                    style={styling('roundedXl')}
-                    title="hubungi kami"
-                    left={(props) => <List.Icon {...props} icon={'chat' as IconNameType} />}
-                    onPress={() => Linking.openURL('https://wa.me/62895404545040')}
-                />
-            </List.Section>
+        <View Style={['flexRow']}>
+            <ScrollView overScrollMode="never" showsVerticalScrollIndicator={onPlatform === 'android' ? true : false}>
+                <List.Section style={styling('flexColumn', 'expand', 'roundedXl')}>
+                    {userRole === 'user' || userRole === 'tier-1' || userRole === 'tier-2' ? (
+                        <>
+                            <List.Subheader>Membership & program pelatihan</List.Subheader>
+                            <List.Item
+                                style={styling('roundedXl')}
+                                title="Gabung program pelatihan"
+                                left={(props) => <List.Icon {...props} icon={'school' as IconNameType} />}
+                                right={(props) => <List.Icon {...props} icon={'chevron-right' as IconNameType} />}
+                                onPress={() => ''}
+                            />
+                            {userRole === 'user' ? (
+                                <List.Item
+                                    style={styling('roundedXl')}
+                                    title="Gabung membership"
+                                    left={(props) => <List.Icon {...props} icon={'star-box' as IconNameType} />}
+                                    right={(props) => <List.Icon {...props} icon={'chevron-right' as IconNameType} />}
+                                    onPress={() => ''}
+                                />
+                            ) : null}
+                        </>
+                    ) : null}
+                    <List.Subheader>Pusat bantuan</List.Subheader>
+                    <List.Item
+                        style={styling('roundedXl')}
+                        right={(props) => <List.Icon {...props} icon={'chevron-right' as IconNameType} />}
+                        title="hubungi kami"
+                        left={(props) => <List.Icon {...props} icon={'chat' as IconNameType} />}
+                        onPress={() => Linking.openURL('https://wa.me/62895404545040')}
+                    />
+                </List.Section>
+            </ScrollView>
         </View>
     )
 }
@@ -135,7 +158,7 @@ const profile = () => {
             ) : users.user_id ? (
                 <>
                     <HeaderProfile isLoading={isLoading} fetchedData={datas as DocumentDataWithID} />
-                    <ProfileList />
+                    <ProfileList fetchedData={datas as DocumentDataWithID} />
                 </>
             ) : (
                 <NewUserView />

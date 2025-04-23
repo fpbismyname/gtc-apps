@@ -1,8 +1,7 @@
-import { useTheme } from '../constants/useTheme'
+import { IconNameType } from '../constants/useTheme'
 import { Roles } from '../types/Firebase/Account'
 
 export const currentTypeRoles = (role?: Roles) => {
-    const { themeWithTransparent } = useTheme()
     let Role = { name: '', icon: '' }
     if (role) {
         switch (role) {
@@ -28,6 +27,18 @@ export const currentTypeRoles = (role?: Roles) => {
                 Role = {
                     name: 'Reguler',
                     icon: 'account-circle'
+                }
+                break
+            case 'tier-1':
+                Role = {
+                    name: 'Premium',
+                    icon: 'star' as IconNameType
+                }
+                break
+            case 'tier-2':
+                Role = {
+                    name: 'Master',
+                    icon: 'chess-queen' as IconNameType
                 }
                 break
             default:

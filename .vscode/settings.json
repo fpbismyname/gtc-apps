@@ -1,4 +1,7 @@
 {
     "javascript.suggest.paths": true,
-    "typescript.suggest.paths": true
+    "typescript.suggest.paths": true,
+    "editor.fontFamily": "Fira Code Retina",
+    "editor.lineHeight": 1.5,
+    "editor.fontLigatures": true,
 }

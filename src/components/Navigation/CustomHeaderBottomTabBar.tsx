@@ -1,5 +1,5 @@
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
-import { FC, useRef, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Appbar, Menu, Portal } from 'react-native-paper'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { IconNameType, useTheme } from '~/src/constants/useTheme'
@@ -7,6 +7,7 @@ import Image from '../elements/Image'
 import useCollection from '~/src/hooks/Firebase/useCollection'
 import useFetch from '~/src/hooks/utils/useFetch'
 import { InsitutionInformation } from '~/src/types/Firebase/MasterData/InsitutionInformation'
+import { View as V } from 'react-native'
 import View from '../elements/View'
 import Text from '../elements/Text'
 import useAuth from '~/src/hooks/Auth/useAuth'
@@ -16,27 +17,37 @@ import { useSystemTheme } from '~/src/store/useSystemTheme'
 import { router } from 'expo-router'
 
 const CustomHeaderBottomTabBar: FC<BottomTabHeaderProps> = ({ options, route }) => {
+    // Safe area
     const insets = useSafeAreaInsets()
     const { getData } = useCollection('MasterData/Institution/Profile')
+    // Fetch Institution Profile
     const { datas, isLoading } = useFetch('useEffect', async () => {
         return await getData()
     })
-    const iconInstitution = datas as InsitutionInformation
+    // Get logged id User
     const { states: users } = useUsers()
+    // institutionIcon
+    const iconInstitution = datas as InsitutionInformation
+    // For Signout account
     const { signOutAccount } = useAuth()
     const { theme } = useTheme()
 
     // Menu States
     const [visibleMenu, setVisibleMenu] = useState<boolean>(false)
-    const openMenu = () => setVisibleMenu(true)
+    const openMenu = () => {
+        setTimeout(() => {
+            setVisibleMenu(true)
+        }, 150)
+    }
     const closeMenu = () => setVisibleMenu(false)
+
     // themeButton
     const { toggleTheme, isDarkMode } = useSystemTheme()
 
     if (route.name === 'profile') {
         return (
             <>
-                <Appbar.Header safeAreaInsets={{ top: insets.top }} theme={theme} mode="small">
+                <Appbar.Header theme={theme} mode="small">
                     <View style={styling('flexRow', 'px4', 'itemsCenter', 'justifyBetween', 'expand')}>
                         {isLoading ? (
                             <ActivityIndicator animating />
@@ -74,7 +85,7 @@ const CustomHeaderBottomTabBar: FC<BottomTabHeaderProps> = ({ options, route }) 
                                 )}
                                 <Menu.Item
                                     title={isDarkMode ? 'Tema Cerah' : 'Tema Gelap'}
-                                    leadingIcon={isDarkMode ? ('weather-night' as IconNameType) : ('white-balance-sunny' as IconNameType)}
+                                    leadingIcon={!isDarkMode ? ('weather-night' as IconNameType) : ('white-balance-sunny' as IconNameType)}
                                     onPress={toggleTheme}
                                 />
                                 <Menu.Item

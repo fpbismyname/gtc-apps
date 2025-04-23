@@ -23,19 +23,21 @@ import Notify from '~/src/components/elements/Notify'
 import useCollectionRealTime from '~/src/hooks/Firebase/useCollectionRealTime'
 import Text from '~/src/components/elements/Text'
 import useAuth from '~/src/hooks/Auth/useAuth'
-import { ScrollView } from 'react-native'
+import { Platform, ScrollView } from 'react-native'
 
 const accountInfoIconMap: Record<string, string> = {
     username: 'tag',
     email: 'email',
     password: 'asterisk',
-    phone_number: 'whatsapp'
+    phone_number: 'whatsapp',
+    expiration_date: 'clock'
 }
 const accountInfoLabelMap: Record<string, string> = {
     username: 'Nama pengguna',
     email: 'Alamat email',
     password: 'Password',
-    phone_number: 'No. Whatsapp'
+    phone_number: 'No. Whatsapp',
+    expiration_date: 'Masa berlaku'
 }
 const convertPassToAsterisk = (pass: string, length?: number) => {
     if (!pass) return null
@@ -45,10 +47,14 @@ const convertPassToAsterisk = (pass: string, length?: number) => {
 const getAccountInfoIcon = (key: string) => accountInfoIconMap[key || ('information' as IconNameType)]
 const getAccountInfoLabel = (key: string) => accountInfoLabelMap[key || ('information' as IconNameType)]
 
+const onPlatform = Platform.OS
+
 const MyProfile = ({ datas, theme }: { datas: Account; theme: any }) => {
     if (!datas) return
     const UserData = Object.entries(datas.authentication).sort(([keyA, keyB]) => keyB.localeCompare(keyA))
     const UserRoles = currentTypeRoles(datas.information.role) as { name: string; icon: string }
+    const UserExpirationDateKey = Object.keys(datas.information.memberships).filter((key) => key === 'expiration_date')?.[0]
+    const UserExpirationDateValue = datas.information.memberships.expiration_date
     // setup Modal variable
     const [modalEdit, setModalEdit] = useState<boolean>(false)
     const [modalDelete, setModalDelete] = useState<boolean>(false)
@@ -76,8 +82,17 @@ const MyProfile = ({ datas, theme }: { datas: Account; theme: any }) => {
                 </View>
             </View>
             <View Style={['flexRow']}>
-                <ScrollView>
+                <ScrollView overScrollMode="never" showsVerticalScrollIndicator={onPlatform === 'android' ? true : false}>
                     <List.Section style={styling('flexColumn', 'expand', 'columnGap4')} theme={theme}>
+                        {UserExpirationDateValue && (
+                            <List.Item
+                                style={styling('roundedXl')}
+                                title={UserExpirationDateValue}
+                                description={getAccountInfoLabel(UserExpirationDateKey)}
+                                left={(props) => <IconButton icon={getAccountInfoIcon(UserExpirationDateKey)} {...props} />}
+                                right={(props) => <IconButton icon={'chevron-right'} {...props} />}
+                            />
+                        )}
                         {UserData.map(([key, value], index) => {
                             return (
                                 <List.Item
@@ -180,7 +195,7 @@ const EditProfile = ({
                                         <>
                                             <View Style={['flexRow', 'justifyCenter', 'itemsCenter', 'gap2']}>
                                                 <Icon source={getAccountInfoIcon(title)} size={36} color={theme.onPrimaryContainer} />
-                                                <Text variant="headlineSmall">{`Edit ${UpperCaseText(title === 'phone_number' ? 'whatsapp' : title)}`}</Text>
+                                                <Text variant="headlineSmall">{`Edit ${UpperCaseText(title === 'phone_number' ? 'whatsapp' : getAccountInfoLabel(title))}`}</Text>
                                             </View>
                                         </>
                                     ) : (

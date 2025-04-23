@@ -1,4 +1,4 @@
-import { ScrollView } from 'react-native'
+import { Platform, ScrollView } from 'react-native'
 import { Avatar, Chip, List } from 'react-native-paper'
 import LoadingScreen from '~/src/components/elements/LoadingScreen'
 import Section from '~/src/components/elements/Section'
@@ -51,7 +51,6 @@ const linkInstitution: Record<string, (value: string) => void> = {
     },
     website: (value: string) => Linking.openURL(`https://${value}`)
 }
-
 const getLinkKey = (key: string, value: string) => {
     linkInstitution[key]?.(value)
 }
@@ -61,6 +60,9 @@ const checkKeyForDefaultValue = (key: string, value: string) => {
     if (key === 'maps') return 'Klik untuk cek lokasinya'
     return value
 }
+
+// Check Platform
+const onPlatform = Platform.OS
 
 const HeaderInstitution = ({ datas }: { datas: InsitutionInformation }) => {
     const { themeWithTransparent } = useTheme()
@@ -83,7 +85,7 @@ const HeaderInstitution = ({ datas }: { datas: InsitutionInformation }) => {
                     </View>
                 </View>
             </View>
-            <ScrollView overScrollMode="never" showsVerticalScrollIndicator={false}>
+            <ScrollView overScrollMode="never" showsVerticalScrollIndicator={onPlatform === 'android' ? true : false}>
                 <List.Section>
                     <List.Subheader>Profil Lembaga</List.Subheader>
                     {DataInstitution.map(([key, value]) => {
