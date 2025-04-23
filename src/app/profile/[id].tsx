@@ -82,6 +82,7 @@ const MyProfile = ({ datas, theme }: { datas: Account; theme: any }) => {
                             return (
                                 <List.Item
                                     key={index}
+                                    style={styling('roundedXl')}
                                     title={key === 'password' ? convertPassToAsterisk(value) : value}
                                     description={getAccountInfoLabel(key)}
                                     left={(props) => <IconButton icon={getAccountInfoIcon(key)} {...props} />}
@@ -302,7 +303,7 @@ export default () => {
     const loadingView = useDelay(isLoading)
     return (
         <>
-            <Section Style={['flexColumn']}>
+            <Section Style={['flexColumn', 'px4']}>
                 {loadingView || !fetchedData ? <LoadingScreen children /> : <>{id === Users.id && <MyProfile datas={fetchedData as Account} theme={theme} />}</>}
             </Section>
         </>

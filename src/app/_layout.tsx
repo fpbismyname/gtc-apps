@@ -3,7 +3,7 @@ import CustomSlot from '../components/navigation/CustomSlot'
 const RootLayout = () => {
     return (
         <>
-            <CustomSlot />
+            <CustomSlot route="/(tabs)/profile" />
         </>
     )
 }

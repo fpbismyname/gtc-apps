@@ -1,7 +1,7 @@
 // ~/src/hooks/useDelay.ts
 import { useState, useEffect } from 'react'
 
-const useDelay = (isActive: boolean, delayMs: number = 500) => {
+const useDelay = (isActive: boolean = false, delayMs: number = 500) => {
     const [shouldShow, setShouldShow] = useState(isActive)
 
     useEffect(() => {

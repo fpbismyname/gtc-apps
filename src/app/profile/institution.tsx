@@ -10,6 +10,7 @@ import useDelay from '~/src/hooks/utils/useDelay'
 import useFetch from '~/src/hooks/utils/useFetch'
 import { InsitutionInformation } from '~/src/types/Firebase/MasterData/InsitutionInformation'
 import * as Linking from 'expo-linking'
+import { styling } from '~/src/constants/styleSheets'
 
 // ICon & label maps
 const iconKeyMap: Record<string, string> = {
@@ -93,6 +94,7 @@ const HeaderInstitution = ({ datas }: { datas: InsitutionInformation }) => {
                         return (
                             <List.Item
                                 key={key}
+                                style={styling('roundedXl')}
                                 title={checkKeyForDefaultValue(key, value)}
                                 description={getLabelKey(key)}
                                 left={(props) => <List.Icon {...props} icon={getIconKey(key)} />}
@@ -113,7 +115,7 @@ const Institution = () => {
     })
     const loadingView = useDelay(isLoading)
     return (
-        <Section Style={['flexColumn', 'gap5', 'mb2']}>
+        <Section Style={['flexColumn', 'gap5', 'mb2', 'px4']}>
             {loadingView ? (
                 <LoadingScreen children />
             ) : (

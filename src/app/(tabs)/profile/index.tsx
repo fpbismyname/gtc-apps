@@ -1,13 +1,13 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import { FC } from 'react'
-import { Avatar, Chip } from 'react-native-paper'
+import { Avatar, Chip, List } from 'react-native-paper'
 import Button from '~/src/components/elements/Button'
 import LoadingScreen from '~/src/components/elements/LoadingScreen'
 import Section from '~/src/components/elements/Section'
 import Text from '~/src/components/elements/Text'
 import View from '~/src/components/elements/View'
-import { useTheme } from '~/src/constants/useTheme'
+import { IconNameType, useTheme } from '~/src/constants/useTheme'
 import useCollection from '~/src/hooks/Firebase/useCollection'
 import useDelay from '~/src/hooks/utils/useDelay'
 import useFetch from '~/src/hooks/utils/useFetch'
@@ -16,6 +16,9 @@ import { Account } from '~/src/types/Firebase/Account'
 import { DocumentDataWithID } from '~/src/types/Firebase/DataTypeFirebase'
 import DefaultImage from '~/src/assets/images/profile/defaultProfile.png'
 import { currentTypeRoles } from '~/src/utils/currentType'
+import * as Linking from 'expo-linking'
+import { styling } from '~/src/constants/styleSheets'
+import Link from '~/src/components/elements/Link'
 
 interface ProfilePage {
     fetchedData: DocumentDataWithID
@@ -89,6 +92,30 @@ const NewUserView = () => {
     )
 }
 
+const ProfileList = () => {
+    return (
+        <View Style={['flexRow', 'expand']}>
+            <List.Section style={styling('expand', 'roundedXl')}>
+                <List.Subheader>Membership & program pelatihan</List.Subheader>
+                <List.Item
+                    style={styling('roundedXl')}
+                    title="Gabung program pelatihan"
+                    left={(props) => <List.Icon {...props} icon={'school' as IconNameType} />}
+                    onPress={() => ''}
+                />
+                <List.Item style={styling('roundedXl')} title="Gabung membership" left={(props) => <List.Icon {...props} icon={'star-box' as IconNameType} />} onPress={() => ''} />
+                <List.Subheader>Pusat bantuan</List.Subheader>
+                <List.Item
+                    style={styling('roundedXl')}
+                    title="hubungi kami"
+                    left={(props) => <List.Icon {...props} icon={'chat' as IconNameType} />}
+                    onPress={() => Linking.openURL('https://wa.me/62895404545040')}
+                />
+            </List.Section>
+        </View>
+    )
+}
+
 const profile = () => {
     // Get User ID
     const { states: users } = useUsers()
@@ -102,12 +129,13 @@ const profile = () => {
     // Delay View
     const loadingView = useDelay(isLoading)
     return (
-        <Section Style={['flexColumn', 'px4']}>
+        <Section Style={['flexColumn', 'px4', 'gap4']}>
             {loadingView ? (
                 <LoadingScreen children />
             ) : users.user_id ? (
                 <>
                     <HeaderProfile isLoading={isLoading} fetchedData={datas as DocumentDataWithID} />
+                    <ProfileList />
                 </>
             ) : (
                 <NewUserView />

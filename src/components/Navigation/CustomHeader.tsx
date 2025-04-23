@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTheme } from '~/src/constants/useTheme'
 import Text from '../elements/Text'
 import View from '../elements/View'
+import { styling } from '~/src/constants/styleSheets'
 
 const CustomHeader: FC<NativeStackHeaderProps> = ({ options, route }) => {
     const insets = useSafeAreaInsets()
@@ -28,7 +29,7 @@ const CustomHeader: FC<NativeStackHeaderProps> = ({ options, route }) => {
 
     if (route.name === 'auth') {
         return (
-            <Appbar.Header safeAreaInsets={insets} theme={theme}>
+            <Appbar.Header safeAreaInsets={insets} theme={theme} style={styling({ elevation: 0 })}>
                 <View Style={['flexRow', 'itemsCenter', 'px4', 'expand', 'justifyCenter']}>
                     <View Style={['absolute', 'left0', 'pl4']}>{<Appbar.BackAction onPress={() => router.push('/(tabs)/')} size={24} />}</View>
                 </View>
@@ -39,7 +40,7 @@ const CustomHeader: FC<NativeStackHeaderProps> = ({ options, route }) => {
     if (route.name === 'institution')
         return (
             <>
-                <Appbar.Header safeAreaInsets={insets} theme={theme} mode="center-aligned">
+                <Appbar.Header safeAreaInsets={insets} theme={theme} style={styling({ elevation: 0 })}>
                     <View Style={['flexRow', 'itemsCenter', 'px4', 'expand', 'justifyCenter']}>
                         <View Style={['absolute', 'left0', 'pl4']}>{<Appbar.BackAction onPress={() => router.push('/(tabs)/profile')} size={24} />}</View>
                         <View Style={['flexColumn', 'itemsCenter']}>{titleHeader ? <Text variant="headlineSmall">{options.title || titleHeader}</Text> : null}</View>
@@ -50,7 +51,7 @@ const CustomHeader: FC<NativeStackHeaderProps> = ({ options, route }) => {
     if (route.name === '[id]')
         return (
             <>
-                <Appbar.Header safeAreaInsets={insets} theme={theme} mode="center-aligned">
+                <Appbar.Header safeAreaInsets={insets} theme={theme} style={styling({ elevation: 0 })}>
                     <View Style={['flexRow', 'itemsCenter', 'px4', 'expand', 'justifyCenter']}>
                         <View Style={['absolute', 'left0', 'pl4']}>{<Appbar.BackAction onPress={() => router.push('/(tabs)/profile')} size={24} />}</View>
                         <View Style={['flexColumn', 'itemsCenter']}>{titleHeader ? <Text variant="headlineSmall">{options.title || titleHeader}</Text> : null}</View>

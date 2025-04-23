@@ -58,7 +58,7 @@ const FormRegister = () => {
                 signUpAccount(values)
             }}
         >
-            {({ handleSubmit, handleChange, errors: err, touched: submitted }) => (
+            {({ handleSubmit, handleChange, errors: err, touched: submitted, values }) => (
                 <View Style={['rowGap4', 'flexColumn']}>
                     <TextInput
                         textContentType="username"
@@ -67,6 +67,7 @@ const FormRegister = () => {
                         error={submitted.username && err.username ? true : false}
                         onChangeText={handleChange('username')}
                         keyboardType="default"
+                        value={values.username}
                         rightItem={{
                             text: err.username && submitted.username ? err.username : ''
                         }}
@@ -79,6 +80,7 @@ const FormRegister = () => {
                         error={submitted.phone_number && err.phone_number ? true : false}
                         onChangeText={handleChange('phone_number')}
                         keyboardType="number-pad"
+                        value={values.phone_number}
                         rightItem={{
                             text: err.phone_number && submitted.phone_number ? err.phone_number : ''
                         }}
@@ -90,6 +92,7 @@ const FormRegister = () => {
                         error={submitted.email && err.email ? true : false}
                         onChangeText={handleChange('email')}
                         keyboardType="default"
+                        value={values.email}
                         rightItem={{
                             text: err.email && submitted.email ? err.email : ''
                         }}
@@ -100,6 +103,7 @@ const FormRegister = () => {
                         error={submitted.password && err.password ? true : false}
                         onChangeText={handleChange('password')}
                         textContentType="password"
+                        value={values.password}
                         rightItem={{
                             text: err.password && submitted.password ? err.password : ''
                         }}
@@ -129,7 +133,7 @@ const FormLogin = () => {
                     signInAccount(values)
                 }}
             >
-                {({ handleSubmit, handleChange, errors: err, touched: submitted }) => (
+                {({ handleSubmit, handleChange, errors: err, touched: submitted, values }) => (
                     <View Style={['rowGap4', 'flexColumn']}>
                         <TextInput
                             error={err.email && submitted.email ? true : false}
@@ -138,6 +142,7 @@ const FormLogin = () => {
                             onChangeText={handleChange('email')}
                             textContentType="emailAddress"
                             keyboardType="default"
+                            value={values.email}
                             rightItem={{
                                 text: err.email && submitted.email ? err.email : ''
                             }}
@@ -150,6 +155,7 @@ const FormLogin = () => {
                             placeholder="Password"
                             error={err.password && submitted.password ? true : false}
                             onChangeText={handleChange('password')}
+                            value={values.password}
                             rightItem={{
                                 text: err.password && submitted.password ? err.password : ''
                             }}

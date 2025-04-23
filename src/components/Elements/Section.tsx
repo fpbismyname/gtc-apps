@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { Keyboard, TouchableWithoutFeedback, ViewProps } from 'react-native'
+import { Keyboard, Platform, TouchableWithoutFeedback, ViewProps } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { styling, StylingType } from '~/src/constants/styleSheets'
 
@@ -8,13 +8,21 @@ interface SectionType extends ViewProps {
 }
 const Section: FC<SectionType> = (props) => {
     const { Style, children, ...rest } = props
-    return (
-        <TouchableWithoutFeedback style={styling('expand')} onPress={Keyboard.dismiss}>
+    if (Platform.OS === 'web') {
+        return (
             <SafeAreaView {...rest} style={styling(...(Style || []), 'expand')} edges={['top']}>
                 <>{children}</>
             </SafeAreaView>
-        </TouchableWithoutFeedback>
-    )
+        )
+    } else {
+        return (
+            <TouchableWithoutFeedback style={styling('expand')} onPress={Keyboard.dismiss}>
+                <SafeAreaView {...rest} style={styling(...(Style || []), 'expand')} edges={['top']}>
+                    <>{children}</>
+                </SafeAreaView>
+            </TouchableWithoutFeedback>
+        )
+    }
 }
 
 export default Section
