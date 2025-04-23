@@ -3,6 +3,7 @@
     "name": "Gading Training Center",
     "slug": "gading-training-center-apps",
     "scheme": "gading-apps-scheme",
+    "deepLinking":true,
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/gtc_icon.png",

@@ -4,52 +4,98 @@ import LoadingScreen from '~/src/components/elements/LoadingScreen'
 import Section from '~/src/components/elements/Section'
 import Text from '~/src/components/elements/Text'
 import View from '~/src/components/elements/View'
-import { styling } from '~/src/constants/styleSheets'
 import { IconNameType, useTheme } from '~/src/constants/useTheme'
 import useCollection from '~/src/hooks/Firebase/useCollection'
 import useDelay from '~/src/hooks/utils/useDelay'
 import useFetch from '~/src/hooks/utils/useFetch'
 import { InsitutionInformation } from '~/src/types/Firebase/MasterData/InsitutionInformation'
+import * as Linking from 'expo-linking'
+
+// ICon & label maps
+const iconKeyMap: Record<string, string> = {
+    established_at: 'calendar-check',
+    email: 'email-outline',
+    slogan: 'format-quote-close',
+    social_media: 'share-variant',
+    name: 'office-building',
+    logo: 'image-outline',
+    address: 'map-marker',
+    maps: 'google-maps',
+    instagram: 'instagram',
+    phone_number: 'whatsapp',
+    website: 'web'
+}
+const titleLabelMap: Record<string, string> = {
+    established_at: 'Didirikan pada',
+    email: 'Email',
+    slogan: 'Slogan',
+    social_media: 'Media Sosial',
+    name: 'Nama Institusi',
+    logo: 'Logo',
+    address: 'Alamat',
+    maps: 'Lokasi lembaga',
+    instagram: 'Instagram',
+    phone_number: 'No. WhatsApp',
+    website: 'Website Resmi'
+}
+const linkInstitution: Record<string, (value: string) => void> = {
+    email: (value: string) => Linking.openURL(`mailto:${value}`),
+    maps: (value: string) => {
+        Linking.openURL(value)
+    },
+    instagram: (value: string) => Linking.openURL(`https://instagram.com/${value.replace('@', '')}`),
+    phone_number: (value: string) => {
+        const phoneNumber = value.replace(/^0/, '62')
+        Linking.openURL(`https://wa.me/${phoneNumber}`)
+    },
+    website: (value: string) => Linking.openURL(`https://${value}`)
+}
+
+const getLinkKey = (key: string, value: string) => {
+    linkInstitution[key]?.(value)
+}
+const getIconKey = (key: string) => iconKeyMap[key] || 'information-outline'
+const getLabelKey = (key: string) => titleLabelMap[key] || 'informasi'
+const checkKeyForDefaultValue = (key: string, value: string) => {
+    if (key === 'maps') return 'Klik untuk cek lokasinya'
+    return value
+}
 
 const HeaderInstitution = ({ datas }: { datas: InsitutionInformation }) => {
     const { themeWithTransparent } = useTheme()
-    const DataInstitution = Object.entries(datas)
+    const DataInstitution = Object.entries(datas).filter(([key]) => key !== 'social_media' && key !== 'id' && key !== 'logo' && key !== 'slogan' && key !== 'maps')
+    const DataSocialMedia = Object.entries(datas.social_media || {})
     return (
         <>
-            <View Style={['flexRow', 'itemsCenter', 'justifyCenter']}>
-                <View Style={['flexColumn', 'gap4', 'itemsCenter', 'justifyCenter']}>
-                    <Avatar.Image source={{ uri: datas.logo }} size={128} />
-                    <Chip textStyle={{ color: themeWithTransparent.onTertiaryContainer }} style={{ backgroundColor: themeWithTransparent['tertiaryContainer/50'] }}>
-                        {datas.name}
-                    </Chip>
+            <View Style={['flexRow', 'itemsCenter', 'justifyCenter', 'gap4']}>
+                <View Style={['flexColumn', 'gap6', 'itemsCenter', 'justifyCenter']}>
+                    <View Style={['flexColumn', 'itemsCenter', 'justifyCenter']}>
+                        <Avatar.Image source={{ uri: datas.logo }} size={128} />
+                    </View>
+                    <View Style={['flexColumn', 'itemsCenter', 'justifyCenter', 'gap4']}>
+                        <Chip textStyle={{ color: themeWithTransparent.onTertiaryContainer }} style={{ backgroundColor: themeWithTransparent['tertiaryContainer/50'] }}>
+                            {datas.name}
+                        </Chip>
+                        <Text variant="bodySmall">{datas.slogan}</Text>
+                    </View>
                 </View>
             </View>
-            <ScrollView>
+            <ScrollView overScrollMode="never">
                 <List.Section>
-                    {DataInstitution.map(([key, value]) => {
-                        if (key === 'id') return null
-                        if (typeof value === 'object' && value !== null) {
-                            return Object.entries(value).map(([key, values]) => {
-                                return (
-                                    <List.Item
-                                        key={key}
-                                        title={values as string}
-                                        description={key}
-                                        left={(props) => <List.Icon {...props} icon={'asterisk' as IconNameType} />}
-                                        right={(props) => <List.Icon {...props} icon={'chevron-right' as IconNameType} />}
-                                        onPress={() => ''}
-                                    />
-                                )
-                            })
-                        }
+                    <List.Subheader>Profil Lembaga</List.Subheader>
+                    {DataInstitution.sort(([keyA], [keyB]) => keyA.localeCompare(keyB)).map(([key, value]) => {
+                        return <List.Item key={key} title={value} description={getLabelKey(key)} left={(props) => <List.Icon {...props} icon={getIconKey(key)} />} />
+                    })}
+                    <List.Subheader>Media sosial kami</List.Subheader>
+                    {DataSocialMedia.map(([key, value]) => {
                         return (
                             <List.Item
                                 key={key}
-                                title={value}
-                                description={key}
-                                left={(props) => <List.Icon {...props} icon={'asterisk' as IconNameType} />}
+                                title={checkKeyForDefaultValue(key, value)}
+                                description={getLabelKey(key)}
+                                left={(props) => <List.Icon {...props} icon={getIconKey(key)} />}
                                 right={(props) => <List.Icon {...props} icon={'chevron-right' as IconNameType} />}
-                                onPress={() => ''}
+                                onPress={() => getLinkKey(key, value)}
                             />
                         )
                     })}
@@ -65,7 +111,7 @@ const Institution = () => {
     })
     const loadingView = useDelay(isLoading)
     return (
-        <Section Style={['flexColumn']}>
+        <Section Style={['flexColumn', 'gap5', 'mb2']}>
             {loadingView ? (
                 <LoadingScreen children />
             ) : (

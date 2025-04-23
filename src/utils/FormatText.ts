@@ -4,7 +4,7 @@ export const ConvertToPath = (value: string[] | '') => {
     return path
 }
 
-export const FormatPath = (value: string) => {
+export const FormatUri = (value: string) => {
     const path = encodeURIComponent(value)
     return path
 }

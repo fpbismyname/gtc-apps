@@ -10,7 +10,7 @@ import * as Splash from 'expo-splash-screen'
 import LoadingScreen from '../elements/LoadingScreen'
 import { useSystemTheme } from '~/src/store/useSystemTheme'
 
-const CustomSlot = ({ defaultRoute }: { defaultRoute?: string }) => {
+const CustomSlot = ({ route }: { route?: string }) => {
     // States Apps is ready
     const [isReady, setIsReady] = useState<boolean>(false)
     // load custom font
@@ -24,7 +24,7 @@ const CustomSlot = ({ defaultRoute }: { defaultRoute?: string }) => {
         const loading = async () => {
             await new Promise(() =>
                 setTimeout(() => {
-                    router.replace(defaultRoute || '/(tabs)/')
+                    router.replace(route || '/(tabs)/')
                 }, 500)
             )
         }

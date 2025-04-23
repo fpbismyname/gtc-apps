@@ -8,7 +8,7 @@ import useDelay from '~/src/hooks/utils/useDelay'
 import LoadingScreen from '~/src/components/elements/LoadingScreen'
 import { Account } from '~/src/types/Firebase/Account'
 import { styling } from '~/src/constants/styleSheets'
-import { useTheme } from '~/src/constants/useTheme'
+import { IconNameType, useTheme } from '~/src/constants/useTheme'
 import { LocalPushParams } from '~/src/types/Navigation/navigationType'
 import { currentTypeRoles } from '~/src/utils/currentType'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
@@ -25,24 +25,29 @@ import Text from '~/src/components/elements/Text'
 import useAuth from '~/src/hooks/Auth/useAuth'
 import { ScrollView } from 'react-native'
 
-const accountTitleIcon = (title: string) => {
-    switch (title) {
-        case 'password':
-            return 'asterisk'
-        case 'phone_number':
-            return 'whatsapp'
-        case 'username':
-            return 'tag'
-        case 'email':
-            return 'email'
-        default:
-            return 'crop-square'
-    }
+const accountInfoIconMap: Record<string, string> = {
+    username: 'tag',
+    email: 'email',
+    password: 'asterisk',
+    phone_number: 'whatsapp'
 }
+const accountInfoLabelMap: Record<string, string> = {
+    username: 'Nama pengguna',
+    email: 'Alamat email',
+    password: 'Password',
+    phone_number: 'No. Whatsapp'
+}
+const convertPassToAsterisk = (pass: string, length?: number) => {
+    if (!pass) return null
+    const password = '*'.repeat(length || 8)
+    return password
+}
+const getAccountInfoIcon = (key: string) => accountInfoIconMap[key || ('information' as IconNameType)]
+const getAccountInfoLabel = (key: string) => accountInfoLabelMap[key || ('information' as IconNameType)]
 
 const MyProfile = ({ datas, theme }: { datas: Account; theme: any }) => {
     if (!datas) return
-    const UserData = Object.entries(datas.authentication)
+    const UserData = Object.entries(datas.authentication).sort(([keyA, keyB]) => keyB.localeCompare(keyA))
     const UserRoles = currentTypeRoles(datas.information.role) as { name: string; icon: string }
     // setup Modal variable
     const [modalEdit, setModalEdit] = useState<boolean>(false)
@@ -60,47 +65,39 @@ const MyProfile = ({ datas, theme }: { datas: Account; theme: any }) => {
 
     return (
         <>
-            <View Style={['flexColumn', 'gap5', 'mb12']}>
-                <View Style={['flexRow', 'itemsCenter', 'justifyCenter']}>
-                    <View Style={['flexColumn', 'itemsCenter', 'justifyCenter', 'gap4']}>
-                        <Avatar.Image size={128} source={DefaultImage} />
-                        <View>
-                            <Chip mode="flat" icon={UserRoles.icon} textStyle={{ color: theme.onTertiaryContainer }} style={{ backgroundColor: theme.tertiaryContainer }}>
-                                {UserRoles.name}
-                            </Chip>
-                        </View>
+            <View Style={['flexRow', 'itemsCenter', 'justifyCenter']}>
+                <View Style={['flexColumn', 'itemsCenter', 'justifyCenter', 'gap4']}>
+                    <Avatar.Image size={128} source={DefaultImage} />
+                    <View>
+                        <Chip mode="flat" icon={UserRoles.icon} textStyle={{ color: theme.onTertiaryContainer }} style={{ backgroundColor: theme.tertiaryContainer }}>
+                            {UserRoles.name}
+                        </Chip>
                     </View>
                 </View>
-                <View Style={['flexRow']}>
+            </View>
+            <View Style={['flexRow']}>
+                <ScrollView>
                     <List.Section style={styling('flexColumn', 'expand', 'columnGap4')} theme={theme}>
-                        {UserData.sort(([a], [b]) => b.localeCompare(a)).map(([key, value]) => {
-                            let keys = {
-                                title: '',
-                                icon: ''
-                            }
-                            if (key === 'email') keys = { title: 'Alamat email', icon: 'email' }
-                            else if (key === 'password') keys = { title: 'Password', icon: 'asterisk' }
-                            else if (key === 'username') keys = { title: 'Nama pengguna', icon: 'tag' }
-                            else if (key === 'phone_number') keys = { title: 'Whatsapp / Telepon', icon: 'whatsapp' }
+                        {UserData.map(([key, value], index) => {
                             return (
                                 <List.Item
-                                    key={key}
-                                    title={key === 'password' ? '************' : value}
-                                    description={keys?.title}
+                                    key={index}
+                                    title={key === 'password' ? convertPassToAsterisk(value) : value}
+                                    description={getAccountInfoLabel(key)}
+                                    left={(props) => <IconButton icon={getAccountInfoIcon(key)} {...props} />}
                                     right={(props) => <IconButton icon={'chevron-right'} {...props} />}
-                                    left={(props) => <IconButton icon={keys?.icon} {...props} />}
                                     onPress={() => setKeyData(key)}
                                 />
                             )
                         })}
                     </List.Section>
-                </View>
-                <View Style={['flexRow', 'itemsCenter', 'justifyCenter']}>
-                    <View Style={['flexColumn', 'itemsCenter', 'justifyCenter']}>
-                        <Button icon={'trash-can'} onPress={() => setModalDelete(true)}>
-                            Hapus akun
-                        </Button>
-                    </View>
+                </ScrollView>
+            </View>
+            <View Style={['flexRow', 'itemsCenter', 'justifyCenter']}>
+                <View Style={['flexColumn', 'itemsCenter', 'justifyCenter']}>
+                    <Button icon={'trash-can'} onPress={() => setModalDelete(true)}>
+                        Hapus akun
+                    </Button>
                 </View>
             </View>
             <EditProfile
@@ -181,7 +178,7 @@ const EditProfile = ({
                                     {title ? (
                                         <>
                                             <View Style={['flexRow', 'justifyCenter', 'itemsCenter', 'gap2']}>
-                                                <Icon source={accountTitleIcon(title)} size={36} color={theme.onPrimaryContainer} />
+                                                <Icon source={getAccountInfoIcon(title)} size={36} color={theme.onPrimaryContainer} />
                                                 <Text variant="headlineSmall">{`Edit ${UpperCaseText(title === 'phone_number' ? 'whatsapp' : title)}`}</Text>
                                             </View>
                                         </>
@@ -306,9 +303,7 @@ export default () => {
     return (
         <>
             <Section Style={['flexColumn']}>
-                <ScrollView>
-                    {loadingView || !fetchedData ? <LoadingScreen children /> : <>{id === Users.id && <MyProfile datas={fetchedData as Account} theme={theme} />}</>}
-                </ScrollView>
+                {loadingView || !fetchedData ? <LoadingScreen children /> : <>{id === Users.id && <MyProfile datas={fetchedData as Account} theme={theme} />}</>}
             </Section>
         </>
     )
