@@ -78,34 +78,30 @@ const HeaderInstitution = ({ datas }: { datas: InsitutionInformation }) => {
                         <Avatar.Image source={{ uri: datas.logo }} size={108} />
                     </View>
                     <View Style={['flexColumn', 'itemsCenter', 'justifyCenter', 'gap4']}>
-                        <Chip textStyle={{ color: themeWithTransparent.onTertiaryContainer }} style={{ backgroundColor: themeWithTransparent['tertiaryContainer/50'] }}>
-                            {datas.name}
-                        </Chip>
+                        <Chip>{datas.name}</Chip>
                         <Text variant="bodySmall">{datas.slogan}</Text>
                     </View>
                 </View>
             </View>
             <ScrollView overScrollMode="never" showsVerticalScrollIndicator={onPlatform === 'android' ? true : false}>
-                <List.Section>
-                    <List.Subheader>Profil Lembaga</List.Subheader>
-                    {DataInstitution.map(([key, value]) => {
-                        return <List.Item key={key} title={value} description={getLabelKey(key)} left={(props) => <List.Icon {...props} icon={getIconKey(key)} />} />
-                    })}
-                    <List.Subheader>Media sosial kami</List.Subheader>
-                    {DataSocialMedia.map(([key, value]) => {
-                        return (
-                            <List.Item
-                                key={key}
-                                style={styling('roundedXl')}
-                                title={checkKeyForDefaultValue(key, value)}
-                                description={getLabelKey(key)}
-                                left={(props) => <List.Icon {...props} icon={getIconKey(key)} />}
-                                right={(props) => <List.Icon {...props} icon={'chevron-right' as IconNameType} />}
-                                onPress={() => getLinkKey(key, value)}
-                            />
-                        )
-                    })}
-                </List.Section>
+                <List.Subheader>Profil Lembaga</List.Subheader>
+                {DataInstitution.map(([key, value]) => {
+                    return <List.Item key={key} title={value} description={getLabelKey(key)} left={(props) => <List.Icon {...props} icon={getIconKey(key)} />} />
+                })}
+                <List.Subheader>Media sosial kami</List.Subheader>
+                {DataSocialMedia.map(([key, value]) => {
+                    return (
+                        <List.Item
+                            key={key}
+                            style={styling('roundedXl')}
+                            title={checkKeyForDefaultValue(key, value)}
+                            description={getLabelKey(key)}
+                            left={(props) => <List.Icon {...props} icon={getIconKey(key)} />}
+                            right={(props) => <List.Icon {...props} icon={'chevron-right' as IconNameType} />}
+                            onPress={() => getLinkKey(key, value)}
+                        />
+                    )
+                })}
             </ScrollView>
         </>
     )

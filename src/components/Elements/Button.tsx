@@ -17,7 +17,7 @@ const Button: FC<ButtonType> = ({ children, Style, ContentStyle, ...rest }) => {
             compact={!rest.compact || true}
             style={styling(...(Style || []), 'roundedMd')}
             textColor={theme.onPrimaryContainer}
-            contentStyle={styling(...(ContentStyle || []), { backgroundColor: theme.primaryContainer })}
+            buttonColor={theme.primaryContainer}
         >
             {children}
         </BT>

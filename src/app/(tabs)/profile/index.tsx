@@ -33,7 +33,7 @@ const HeaderProfile: FC<ProfilePage & { isLoading: boolean }> = ({ fetchedData, 
     // Checking Data
     if (isLoading || !datas || !datas.id) return
     // Theme
-    const { themeWithTransparent, theme } = useTheme()
+    const { themeWithTransparent } = useTheme()
     // CurrentUser Roles
     const UserRoles = currentTypeRoles(datas.information.role)
 
@@ -58,7 +58,7 @@ const HeaderProfile: FC<ProfilePage & { isLoading: boolean }> = ({ fetchedData, 
             <View Style={['flexColumn', 'expand']}>
                 <View Style={['flexRow', 'itemsCenter', 'justifyEnd']}>
                     <View Style={['flexColumn', 'itemsCenter']}>
-                        <Chip mode="flat" icon={UserRoles.icon} textStyle={{ color: theme.onTertiaryContainer }} style={{ backgroundColor: theme.tertiaryContainer }}>
+                        <Chip mode="flat" icon={UserRoles.icon}>
                             {UserRoles.name}
                         </Chip>
                     </View>

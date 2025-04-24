@@ -36,6 +36,7 @@ const CustomTabBar: FC<BottomTabBarProps> = ({ state, descriptors, insets, navig
             keyboardHidesNavigationBar
             style={{ backgroundColor: themeWithTransparent.primaryContainer }}
             activeColor={themeWithTransparent.onBackground}
+            inactiveColor={themeWithTransparent.onBackground}
             activeIndicatorStyle={{ backgroundColor: themeWithTransparent['primary/50'] }}
             renderIcon={({ route, focused, color }) => {
                 switch (route.name) {

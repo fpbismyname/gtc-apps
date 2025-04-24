@@ -7,9 +7,7 @@ import { DocumentDataWithID } from '~/src/types/Firebase/DataTypeFirebase'
 export type collectionDocsType = string
 export type queryType = { field: any; operator: WhereFilterOp; value: any } | null
 
-const delayFetchTime = 600
-
-const useCollectionRealTime = (collectionPath: string, { queryByDocId, query }: { query?: queryType; queryByDocId?: string }) => {
+const useCollectionRealTime = ({ collectionPath, queryByDocId, query }: { collectionPath: string; query?: queryType; queryByDocId?: string }) => {
     // Datas collection
     const [datas, setDatas] = useState<DocumentDataWithID | DocumentDataWithID[] | null>(null)
 
@@ -32,7 +30,8 @@ const useCollectionRealTime = (collectionPath: string, { queryByDocId, query }: 
                 unsubscribe = onSnapshot(queriesSnapshot, (data) => {
                     if (!data.empty) {
                         const datas = data.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
-                        setDatas(datas)
+                        const checkSingleData = Array.isArray(datas) ? datas?.[0] : datas
+                        setDatas(checkSingleData)
                     } else {
                         setDatas(null)
                     }
@@ -43,7 +42,8 @@ const useCollectionRealTime = (collectionPath: string, { queryByDocId, query }: 
                 unsubscribe = onSnapshot(colRef, (data) => {
                     if (!data.empty) {
                         const datas = data.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
-                        setDatas(datas)
+                        const checkSingleData = Array.isArray(datas) && datas.length <= 1 ? datas?.[0] : datas
+                        setDatas(checkSingleData)
                     } else {
                         setDatas(null)
                     }
@@ -54,11 +54,13 @@ const useCollectionRealTime = (collectionPath: string, { queryByDocId, query }: 
                 const docRef = doc(db, collectionPath, queryByDocId)
                 unsubscribe = onSnapshot(docRef, (data) => {
                     if (data.exists()) {
-                        setDatas({ id: data.id, ...data.data() })
+                        const datas = { id: data.id, ...data.data() }
+                        const checkSingleData = Array.isArray(datas) ? datas?.[0] : datas
+                        setDatas(checkSingleData)
                     } else {
-                        setDatas(null)
                     }
                 })
+
                 return unsubscribe
             }
         } catch (err) {
@@ -71,11 +73,9 @@ const useCollectionRealTime = (collectionPath: string, { queryByDocId, query }: 
 
     // Real time data load
     useEffect(() => {
-        if (query || queryByDocId) {
-            const unsubscribe = getData()
-            return () => {
-                if (unsubscribe) unsubscribe()
-            }
+        const unsubscribe = getData()
+        return () => {
+            if (unsubscribe) unsubscribe()
         }
     }, [])
 

@@ -75,7 +75,7 @@ const MyProfile = ({ datas, theme }: { datas: Account; theme: any }) => {
                 <View Style={['flexColumn', 'itemsCenter', 'justifyCenter', 'gap4']}>
                     <Avatar.Image size={108} source={DefaultImage} />
                     <View>
-                        <Chip mode="flat" icon={UserRoles.icon} textStyle={{ color: theme.onTertiaryContainer }} style={{ backgroundColor: theme.tertiaryContainer }}>
+                        <Chip mode="flat" icon={UserRoles.icon}>
                             {UserRoles.name}
                         </Chip>
                     </View>
@@ -83,30 +83,28 @@ const MyProfile = ({ datas, theme }: { datas: Account; theme: any }) => {
             </View>
             <View Style={['flexRow']}>
                 <ScrollView overScrollMode="never" showsVerticalScrollIndicator={onPlatform === 'android' ? true : false}>
-                    <List.Section style={styling('flexColumn', 'expand', 'columnGap4')} theme={theme}>
-                        {UserExpirationDateValue && (
+                    {UserExpirationDateValue && (
+                        <List.Item
+                            style={styling('roundedXl')}
+                            title={UserExpirationDateValue}
+                            description={getAccountInfoLabel(UserExpirationDateKey)}
+                            left={(props) => <IconButton icon={getAccountInfoIcon(UserExpirationDateKey)} {...props} />}
+                            right={(props) => <IconButton icon={'chevron-right'} {...props} />}
+                        />
+                    )}
+                    {UserData.map(([key, value], index) => {
+                        return (
                             <List.Item
+                                key={index}
                                 style={styling('roundedXl')}
-                                title={UserExpirationDateValue}
-                                description={getAccountInfoLabel(UserExpirationDateKey)}
-                                left={(props) => <IconButton icon={getAccountInfoIcon(UserExpirationDateKey)} {...props} />}
+                                title={key === 'password' ? convertPassToAsterisk(value) : value}
+                                description={getAccountInfoLabel(key)}
+                                left={(props) => <IconButton icon={getAccountInfoIcon(key)} {...props} />}
                                 right={(props) => <IconButton icon={'chevron-right'} {...props} />}
+                                onPress={() => setKeyData(key)}
                             />
-                        )}
-                        {UserData.map(([key, value], index) => {
-                            return (
-                                <List.Item
-                                    key={index}
-                                    style={styling('roundedXl')}
-                                    title={key === 'password' ? convertPassToAsterisk(value) : value}
-                                    description={getAccountInfoLabel(key)}
-                                    left={(props) => <IconButton icon={getAccountInfoIcon(key)} {...props} />}
-                                    right={(props) => <IconButton icon={'chevron-right'} {...props} />}
-                                    onPress={() => setKeyData(key)}
-                                />
-                            )
-                        })}
-                    </List.Section>
+                        )
+                    })}
                 </ScrollView>
             </View>
             <View Style={['flexRow', 'itemsCenter', 'justifyCenter']}>
@@ -311,7 +309,7 @@ export default () => {
     // Get Params from navigating
     const { id } = useLocalSearchParams<LocalPushParams>()
     // Fetch account data
-    const { datas: fetchedData, isLoading } = useCollectionRealTime('Account', { queryByDocId: id })
+    const { datas: fetchedData, isLoading } = useCollectionRealTime({ collectionPath: 'Account', queryByDocId: id })
     // Users
     const Users = fetchedData as Account
     // Set Loading View

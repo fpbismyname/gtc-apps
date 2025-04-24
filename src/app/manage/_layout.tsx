@@ -1,15 +1,13 @@
-import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
-import { router, Tabs } from 'expo-router'
+import { router, Stack } from 'expo-router'
 import { useEffect } from 'react'
 import { Platform } from 'react-native'
-import CustomHeaderBottomTabBar from '~/src/components/navigation/CustomHeaderBottomTabBar'
-import CustomTabBar from '~/src/components/navigation/CustomTabBar'
+import CustomHeader from '~/src/components/navigation/CustomHeader'
 import { useTheme } from '~/src/constants/useTheme'
 import useCollectionRealTime from '~/src/hooks/Firebase/useCollectionRealTime'
 import { useUsers } from '~/src/store/useUsers'
 import { Account } from '~/src/types/Firebase/Account'
 
-const TabLayout = () => {
+const AdminLayout = () => {
     // Users ID
     const { states: users, deleteUserID } = useUsers()
     // Notify
@@ -29,37 +27,40 @@ const TabLayout = () => {
             if (!Users?.id && users.user_id) {
                 deleteUserID()
             }
-            if (Users?.id && users.user_id && Users.information.role === 'admin') {
+            if (Users.information.role !== 'admin') {
                 if (onPlatform === 'web') {
-                    router.replace('/manage')
-                } else {
                     router.replace('/(tabs)/')
+                } else {
+                    router.replace('/manage')
                 }
             }
         }, 500)
         return () => clearTimeout(checkUser)
     }, [datas])
 
-    // Theme
     const { theme } = useTheme()
     return (
-        <Tabs
-            tabBar={(props: BottomTabBarProps) => <CustomTabBar {...props} />}
+        <Stack
             screenOptions={{
-                header: (props) => <CustomHeaderBottomTabBar {...props} />,
-                tabBarHideOnKeyboard: true,
-                sceneStyle: {
-                    backgroundColor: theme.background,
-                    elevation: 0
-                }
-                // animation: 'shift'
+                headerShown: true,
+                header: (props) => <CustomHeader {...props} />,
+                headerTintColor: theme.onBackground,
+                headerStyle: {
+                    backgroundColor: theme.background
+                },
+                headerTitleStyle: {
+                    color: theme.onBackground
+                },
+                headerShadowVisible: false,
+                contentStyle: {
+                    backgroundColor: theme.background
+                },
+                animation: 'fade_from_bottom'
             }}
-            initialRouteName="index"
         >
-            <Tabs.Screen name="index" options={{ title: 'Beranda' }} />
-            <Tabs.Screen name="module" options={{ title: 'Modul' }} />
-            <Tabs.Screen name="profile" options={{ title: 'Profil' }} />
-        </Tabs>
+            <Stack.Screen name="index" options={{ title: 'Manage' }} />
+        </Stack>
     )
 }
-export default TabLayout
+
+export default AdminLayout
