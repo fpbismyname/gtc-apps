@@ -59,7 +59,7 @@ const HeaderProfile: FC<ProfilePage & { isLoading: boolean }> = ({ fetchedData, 
                 <View Style={['flexRow', 'itemsCenter', 'justifyEnd']}>
                     <View Style={['flexColumn', 'itemsCenter']}>
                         <Chip mode="flat" icon={UserRoles.icon}>
-                            {UserRoles.name}
+                            <Text>{UserRoles.name}</Text>
                         </Chip>
                     </View>
                 </View>

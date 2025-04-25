@@ -76,7 +76,7 @@ const MyProfile = ({ datas, theme }: { datas: Account; theme: any }) => {
                     <Avatar.Image size={108} source={DefaultImage} />
                     <View>
                         <Chip mode="flat" icon={UserRoles.icon}>
-                            {UserRoles.name}
+                            <Text>{UserRoles.name}</Text>
                         </Chip>
                     </View>
                 </View>
