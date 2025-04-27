@@ -69,11 +69,11 @@ const useCollection = (collectionPath: string) => {
     }
 
     // Editing Data
-    const editData = async ({ id, field, values, type }: { id: string; field?: string; values?: any; type: 'password' | 'text' }) => {
+    const editData = async ({ id, field, values, type = 'text' }: { id?: string; field?: string; values?: any; type?: 'password' | 'text' }) => {
         setIsLoading(true)
         try {
             if (type === 'password') {
-                if (!id || !values?.password || !values?.newPassword || !field) return false
+                if (!id || !values?.password || !values?.newPassword) return false
                 const oldPassword = values?.password
                 const newPassword = values?.newPassword
                 const hashedNewPassword = await createHash(newPassword)
@@ -91,7 +91,7 @@ const useCollection = (collectionPath: string) => {
                 return true
             }
             if (type === 'text') {
-                if (!id || !values || !field) return false
+                if (!id || !values) return false
                 const preparedData = field
                     ? {
                           [field]: values

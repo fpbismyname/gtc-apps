@@ -24,28 +24,8 @@ import useCollectionRealTime from '~/src/hooks/Firebase/useCollectionRealTime'
 import Text from '~/src/components/elements/Text'
 import useAuth from '~/src/hooks/Auth/useAuth'
 import { Platform, ScrollView } from 'react-native'
-
-const accountInfoIconMap: Record<string, string> = {
-    username: 'tag',
-    email: 'email',
-    password: 'asterisk',
-    phone_number: 'whatsapp',
-    expiration_date: 'clock'
-}
-const accountInfoLabelMap: Record<string, string> = {
-    username: 'Nama pengguna',
-    email: 'Alamat email',
-    password: 'Password',
-    phone_number: 'No. Whatsapp',
-    expiration_date: 'Masa berlaku'
-}
-const convertPassToAsterisk = (pass: string, length?: number) => {
-    if (!pass) return null
-    const password = '*'.repeat(length || 8)
-    return password
-}
-const getAccountInfoIcon = (key: string) => accountInfoIconMap[key || ('information' as IconNameType)]
-const getAccountInfoLabel = (key: string) => accountInfoLabelMap[key || ('information' as IconNameType)]
+import { convertPassToAsterisk, getAccountInfoIcon, getAccountInfoLabel } from '~/src/utils/defaultValueKeyorValue'
+import AvatarImage from '~/src/components/elements/AvatarImage'
 
 const onPlatform = Platform.OS
 
@@ -73,7 +53,7 @@ const MyProfile = ({ datas, theme }: { datas: Account; theme: any }) => {
         <>
             <View Style={['flexRow', 'itemsCenter', 'justifyCenter']}>
                 <View Style={['flexColumn', 'itemsCenter', 'justifyCenter', 'gap4']}>
-                    <Avatar.Image size={108} source={DefaultImage} />
+                    <AvatarImage size={108} source={DefaultImage} />
                     <View>
                         <Chip mode="flat" icon={UserRoles.icon}>
                             <Text>{UserRoles.name}</Text>
@@ -179,7 +159,7 @@ const EditProfile = ({
                                 setNotifyValue({ message: textMessages.editedAccountSuccess })
                             } else if (!editProfile) {
                                 if (!values[title || ''] || !newPassword) {
-                                    setNotifyValue({ message: textAction.edit('isEmpty'), type: 'info' })
+                                    setNotifyValue({ message: textAction.edit('isEmpty', 'failed'), type: 'info' })
                                 } else {
                                     setNotifyValue({ message: title === 'password' ? textMessages.editedAccountFailedWrongPass : textMessages.editedAccountFailed })
                                 }

@@ -1,68 +1,70 @@
-import { DataTable, IconButton } from 'react-native-paper'
+import { Chip, ChipProps, DataTable, List } from 'react-native-paper'
 import LoadingScreen from '~/src/components/elements/LoadingScreen'
 import View from '~/src/components/elements/View'
 import useCollectionRealTime from '~/src/hooks/Firebase/useCollectionRealTime'
 import useDelay from '~/src/hooks/utils/useDelay'
 import { Account } from '~/src/types/Firebase/Account'
 import { DocumentDataWithID } from '~/src/types/Firebase/DataTypeFirebase'
-import index from '..'
-import { Fragment } from 'react'
-import Button from '~/src/components/elements/Button'
+import { FC, Fragment } from 'react'
+import { FlattenObject } from '~/src/utils/ObjectUtils'
+import { UpperCaseText } from '~/src/utils/FormatText'
+import Text from '~/src/components/elements/Text'
+import { styling } from '~/src/constants/styleSheets'
+import { ScrollView } from 'react-native'
 
-const getFromObject = (values: object | object[], whatToGet: 'key' | 'value') => {
-    if (whatToGet === 'key') {
-        const data = Object.keys(values)
-        return data
-    }
-    if (whatToGet === 'value') {
-        const data = Object.values(values)
-        return data
-    }
-}
 const AccountList = ({ datas }: { datas: DocumentDataWithID | DocumentDataWithID[] }) => {
     const account = Array.isArray(datas) ? (datas as Account[]) : (datas as Account)
-    const authData = Array.isArray(account) ? account.map((data) => ({ id: data.id, ...data.authentication })) : { id: account.id, ...account.authentication }
-    const Datas = Object.entries(authData)
+    const amountAccount = Object.entries(account)
+
     return (
         <View>
             <DataTable>
-                {Datas.map(([key, value], index) => {
-                    const keysTable = Object.keys(value)
-                    const valuesTable = Object.values(value)
-
+                {amountAccount.map(([key, value], index) => {
+                    const id = FlattenObject(value).filter(([data]) => data === 'id')
+                    const valueData = FlattenObject(value).filter(([data]) => data !== 'token' && data !== 'password' && data !== 'id')
+                    const values = [...id, ...valueData]
+                    const keys = Object.keys(value)
                     if (index < 1) {
                         return (
-                            <Fragment key={key}>
-                                <DataTable.Header key={`header-${index}`}>
-                                    {keysTable.map((val, index) => (
-                                        <DataTable.Title key={`title-${index}`}>{val}</DataTable.Title>
-                                    ))}
-                                    <DataTable.Title key={`title-${index}`}>Aksi</DataTable.Title>
+                            <Fragment key={`frag-${key}`}>
+                                <DataTable.Header key={`header-${keys}`}>
+                                    {values.map(([key]) => {
+                                        return <DataTable.Title key={`table-cell-${key}`}>{UpperCaseText(key)}</DataTable.Title>
+                                    })}
                                 </DataTable.Header>
-                                <DataTable.Row key={`row-${index}`}>
-                                    {valuesTable.map((val, index) => (
-                                        <DataTable.Cell key={`cell-row-${index}`}>{val as string}</DataTable.Cell>
-                                    ))}
-                                    <DataTable.Cell key={`cell-row-${index}`}>
-                                        <IconButton key={`iconButton-${key}`} icon={'pencil'} />
-                                        <IconButton key={`iconButton-${key + 1}`} icon={'trash-can'} />
-                                    </DataTable.Cell>
+                                <DataTable.Row>
+                                    {values.map(([key, val]) => {
+                                        if (typeof val === 'object') {
+                                            const dataModule = FlattenObject(val).filter(([key]) => key === 'module_name')
+                                            console.log(dataModule)
+                                            return (
+                                                <DataTable.Cell key={`table-cell-${key}`}>
+                                                    {dataModule.map(([key, value]) => {
+                                                        return <AccountModuleList key={`module-list-${value}`} label={value} />
+                                                    })}
+                                                </DataTable.Cell>
+                                            )
+                                        } else {
+                                            return <DataTable.Cell key={`table-cell-${key}`}>{val || '-'}</DataTable.Cell>
+                                        }
+                                    })}
                                 </DataTable.Row>
                             </Fragment>
-                        )
-                    } else {
-                        return (
-                            <DataTable.Row key={`row-${index}`}>
-                                {valuesTable.map((val, index) => (
-                                    <DataTable.Cell key={`cell-rows-${index}`}>{val as string}</DataTable.Cell>
-                                ))}
-                                <DataTable.Cell key={`cell-rows-${index}`}>Aksi</DataTable.Cell>
-                            </DataTable.Row>
                         )
                     }
                 })}
             </DataTable>
         </View>
+    )
+}
+
+const AccountModuleList = ({ label }: { label: string }) => {
+    return (
+        <ScrollView>
+            <List.Section>
+                <List.Item title={label} />
+            </List.Section>
+        </ScrollView>
     )
 }
 

@@ -80,5 +80,9 @@ export const ValidationSchema = {
             .required(textMessages.required)
             .min(setInputLength('password', 'minLength'), textMessages.tooShort(setInputLength('password', 'minLength')))
             .max(setInputLength('password', 'maxLength'), textMessages.tooLong(setInputLength('password', 'maxLength')))
-    })
+    }),
+    customScheme: (key: string) =>
+        Yup.object().shape({
+            [key]: Yup.string().required(textMessages.required)
+        })
 }

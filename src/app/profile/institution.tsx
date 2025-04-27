@@ -9,63 +9,14 @@ import useCollection from '~/src/hooks/Firebase/useCollection'
 import useDelay from '~/src/hooks/utils/useDelay'
 import useFetch from '~/src/hooks/utils/useFetch'
 import { InsitutionInformation } from '~/src/types/Firebase/MasterData/InsitutionInformation'
-import * as Linking from 'expo-linking'
 import { styling } from '~/src/constants/styleSheets'
-
-// ICon & label maps
-const iconKeyMap: Record<string, string> = {
-    established_at: 'calendar-check',
-    email: 'email-outline',
-    slogan: 'format-quote-close',
-    social_media: 'share-variant',
-    name: 'office-building',
-    logo: 'image-outline',
-    address: 'map-marker',
-    maps: 'google-maps',
-    instagram: 'instagram',
-    phone_number: 'whatsapp',
-    website: 'web'
-}
-const titleLabelMap: Record<string, string> = {
-    established_at: 'Didirikan pada',
-    email: 'Email',
-    slogan: 'Slogan',
-    social_media: 'Media Sosial',
-    name: 'Nama Institusi',
-    logo: 'Logo',
-    address: 'Alamat',
-    maps: 'Lokasi lembaga',
-    instagram: 'Instagram',
-    phone_number: 'No. WhatsApp',
-    website: 'Website Resmi'
-}
-const linkInstitution: Record<string, (value: string) => void> = {
-    email: (value: string) => Linking.openURL(`mailto:${value}`),
-    maps: (value: string) => {
-        Linking.openURL(value)
-    },
-    instagram: (value: string) => Linking.openURL(`https://instagram.com/${value.replace('@', '')}`),
-    phone_number: (value: string) => {
-        const phoneNumber = value.replace(/^0/, '62')
-        Linking.openURL(`https://wa.me/${phoneNumber}`)
-    },
-    website: (value: string) => Linking.openURL(`https://${value}`)
-}
-const getLinkKey = (key: string, value: string) => {
-    linkInstitution[key]?.(value)
-}
-const getIconKey = (key: string) => iconKeyMap[key] || 'information-outline'
-const getLabelKey = (key: string) => titleLabelMap[key] || 'informasi'
-const checkKeyForDefaultValue = (key: string, value: string) => {
-    if (key === 'maps') return 'Klik untuk cek lokasinya'
-    return value
-}
+import { checkKeyForDefaultValue, getIconKey, getLabelKey, getLinkKey } from '~/src/utils/defaultValueKeyorValue'
+import AvatarImage from '~/src/components/elements/AvatarImage'
 
 // Check Platform
 const onPlatform = Platform.OS
 
 const HeaderInstitution = ({ datas }: { datas: InsitutionInformation }) => {
-    const { themeWithTransparent } = useTheme()
     const DataInstitution = Object.entries(datas)
         .filter(([key]) => key !== 'social_media' && key !== 'id' && key !== 'logo' && key !== 'slogan' && key !== 'maps')
         .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
@@ -75,7 +26,7 @@ const HeaderInstitution = ({ datas }: { datas: InsitutionInformation }) => {
             <View Style={['flexRow', 'itemsCenter', 'justifyCenter', 'gap4']}>
                 <View Style={['flexColumn', 'gap6', 'itemsCenter', 'justifyCenter']}>
                     <View Style={['flexColumn', 'itemsCenter', 'justifyCenter']}>
-                        <Avatar.Image source={{ uri: datas.logo }} size={108} />
+                        <AvatarImage source={{ uri: datas.logo }} size={108} />
                     </View>
                     <View Style={['flexColumn', 'itemsCenter', 'justifyCenter', 'gap4']}>
                         <Chip>{datas.name}</Chip>
@@ -86,7 +37,16 @@ const HeaderInstitution = ({ datas }: { datas: InsitutionInformation }) => {
             <ScrollView overScrollMode="never" showsVerticalScrollIndicator={onPlatform === 'android' ? true : false}>
                 <List.Subheader>Profil Lembaga</List.Subheader>
                 {DataInstitution.map(([key, value]) => {
-                    return <List.Item key={key} title={value} description={getLabelKey(key)} left={(props) => <List.Icon {...props} icon={getIconKey(key)} />} />
+                    return (
+                        <List.Item
+                            key={key}
+                            style={styling('roundedXl')}
+                            title={value}
+                            description={getLabelKey(key)}
+                            left={(props) => <List.Icon {...props} icon={getIconKey(key)} />}
+                            onPress={() => ''}
+                        />
+                    )
                 })}
                 <List.Subheader>Media sosial kami</List.Subheader>
                 {DataSocialMedia.map(([key, value]) => {

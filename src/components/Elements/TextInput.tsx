@@ -28,6 +28,7 @@ const TextInput: FC<TextInputType> = ({ Style, unDense, rightItem, ...rest }) =>
         <View>
             <TI
                 {...rest}
+                mode={rest.mode || 'outlined'}
                 dense={!unDense}
                 style={styling(...(Style || []))}
                 secureTextEntry={typeInputPassword ? !showPassword : false}
