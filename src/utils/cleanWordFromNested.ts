@@ -1,7 +1,13 @@
-const cleanWordFromNested = (values: string) => {
+const cleanWordFromNested = (values: string, getWhichWord: 'first' | 'last' = 'last') => {
     const splitWord = values.split('.')
-    const getLastWord = splitWord[splitWord.length - 1]
-    return getLastWord
+    if (getWhichWord === 'first') {
+        const getLastWord = splitWord.shift()
+        return getLastWord
+    }
+    if (getWhichWord === 'last') {
+        const getLastWord = splitWord.pop()
+        return getLastWord
+    }
 }
 
 export default cleanWordFromNested

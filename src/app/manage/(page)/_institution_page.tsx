@@ -29,11 +29,15 @@ const InstitutionLayout = ({ datas }: { datas: InsitutionInformation }) => {
     // Dialog States
     const [visible, setVisible] = useState<boolean>(false)
     const [keyData, setKeyData] = useState<string | ''>('')
+    const [defaultValue, setDefaultValue] = useState<string | null>(null)
     // Check Key Data
     useEffect(() => {
         if (keyData) {
+            const defaultValue = DataInstitution.find(([key, value]) => key === keyData)?.[1]
+            setDefaultValue(defaultValue)
             setVisible(true)
         } else {
+            setDefaultValue(null)
             setVisible(false)
         }
     }, [keyData])
@@ -102,14 +106,15 @@ const InstitutionLayout = ({ datas }: { datas: InsitutionInformation }) => {
                 type={'form'}
                 visible={visible}
                 setVisible={setKeyData}
+                defaultValue={defaultValue || ''}
                 title={keyData}
                 onSubmitFormDialog={async (values) => {
                     const submitEdit = await editData({ id: datas.id, values: values })
                     const keyValue = cleanWordFromNested(keyData)
                     if (submitEdit) {
-                        setNotifyValue({ message: textAction.edit(keyValue, 'success') })
+                        setNotifyValue({ message: textAction.edit(getLabelKey(keyValue || ''), 'success'), type: 'success' })
                     } else {
-                        setNotifyValue({ message: textAction.edit(keyValue, 'failed') })
+                        setNotifyValue({ message: textAction.edit(getLabelKey(keyValue || ''), 'failed'), type: 'error' })
                     }
                 }}
             />

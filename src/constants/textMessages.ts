@@ -41,7 +41,7 @@ export const textAction = {
         if (text === 'isEmpty') {
             return `Kolom wajib diisi`
         } else {
-            return `Data ${text} ${status === 'success' ? 'berhasil' : 'gagal'} dubah`
+            return `Data ${text} ${status === 'success' ? 'berhasil' : 'gagal'} diubah`
         }
     },
     delete: (text: string) => `Apakah anda yakin ingin menghapus ${text} ?`

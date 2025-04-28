@@ -1,4 +1,4 @@
-import { collection as collect, doc, onSnapshot, where } from 'firebase/firestore'
+import { collection as collect, doc, onSnapshot, orderBy, where } from 'firebase/firestore'
 import { db } from '~/src/services/firebase'
 import { WhereFilterOp, query as q } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
@@ -39,7 +39,8 @@ const useCollectionRealTime = ({ collectionPath, queryByDocId, query }: { collec
                 return unsubscribe
             }
             if (!query && !queryByDocId) {
-                unsubscribe = onSnapshot(colRef, (data) => {
+                const queriesSnapshot = q(colRef)
+                unsubscribe = onSnapshot(queriesSnapshot, (data) => {
                     if (!data.empty) {
                         const datas = data.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
                         const checkSingleData = Array.isArray(datas) && datas.length <= 1 ? datas?.[0] : datas
